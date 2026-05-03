@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buck salva Thornton — Ora 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1A2E4A;--red:#C0392B;--teal:#0E7C7B;--green:#27640A;
+  --amber:#7D4E00;--purple:#44276A;--blue:#0D4B8C;--coral:#7D1F3C;
+  --gold:#8A6200;--text:#111;--muted:#555;--light:#F4F4F4;--border:#CCC;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#DEDEDE;height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+.deck{flex:1;position:relative;overflow:hidden;min-height:0;}
+.slide{position:absolute;inset:0;background:#FFF;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateX(40px);transition:opacity .35s,transform .35s;}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
+.slide.prev{opacity:0;transform:translateX(-40px);}
+.topbar{height:6px;background:linear-gradient(90deg,var(--navy) 60%,var(--red) 100%);flex-shrink:0;}
+.slide-header{padding:18px 52px 0;display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;}
+.slide-title{font-family:'Playfair Display',serif;font-size:clamp(22px,3.6vw,46px);font-weight:900;color:var(--navy);line-height:1.1;}
+.slide-title .r{color:var(--red);}.slide-title .t{color:var(--teal);}.slide-title .g{color:var(--green);}
+.stag{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:5px;}
+.tred{color:var(--red);background:#FDECEA;border:1.5px solid #F5B8B2;}
+.tblue{color:var(--blue);background:#EAF1FB;border:1.5px solid #B0CCF0;}
+.tteal{color:var(--teal);background:#E8F7F7;border:1.5px solid #A8DFDE;}
+.tgreen{color:var(--green);background:#EDFAE0;border:1.5px solid #A8D98A;}
+.tgold{color:var(--gold);background:#FEF7E0;border:1.5px solid #EDCE77;}
+.tpurple{color:var(--purple);background:#F3EEF9;border:1.5px solid #C9B3E8;}
+.pref{font-size:12px;font-weight:600;color:var(--muted);background:var(--light);border:1.5px solid var(--border);padding:4px 12px;border-radius:6px;font-family:monospace;margin-top:5px;flex-shrink:0;}
+.si{flex:1;padding:14px 52px 18px;display:flex;flex-direction:column;overflow:hidden;gap:11px;min-height:0;}
+.card{background:var(--light);border:1.5px solid var(--border);border-radius:12px;padding:13px 17px;}
+.card.tl{border-left:4px solid var(--teal);}
+.card.nl{border-left:4px solid var(--navy);}
+.card.rl{border-left:4px solid var(--red);}
+.card.gl{border-left:4px solid var(--green);}
+.cbox{border:2px dashed #AAA;border-radius:10px;padding:13px 17px;position:relative;background:#FAFAFA;}
+.clbl{position:absolute;top:-11px;left:14px;background:#FAFAFA;padding:0 6px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.cbox p,.cbox div{font-size:14px;line-height:1.7;color:var(--text);}
+.cbox strong{color:var(--navy);}
+.abox{background:#FEF3F2;border:2px solid #F5B8B2;border-radius:10px;padding:11px 15px;font-size:14px;color:var(--text);line-height:1.5;}
+.abox strong{color:var(--red);}
+.ibox{background:#EAF1FB;border:2px solid #B0CCF0;border-radius:10px;padding:11px 15px;font-size:14px;color:var(--text);line-height:1.5;}
+.ibox strong{color:var(--blue);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.ilist{display:flex;flex-direction:column;gap:7px;}
+.it{display:flex;align-items:flex-start;gap:9px;font-size:14px;line-height:1.5;color:var(--text);}
+.it .b{width:7px;height:7px;border-radius:50%;background:var(--navy);margin-top:6px;flex-shrink:0;}
+.it .b.r{background:var(--red);}.it .b.t{background:var(--teal);}.it .b.g{background:var(--green);}
+.it strong{color:var(--navy);}
+@keyframes fu{from{opacity:0;transform:translateY(13px);}to{opacity:1;transform:translateY(0);}}
+.slide.active .slide-header,.slide.active .si>*{animation:fu .4s ease both;}
+.slide.active .slide-header{animation-delay:.03s;}
+.slide.active .si>*:nth-child(1){animation-delay:.08s;}
+.slide.active .si>*:nth-child(2){animation-delay:.14s;}
+.slide.active .si>*:nth-child(3){animation-delay:.20s;}
+.slide.active .si>*:nth-child(4){animation-delay:.26s;}
+.slide.active .si>*:nth-child(5){animation-delay:.32s;}
+.slide.active .si>*:nth-child(6){animation-delay:.38s;}
+/* NAV BAR */
+.navb{width:100%;height:50px;background:#FFF;border-top:2px solid var(--border);display:flex;align-items:center;justify-content:center;gap:18px;flex-shrink:0;}
+.navb button{background:none;border:1.5px solid var(--border);color:var(--navy);font-size:13px;font-weight:700;cursor:pointer;padding:5px 18px;border-radius:6px;transition:background .18s,border-color .18s;font-family:'Inter',sans-serif;}
+.navb button:hover{background:var(--light);border-color:var(--navy);}
+.navb button:disabled{color:var(--border);border-color:#EEE;cursor:not-allowed;}
+.nctr{font-size:13px;font-weight:600;color:var(--muted);min-width:60px;text-align:center;font-family:monospace;}
+.ndots{display:flex;gap:5px;align-items:center;flex-wrap:wrap;max-width:300px;justify-content:center;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border);cursor:pointer;transition:background .2s,transform .2s;}
+.dot.active{background:var(--navy);transform:scale(1.35);}
+
+/* S1 TITOLO */
+.s1b{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 52px;}
+.s1ey{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:13px;display:flex;align-items:center;gap:11px;}
+.s1ey::before{content:'';display:block;width:30px;height:2px;background:var(--red);border-radius:1px;}
+.s1big{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,64px);font-weight:900;color:var(--navy);line-height:1.05;margin-bottom:8px;}
+.s1big .a{color:var(--red);}
+.s1sub{font-size:18px;color:var(--muted);font-weight:400;margin-bottom:20px;font-style:italic;}
+.s1mt{display:flex;flex-wrap:wrap;}
+.s1mi{font-size:14px;color:var(--muted);padding:0 16px;border-right:1.5px solid var(--border);}
+.s1mi:first-child{padding-left:0;}.s1mi:last-child{border-right:none;}
+.s1mi strong{color:var(--navy);}
+.s1deco{position:absolute;right:52px;top:50%;transform:translateY(-50%);font-size:140px;opacity:.06;pointer-events:none;line-height:1;}
+.s1bk{position:absolute;bottom:60px;right:52px;background:var(--light);border:1.5px solid var(--border);border-radius:10px;padding:11px 15px;font-size:13px;color:var(--muted);text-align:center;}
+.s1bk strong{color:var(--navy);display:block;margin-bottom:3px;}
+
+/* AUTHOR CARD */
+.author-card{background:var(--navy);color:white;border-radius:14px;padding:20px 24px;display:flex;gap:20px;align-items:flex-start;}
+.author-ico{font-size:52px;flex-shrink:0;}
+.author-body{}
+.author-name{font-family:'Playfair Display',serif;font-size:clamp(20px,2.5vw,30px);font-weight:900;color:#FFE066;margin-bottom:6px;}
+.author-dates{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:10px;font-style:italic;}
+.author-text{font-size:14px;line-height:1.65;color:rgba(255,255,255,.88);}
+.author-text strong{color:#FFE066;}
+
+/* TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:8px;flex:1;}
+.tline-item{display:flex;gap:14px;align-items:flex-start;}
+.tline-dot{width:12px;height:12px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:4px;}
+.tline-content{flex:1;font-size:14px;line-height:1.5;color:var(--text);}
+.tline-content strong{color:var(--navy);}
+.tline-year{font-family:monospace;font-size:12px;font-weight:700;color:var(--red);background:#FEF3F2;border:1px solid #F5B8B2;padding:2px 8px;border-radius:4px;flex-shrink:0;margin-top:3px;}
+
+/* VIDEO SLIDE */
+.vid-hero{background:var(--navy);border-radius:14px;padding:18px 22px;display:flex;align-items:center;gap:16px;}
+.vid-play-big{width:64px;height:64px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:24px;color:white;flex-shrink:0;}
+.vid-title{font-family:'Playfair Display',serif;font-size:clamp(16px,2.2vw,24px);font-weight:900;color:#FFE066;margin-bottom:5px;}
+.vid-sub{font-size:13px;color:rgba(255,255,255,.75);}
+.vid-url-big{font-family:monospace;font-size:14px;color:var(--red);font-weight:700;margin-top:6px;}
+.vid-note{font-size:12px;color:rgba(255,255,255,.6);margin-top:3px;}
+
+/* PERSONAGGIO */
+.pcard-big{border-radius:14px;padding:18px 20px;flex:1;display:flex;flex-direction:column;gap:9px;}
+.pcard-big.gold{background:#FFFBF0;border:2px solid #B8860B;}
+.pcard-big.navy{background:#EAF1FB;border:2px solid #0D4B8C;}
+.pcb-top{display:flex;align-items:center;gap:14px;margin-bottom:4px;}
+.pcb-ico{font-size:40px;}
+.pcb-name{font-family:'Playfair Display',serif;font-size:clamp(18px,2.2vw,26px);font-weight:900;}
+.pcard-big.gold .pcb-name{color:#7A5800;}
+.pcard-big.navy .pcb-name{color:var(--blue);}
+.pcb-role{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.pcb-traits{display:flex;flex-direction:column;gap:7px;}
+.pct{display:flex;align-items:flex-start;gap:9px;font-size:14px;line-height:1.45;color:var(--text);}
+.pct::before{content:'→';color:var(--muted);flex-shrink:0;font-weight:700;}
+.pct strong{color:var(--navy);}
+.pcb-quote{font-style:italic;font-size:13.5px;color:var(--muted);padding:9px 13px;background:rgba(0,0,0,.04);border-left:3px solid var(--border);border-radius:0 6px 6px 0;margin-top:4px;}
+
+/* AMBIENTAZIONE IMG */
+.amb-strip{flex:1;border-radius:13px;overflow:hidden;position:relative;min-height:0;}
+.amb-strip img{width:100%;height:100%;object-fit:cover;filter:brightness(.75);}
+.amb-strip-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,.75) 0%,rgba(0,0,0,.2) 60%);}
+.amb-strip-text{position:absolute;left:0;top:0;bottom:0;padding:20px 28px;display:flex;flex-direction:column;justify-content:center;gap:8px;max-width:55%;}
+.amb-strip-title{font-family:'Playfair Display',serif;font-size:clamp(18px,2.4vw,28px);font-weight:900;color:white;}
+.amb-strip-item{font-size:14px;color:rgba(255,255,255,.88);display:flex;align-items:flex-start;gap:8px;line-height:1.4;}
+.amb-strip-item::before{content:'❄';flex-shrink:0;}
+
+/* 5 MOMENTI */
+.mom-list{flex:1;display:flex;flex-direction:column;gap:7px;min-height:0;}
+.mom{display:flex;align-items:flex-start;gap:13px;background:var(--light);border:1.5px solid var(--border);border-radius:10px;padding:10px 15px;flex:1;position:relative;overflow:hidden;}
+.mom::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;border-radius:4px 0 0 4px;}
+.mom:nth-child(1)::before{background:var(--teal);}
+.mom:nth-child(2)::before{background:#B8860B;}
+.mom:nth-child(3)::before{background:var(--amber);}
+.mom:nth-child(4)::before{background:var(--red);}
+.mom:nth-child(5)::before{background:var(--green);}
+.mom-num{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:rgba(0,0,0,.08);min-width:30px;flex-shrink:0;}
+.mom-body{flex:1;}
+.mom-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.mom-name{font-size:14.5px;font-weight:700;color:var(--navy);margin-bottom:2px;}
+.mom-text{font-size:13px;color:var(--muted);line-height:1.4;}
+.mom-buck{font-size:13px;font-weight:600;color:var(--red);font-style:italic;margin-top:2px;}
+.mom-ico{font-size:20px;flex-shrink:0;margin-top:2px;}
+
+/* VF EXERCISE */
+.vf-list{display:flex;flex-direction:column;gap:9px;flex:1;}
+.vf-item{display:flex;align-items:center;gap:12px;background:var(--light);border:2px solid var(--border);border-radius:10px;padding:12px 16px;cursor:default;transition:border-color .2s;}
+.vf-q{flex:1;font-size:14.5px;color:var(--text);line-height:1.4;}
+.vf-btns{display:flex;gap:7px;flex-shrink:0;}
+.vf-btn{padding:6px 16px;border-radius:8px;border:2px solid var(--border);background:white;font-size:13px;font-weight:700;cursor:pointer;transition:all .18s;font-family:'Inter',sans-serif;}
+.vf-btn.v{color:var(--green);border-color:var(--green);}
+.vf-btn.f{color:var(--red);border-color:var(--red);}
+.vf-btn.v:hover,.vf-btn.v.sel{background:var(--green);color:white;}
+.vf-btn.f:hover,.vf-btn.f.sel{background:var(--red);color:white;}
+.vf-btn.correct{background:var(--green)!important;color:white!important;border-color:var(--green)!important;}
+.vf-btn.wrong{background:var(--red)!important;color:white!important;border-color:var(--red)!important;}
+.vf-result{font-size:11px;font-weight:700;margin-top:3px;display:block;}
+.vf-result.ok{color:var(--green);}
+.vf-result.err{color:var(--red);}
+
+/* MC EXERCISE */
+.mc-list{display:flex;flex-direction:column;gap:11px;flex:1;}
+.mc-item{background:var(--light);border:1.5px solid var(--border);border-radius:10px;padding:12px 16px;}
+.mc-q{font-size:14.5px;font-weight:600;color:var(--navy);margin-bottom:8px;line-height:1.4;}
+.mc-opts{display:flex;flex-direction:column;gap:5px;}
+.mc-opt{padding:7px 13px;border-radius:7px;border:1.5px solid var(--border);background:white;font-size:13.5px;cursor:pointer;transition:all .18s;text-align:left;font-family:'Inter',sans-serif;color:var(--text);}
+.mc-opt:hover{border-color:var(--navy);background:#F0F4FA;}
+.mc-opt.correct{background:#D4EDDA!important;border-color:var(--green)!important;color:var(--green)!important;font-weight:700;}
+.mc-opt.wrong{background:#FDECEA!important;border-color:var(--red)!important;color:var(--red)!important;}
+.mc-opt.disabled{pointer-events:none;}
+
+/* FILL EXERCISE */
+.fill-list{display:flex;flex-direction:column;gap:9px;flex:1;}
+.fill-item{background:var(--light);border:1.5px solid var(--border);border-radius:10px;padding:11px 15px;font-size:14.5px;line-height:1.9;color:var(--text);}
+.fill-blank{display:inline-block;min-width:110px;border-bottom:2.5px solid var(--navy);padding:1px 6px;font-weight:700;text-align:center;font-size:14px;color:var(--navy);vertical-align:bottom;min-height:22px;}
+.fill-blank.ok{background:#D4EDDA;border-bottom-color:var(--green);color:var(--green);border-radius:4px 4px 0 0;}
+.fill-blank.err{background:#FDECEA;border-bottom-color:var(--red);color:var(--red);border-radius:4px 4px 0 0;}
+.fill-input{border:none;border-bottom:2.5px solid var(--navy);background:transparent;font-size:14px;font-weight:700;color:var(--navy);font-family:'Inter',sans-serif;min-width:110px;padding:1px 6px;outline:none;text-align:center;}
+.fill-input:focus{border-bottom-color:var(--blue);}
+
+/* SCHEDA QUADERNO */
+.scheda{border:2px solid var(--navy);border-radius:14px;overflow:hidden;flex:1;display:flex;flex-direction:column;}
+.scheda-top{background:var(--navy);padding:11px 18px;display:flex;align-items:center;justify-content:space-between;}
+.scheda-top-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:#FFE066;}
+.scheda-top-sub{font-size:12px;color:rgba(255,255,255,.7);}
+.scheda-body{padding:14px 18px;display:flex;flex-direction:column;gap:9px;flex:1;}
+.scheda-row{display:flex;gap:12px;align-items:flex-start;}
+.scheda-key{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);min-width:130px;flex-shrink:0;padding-top:2px;}
+.scheda-val{flex:1;font-size:14px;line-height:1.55;color:var(--text);border-bottom:1.5px dashed #CCC;padding-bottom:6px;}
+.scheda-val strong{color:var(--navy);}
+
+/* CONFRONTO */
+.check-row{display:flex;gap:10px;align-items:center;flex-shrink:0;}
+.btn-check{padding:7px 19px;border-radius:8px;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;border:none;transition:all .18s;}
+.btn-ok{background:var(--green);color:white;}
+.btn-ok:hover{background:#1E4D08;}
+.btn-rst{background:var(--light);color:var(--muted);border:1.5px solid var(--border);}
+.btn-rst:hover{background:#E0E0E0;}
+.res-msg{font-size:13.5px;font-weight:600;}
+.res-msg.ok{color:var(--green);}.res-msg.err{color:var(--red);}
+
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{padding:7px 15px;border-radius:30px;font-size:14px;font-weight:600;background:white;border:2px solid;white-space:nowrap;}
+.chip.navy{border-color:var(--navy);color:var(--navy);}
+.chip.red{border-color:var(--red);color:var(--red);}
+.chip.teal{border-color:var(--teal);color:var(--teal);}
+.chip.green{border-color:var(--green);color:var(--green);}
+
+/* CONFRONTO GRIGLIA */
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;}
+.cmp-card{border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;}
+.cmp-card.ora1{background:#EAF1FB;border:2px solid #B0CCF0;}
+.cmp-card.ora2{background:#EDFAE0;border:2px solid #A8D98A;}
+.cmp-title{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
+.cmp-card.ora1 .cmp-title{color:var(--blue);}
+.cmp-card.ora2 .cmp-title{color:var(--green);}
+.cmp-item{font-size:14px;line-height:1.4;color:var(--text);display:flex;gap:8px;align-items:flex-start;}
+.cmp-item::before{content:'✓';font-weight:700;flex-shrink:0;}
+.cmp-card.ora1 .cmp-item::before{color:var(--blue);}
+.cmp-card.ora2 .cmp-item::before{color:var(--green);}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- ======================== S1 TITOLO ======================== -->
+<div class="slide active" id="s1">
+  <div class="topbar"></div>
+  <div class="s1b">
+    <div class="s1ey">Italiano · Unità 10 · L'avventura · Anno scolastico 2025–2026</div>
+    <div class="s1big"><span class="a">Buck salva Thornton</span></div>
+    <div class="s1sub">J. London · "Il richiamo della foresta" · p. 428</div>
+    <div class="s1mt">
+      <div class="s1mi">Classe <strong>1ª media</strong></div>
+      <div class="s1mi">Ora <strong>2 di 6</strong></div>
+      <div class="s1mi">60 minuti</div>
+      <div class="s1mi">Avventura di <strong>frontiera</strong></div>
+    </div>
+  </div>
+  <div class="s1deco">🐕</div>
+  <div class="s1bk"><strong>📖 p. 428</strong>"Leggi un testo esemplare"<br>E tu splendi · Mursia Scuola</div>
+</div>
+
+<!-- ======================== S2 CHI È JACK LONDON ======================== -->
+<div class="slide" id="s2">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Chi è <span class="r">Jack London?</span></h2>
+    <span class="stag tpurple">✍️ L'autore</span>
+  </div>
+  <div class="si">
+    <div class="author-card">
+      <div class="author-ico">✍️</div>
+      <div class="author-body">
+        <div class="author-name">Jack London</div>
+        <div class="author-dates">San Francisco, 1876 — California, 1916 · Scrittore americano</div>
+        <div class="author-text">Jack London è uno dei più grandi scrittori americani di avventura. Nato povero, lavorò fin da giovanissimo come operaio, marinaio, cacciatore di foche e cercatore d'oro in Alaska. <strong>Ha vissuto davvero le avventure che racconta.</strong> I suoi libri parlano di coraggio, sopravvivenza e lotta per la vita, spesso in ambienti ostili e selvaggi.</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card nl">
+        <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px">Opere principali</div>
+        <div class="ilist">
+          <div class="it"><div class="b"></div><div><strong>Il richiamo della foresta</strong> (1903) — il libro da cui è tratto il brano di oggi</div></div>
+          <div class="it"><div class="b"></div><div><strong>Zanna Bianca</strong> (1906) — storia di un lupo che diventa cane</div></div>
+          <div class="it"><div class="b"></div><div><strong>Martin Eden</strong> (1909) — romanzo autobiografico</div></div>
+        </div>
+      </div>
+      <div class="card rl">
+        <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px">Curiosità</div>
+        <div class="ilist">
+          <div class="it"><div class="b r"></div><div>Ha partecipato alla <strong>corsa all'oro nel Klondike</strong> nel 1897</div></div>
+          <div class="it"><div class="b r"></div><div>Ha scritto più di <strong>50 romanzi e centinaia di racconti</strong></div></div>
+          <div class="it"><div class="b r"></div><div>Il suo protagonista più famoso è <strong>Buck, un cane</strong></div></div>
+          <div class="it"><div class="b r"></div><div>È morto a soli <strong>40 anni</strong>, dopo una vita di avventure</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="cbox">
+      <div class="clbl">✏ Da ricordare</div>
+      <p><strong>Jack London</strong> ha vissuto le sue avventure prima di scriverle. Per questo i suoi racconti sembrano così <strong>veri e realistici</strong>.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S3 IL KLONDIKE ======================== -->
+<div class="slide" id="s3">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Il contesto: <span class="t">il Klondike</span></h2>
+    <span class="stag tteal">🗺️ Ambientazione storica</span>
+  </div>
+  <div class="si">
+    <div class="ibox">
+      <strong>Klondike (Canada), fine Ottocento.</strong> Nel 1896 fu scoperto l'oro nel Klondike, nel nord del Canada. In migliaia partirono per cercarlo — si chiamò la <strong>"corsa all'oro"</strong>. In quelle terre il freddo arriva a –50°C. I cani da slitta erano indispensabili per sopravvivere.
+    </div>
+    <div class="g2">
+      <div class="card tl">
+        <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:7px">🌍 Dove siamo</div>
+        <div class="ilist">
+          <div class="it"><div class="b t"></div><div>Territorio del <strong>Klondike</strong>, nord-ovest del Canada</div></div>
+          <div class="it"><div class="b t"></div><div>Clima <strong>artico</strong>: freddo estremo, neve, ghiaccio</div></div>
+          <div class="it"><div class="b t"></div><div>Fiumi ghiacciati e <strong>correnti pericolosissime</strong></div></div>
+          <div class="it"><div class="b t"></div><div>Natura selvaggia: lupi, orsi, foreste infinite</div></div>
+        </div>
+      </div>
+      <div class="card nl">
+        <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px">⏰ Quando</div>
+        <div class="ilist">
+          <div class="it"><div class="b"></div><div>Fine <strong>Ottocento</strong> (1890–1900 circa)</div></div>
+          <div class="it"><div class="b"></div><div>Periodo della grande <strong>corsa all'oro</strong> in Alaska</div></div>
+          <div class="it"><div class="b"></div><div>Niente automobili, niente telefoni — solo <strong>slitte e cani</strong></div></div>
+          <div class="it"><div class="b"></div><div>Jack London c'era davvero: ha vissuto lì nel <strong>1897</strong></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="abox">
+      ⚠ <strong>Attenzione:</strong> il brano che leggiamo oggi è un racconto <strong>realistico</strong>. Il Klondike esiste davvero. I cani da slitta esistevano davvero. Tutto poteva accadere — e in certi casi è accaduto davvero.
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S4 TRAILER ======================== -->
+<div class="slide" id="s4">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Guardiamo il <span class="r">trailer</span></h2>
+    <span class="stag tred">🎬 Film 2020</span>
+  </div>
+  <div class="si">
+    <div class="vid-hero">
+      <div class="vid-play-big">▶</div>
+      <div>
+        <div class="vid-title">Il richiamo della foresta (2020)</div>
+        <div class="vid-sub">Con Harrison Ford · Tratto dal romanzo di Jack London · Klondike, fine Ottocento</div>
+        <div class="vid-url-big"><a href="https://youtu.be/eaHtd3Svdv0?si=kU53spP-TPYyMQe6" target="_blank" style="color:#FFE066;text-decoration:none;">▶ https://youtu.be/eaHtd3Svdv0</a></div>
+        <div class="vid-note">⚠ Carica il link PRIMA di entrare in classe</div>
+      </div>
+    </div>
+    <div class="cbox">
+      <div class="clbl">Mentre guardate — tenete a mente queste domande</div>
+      <p style="font-size:15px;color:var(--muted);font-style:italic">Non scrivete niente. Solo guardate e pensate.</p>
+    </div>
+    <div class="g3">
+      <div class="card nl" style="text-align:center;padding:14px 10px;">
+        <div style="font-size:28px;margin-bottom:6px;">🐕</div>
+        <div style="font-size:14px;font-weight:700;color:var(--navy)">Chi è il protagonista?</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px">Come si chiama? Come è fatto?</div>
+      </div>
+      <div class="card nl" style="text-align:center;padding:14px 10px;">
+        <div style="font-size:28px;margin-bottom:6px;">🏔️</div>
+        <div style="font-size:14px;font-weight:700;color:var(--navy)">Come è il luogo?</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px">Che tipo di ambiente? Che clima?</div>
+      </div>
+      <div class="card nl" style="text-align:center;padding:14px 10px;">
+        <div style="font-size:28px;margin-bottom:6px;">⚡</div>
+        <div style="font-size:14px;font-weight:700;color:var(--navy)">Che pericoli ci sono?</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px">Cosa minaccia il protagonista?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S5 PRIMA DI LEGGERE ======================== -->
+<div class="slide" id="s5">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Prima di leggere: <span class="t">attiviamoci</span></h2>
+    <span class="stag tteal">💬 Discussione</span>
+  </div>
+  <div class="si">
+    <div class="ibox">
+      💡 Prima di leggere un testo è utile <strong>attivare le preconoscenze</strong> — cioè richiamare quello che già sappiamo. Questo ci aiuta a capire meglio la storia.
+    </div>
+    <div class="ilist" style="flex:1;justify-content:space-around;">
+      <div class="card nl" style="padding:14px 18px;">
+        <div style="font-size:22px;margin-bottom:6px;">🤔</div>
+        <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:5px">Avete mai visto un cane molto coraggioso? Cosa ha fatto?</div>
+        <div style="font-size:13px;color:var(--muted)">Pensate a un cane che conoscete, oppure a un cane di un film o di un libro.</div>
+      </div>
+      <div class="card rl" style="padding:14px 18px;">
+        <div style="font-size:22px;margin-bottom:6px;">❄️</div>
+        <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:5px">Immaginate di cadere in un fiume ghiacciato. Come vi sentireste?</div>
+        <div style="font-size:13px;color:var(--muted)">Freddo, paura, difficoltà a muoversi… come si potrebbe sopravvivere?</div>
+      </div>
+      <div class="card gl" style="padding:14px 18px;">
+        <div style="font-size:22px;margin-bottom:6px;">💪</div>
+        <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:5px">Secondo voi, può un animale salvare la vita di un essere umano?</div>
+        <div style="font-size:13px;color:var(--muted)">Avete sentito storie di cani, delfini o altri animali che hanno salvato qualcuno?</div>
+      </div>
+    </div>
+    <div class="cbox">
+      <div class="clbl">📖 Ora leggiamo</div>
+      <p>Aprite il libro a <strong>pagina 428</strong>. La professoressa legge ad alta voce insieme a voi. Mentre ascoltate, seguite con il dito sul libro.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S6 IL TESTO — CONSEGNA ======================== -->
+<div class="slide" id="s6">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Leggiamo insieme: <span class="r">p. 428</span></h2>
+    <span class="stag tred">📖 Lettura guidata</span>
+  </div>
+  <div class="si">
+    <div class="abox">
+      📌 <strong>Consegna durante la lettura:</strong> seguite con il dito. Con la matita, sottolineate <strong>UNA SOLA frase</strong> — quella che vi fa sentire di più il freddo, la paura o il coraggio.
+    </div>
+    <div class="g2" style="flex:1;">
+      <div class="card nl" style="display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">🗺️ La situazione</div>
+        <div class="ilist">
+          <div class="it"><div class="b"></div><div>Siamo nel Klondike, in un inverno gelido</div></div>
+          <div class="it"><div class="b"></div><div>John Thornton è in pericolo: rischia di essere trascinato dalla corrente del fiume</div></div>
+          <div class="it"><div class="b"></div><div>Buck, il suo cane, deve decidere cosa fare</div></div>
+          <div class="it"><div class="b"></div><div>Il fiume ha una corrente fortissima e l'acqua è gelata</div></div>
+        </div>
+      </div>
+      <div class="card rl" style="display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">👁️ Mentre leggete, prestate attenzione a...</div>
+        <div class="ilist">
+          <div class="it"><div class="b r"></div><div><strong>Come si muove Buck</strong>: ogni suo gesto è descritto con precisione</div></div>
+          <div class="it"><div class="b r"></div><div><strong>Le emozioni</strong>: paura, coraggio, amore per il padrone</div></div>
+          <div class="it"><div class="b r"></div><div><strong>Il ritmo</strong>: le frasi diventano più brevi quando c'è tensione</div></div>
+          <div class="it"><div class="b r"></div><div><strong>La natura</strong>: il fiume, il freddo, la corrente sono quasi dei nemici</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="ibox">
+      💡 <strong>Ricordate dalla lezione scorsa?</strong> Nel racconto d'avventura le frasi sono brevi e il ritmo è veloce — lo vedrete chiaramente in questo brano!
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S7 IL PROTAGONISTA: BUCK ======================== -->
+<div class="slide" id="s7">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Il protagonista: <span class="r">Buck</span></h2>
+    <span class="stag tred">🐕 L'eroe del brano</span>
+  </div>
+  <div class="si">
+    <div class="g2" style="flex:1;">
+      <div class="pcard-big gold">
+        <div class="pcb-top">
+          <div class="pcb-ico">🐕</div>
+          <div>
+            <div class="pcb-role">Il protagonista — l'eroe</div>
+            <div class="pcb-name">Buck</div>
+          </div>
+        </div>
+        <div class="pcb-traits">
+          <div class="pct">Un <strong>cane enorme</strong>: meticcio tra San Bernardo e Pastore Scozzese. Pesa quasi 70 chili</div>
+          <div class="pct"><strong>Forza straordinaria</strong>: riesce a fare cose che nessun altro cane riuscirebbe</div>
+          <div class="pct"><strong>Intelligente</strong>: capisce la situazione prima ancora che il padrone glielo ordini</div>
+          <div class="pct"><strong>Fedele</strong>: il legame con Thornton è totale — darebbe la vita per lui</div>
+          <div class="pct">Nel brano: <strong>si getta da solo nel fiume</strong> per salvare il padrone</div>
+        </div>
+        <div class="pcb-quote">"Buck si lanciò verso la riva e si gettò in acqua."</div>
+      </div>
+      <div class="card nl" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">💡 Buck è un eroe?</div>
+        <div style="font-size:14px;line-height:1.6;color:var(--text);">Buck è il <strong>protagonista</strong> del racconto, ma è un <strong>cane</strong>. Questo è insolito — di solito gli eroi sono persone. Jack London sceglie un animale perché vuole mostrarci qualcosa di importante: <strong>il coraggio e la fedeltà non appartengono solo agli esseri umani.</strong></div>
+        <div class="ibox" style="font-size:13px;">
+          🔍 <strong>Il narratore esterno:</strong> Jack London non ci fa leggere i pensieri di Buck — ci <em>mostra</em> quello che fa. Il narratore è ESTERNO: osserva dall'esterno e descrive le azioni.
+        </div>
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-top:4px;">Buck ha tutte le caratteristiche dell'eroe dell'avventura:</div>
+        <div class="chips">
+          <span class="chip navy">Forza fisica</span>
+          <span class="chip navy">Coraggio</span>
+          <span class="chip navy">Intelligenza</span>
+          <span class="chip navy">Fedeltà</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S8 JOHN THORNTON ======================== -->
+<div class="slide" id="s8">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Il personaggio: <span class="r">John Thornton</span></h2>
+    <span class="stag tblue">👤 L'aiutante / il salvato</span>
+  </div>
+  <div class="si">
+    <div class="g2" style="flex:1;">
+      <div class="pcard-big navy">
+        <div class="pcb-top">
+          <div class="pcb-ico">🧑‍🦱</div>
+          <div>
+            <div class="pcb-role">Il padrone di Buck</div>
+            <div class="pcb-name">John Thornton</div>
+          </div>
+        </div>
+        <div class="pcb-traits">
+          <div class="pct">Cercatore d'oro nel Klondike: è lì per fare <strong>fortuna con l'oro</strong></div>
+          <div class="pct"><strong>Coraggioso</strong>: non ha paura della natura selvaggia</div>
+          <div class="pct">Ha un legame fortissimo con Buck: lo tratta con <strong>rispetto e affetto</strong></div>
+          <div class="pct">Nel brano: <strong>cade nelle rapide del fiume</strong> e rischia di annegare</div>
+          <div class="pct">Viene <strong>salvato da Buck</strong> grazie alla sua forza e al suo istinto</div>
+        </div>
+        <div class="pcb-quote">"Thornton era stato trascinato dalla corrente verso le rapide."</div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">I personaggi e i loro ruoli</div>
+        <div class="scheda-row" style="border-bottom:1px dashed #CCC;padding-bottom:8px;">
+          <div class="scheda-key">Buck</div>
+          <div style="font-size:13.5px;color:var(--text);">🗡️ <strong>Protagonista / Eroe</strong> — compie il salvataggio</div>
+        </div>
+        <div class="scheda-row" style="border-bottom:1px dashed #CCC;padding-bottom:8px;">
+          <div class="scheda-key">John Thornton</div>
+          <div style="font-size:13.5px;color:var(--text);">❤️ <strong>Il salvato / L'amico</strong> — è in pericolo</div>
+        </div>
+        <div class="scheda-row" style="border-bottom:1px dashed #CCC;padding-bottom:8px;">
+          <div class="scheda-key">Il fiume / la corrente</div>
+          <div style="font-size:13.5px;color:var(--text);">👹 <strong>L'antagonista</strong> — la natura è il vero nemico</div>
+        </div>
+        <div class="scheda-row">
+          <div class="scheda-key">Gli altri uomini</div>
+          <div style="font-size:13.5px;color:var(--text);">🤝 <strong>Aiutanti</strong> — aiutano a tirare Buck fuori dall'acqua</div>
+        </div>
+        <div class="abox" style="font-size:13px;margin-top:4px;">
+          ⚠ In questo brano <strong>l'antagonista non è una persona</strong> — è la <strong>natura stessa</strong>: il fiume, il freddo, la corrente. È tipico dell'avventura di frontiera.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S9 AMBIENTAZIONE ======================== -->
+<div class="slide" id="s9">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title"><span class="t">L'ambientazione</span> del brano</h2>
+    <span class="stag tteal">🏔️ Avventura di frontiera</span>
+  </div>
+  <div class="si">
+    <div class="g2" style="flex:1;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card tl">
+          <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:7px">❄️ I luoghi del brano</div>
+          <div class="ilist">
+            <div class="it"><div class="b t"></div><div><strong>Il fiume</strong>: corrente fortissima, acqua gelida</div></div>
+            <div class="it"><div class="b t"></div><div><strong>Le rapide</strong>: il punto più pericoloso del fiume</div></div>
+            <div class="it"><div class="b t"></div><div><strong>La riva</strong>: dove si trovano gli uomini che osservano</div></div>
+            <div class="it"><div class="b t"></div><div><strong>La natura artica</strong>: freddo, ghiaccio, silenzi enormi</div></div>
+          </div>
+        </div>
+        <div class="card nl">
+          <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px">🌡️ Come viene descritto</div>
+          <div class="ilist">
+            <div class="it"><div class="b"></div><div>Aggettivi potenti: <strong>gelato, impetuoso, frastagliato</strong></div></div>
+            <div class="it"><div class="b"></div><div>Verbi di movimento: <strong>trascinava, ruggiva, si avventava</strong></div></div>
+            <div class="it"><div class="b"></div><div>La natura sembra <strong>viva e nemica</strong></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px">Il sottogenere: avventura di frontiera</div>
+        <div class="chips">
+          <span class="chip teal">🏔️ Natura selvaggia</span>
+          <span class="chip teal">❄️ Freddo estremo</span>
+          <span class="chip teal">🐺 Animali</span>
+          <span class="chip teal">⚔️ Lotta per sopravvivere</span>
+        </div>
+        <div style="font-size:13.5px;line-height:1.6;color:var(--text);margin-top:4px;">L'<strong>avventura di frontiera</strong> è ambientata in luoghi remoti e inospitali, dove l'uomo è solo contro la natura. Il Klondike — con il suo gelo, i suoi fiumi e le sue foreste — è l'ambientazione perfetta per questo tipo di storia.</div>
+        <div class="cbox" style="margin-top:4px;">
+          <div class="clbl">✏ Da copiare</div>
+          <p>Il brano è ambientato nel <strong>Klondike</strong> (Canada), in una zona artica, lungo un <strong>fiume dalla corrente impetuosa e gelata</strong>. La natura è ostile e pericolosa — è quasi come un nemico.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S10 PERICOLO E CONFLITTO ======================== -->
+<div class="slide" id="s10">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Il <span class="r">pericolo</span> e il conflitto</h2>
+    <span class="stag tred">💥 La tensione narrativa</span>
+  </div>
+  <div class="si">
+    <div class="g2" style="flex:1;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card rl">
+          <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:7px">⚡ Qual è il pericolo?</div>
+          <div class="ilist">
+            <div class="it"><div class="b r"></div><div>Thornton <strong>cade nel fiume</strong> ghiacciato</div></div>
+            <div class="it"><div class="b r"></div><div>La <strong>corrente lo trascina</strong> verso le rapide</div></div>
+            <div class="it"><div class="b r"></div><div>Le rapide sono <strong>rocce aguzze e mortali</strong></div></div>
+            <div class="it"><div class="b r"></div><div>L'acqua <strong>gelida blocca i movimenti</strong></div></div>
+            <div class="it"><div class="b r"></div><div>Nessun uomo potrebbe <strong>nuotare in quella corrente</strong></div></div>
+          </div>
+        </div>
+        <div class="card gl">
+          <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:7px">✅ Come si risolve?</div>
+          <div class="ilist">
+            <div class="it"><div class="b g"></div><div>Buck si <strong>butta in acqua da solo</strong></div></div>
+            <div class="it"><div class="b g"></div><div>Nuota verso Thornton con tutta la sua forza</div></div>
+            <div class="it"><div class="b g"></div><div>Thornton si <strong>aggrappa al pelo di Buck</strong></div></div>
+            <div class="it"><div class="b g"></div><div>Gli uomini sulla riva <strong>tirano la corda</strong></div></div>
+            <div class="it"><div class="b g"></div><div>Vengono <strong>salvati entrambi</strong></div></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="ibox">
+          💡 <strong>Suspense:</strong> nel brano non sappiamo fino alla fine se Buck e Thornton ce la faranno. Le frasi diventano sempre più brevi quando la tensione sale. Questo è il tipico ritmo dell'avventura.
+        </div>
+        <div class="card nl">
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:7px">📐 La struttura del conflitto</div>
+          <div class="ilist">
+            <div class="it"><div class="b"></div><div><strong>PROBLEMA:</strong> Thornton in pericolo</div></div>
+            <div class="it"><div class="b"></div><div><strong>TENTATIVO:</strong> Buck si getta in acqua</div></div>
+            <div class="it"><div class="b"></div><div><strong>OSTACOLO:</strong> la corrente è troppo forte</div></div>
+            <div class="it"><div class="b"></div><div><strong>SOLUZIONE:</strong> la corda + la forza di Buck</div></div>
+            <div class="it"><div class="b"></div><div><strong>ESITO:</strong> entrambi sono salvi</div></div>
+          </div>
+        </div>
+        <div class="cbox">
+          <div class="clbl">✏ Da ricordare</div>
+          <p>Nel racconto d'avventura il <strong>pericolo</strong> è sempre reale e concreto. Il lettore deve sentire che il protagonista potrebbe davvero non farcela.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S11 IL COLPO DI SCENA ======================== -->
+<div class="slide" id="s11">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Il colpo di <span class="r">scena</span></h2>
+    <span class="stag tred">💥 L'imprevisto</span>
+  </div>
+  <div class="si">
+    <div class="abox" style="font-size:15px;line-height:1.65;">
+      💥 <strong>Il colpo di scena principale:</strong> Buck non aspetta un ordine. <strong>Si getta in acqua da solo</strong>, per istinto, spinto dall'amore per il padrone. Nessuno glielo ha chiesto — lo fa e basta. Il lettore non se lo aspettava così.
+    </div>
+    <div class="g2" style="flex:1;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card nl">
+          <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px">🔍 Come London crea la suspense</div>
+          <div class="ilist">
+            <div class="it"><div class="b"></div><div><strong>Frasi brevissime</strong> nel momento più intenso</div></div>
+            <div class="it"><div class="b"></div><div><strong>Verbi di azione</strong>: si lanciò, nuotò, afferrò</div></div>
+            <div class="it"><div class="b"></div><div>La scena rallenta proprio quando <strong>la tensione è al massimo</strong></div></div>
+            <div class="it"><div class="b"></div><div>Il lettore <strong>non sa se ce la faranno</strong> fino alla fine</div></div>
+          </div>
+        </div>
+        <div class="card gl">
+          <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:7px">🏆 Il lieto fine</div>
+          <div class="ilist">
+            <div class="it"><div class="b g"></div><div>Buck e Thornton vengono <strong>portati in salvo</strong></div></div>
+            <div class="it"><div class="b g"></div><div>Thornton piange e abbraccia Buck</div></div>
+            <div class="it"><div class="b g"></div><div>Il legame tra i due si fa <strong>ancora più profondo</strong></div></div>
+            <div class="it"><div class="b g"></div><div>Lieto fine: come nelle fiabe, <strong>i buoni vincono</strong></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);">📌 Il tema del brano</div>
+        <div style="font-size:14.5px;line-height:1.65;color:var(--text);">Il vero tema di "Buck salva Thornton" non è solo l'avventura. È la <strong>fedeltà</strong> e l'<strong>amore</strong> tra un cane e il suo padrone. Buck non è un eroe che vuole la gloria: è un essere vivente che ama qualcuno e fa di tutto per proteggerlo.</div>
+        <div class="cbox" style="margin-top:4px;">
+          <div class="clbl">✏ Da copiare — Temi del brano</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
+            <span class="chip green">❤️ Fedeltà</span>
+            <span class="chip green">💪 Coraggio</span>
+            <span class="chip green">🐕 Uomo-animale</span>
+            <span class="chip green">🌿 Uomo-natura</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S12 I 5 MOMENTI ======================== -->
+<div class="slide" id="s12">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">I <span class="r">5 momenti</span> del racconto applicati a Buck</h2>
+    <span class="stag tgold">📐 Struttura narrativa</span>
+  </div>
+  <div class="si">
+    <div class="ibox">💡 Ricordate i <strong>5 momenti del racconto</strong> studiati nell'Ora 1? Adesso li applichiamo a "Buck salva Thornton".</div>
+    <div class="mom-list">
+      <div class="mom">
+        <div class="mom-num">1</div>
+        <div class="mom-body">
+          <div class="mom-label">Momento 1</div>
+          <div class="mom-name">Situazione iniziale</div>
+          <div class="mom-text">Buck vive con John Thornton nel Klondike. Il loro legame è fortissimo.</div>
+          <div class="mom-buck">Nel brano: Buck è un cane fedele al suo padrone. La vita nel Klondike è dura ma i due si vogliono bene.</div>
+        </div>
+        <div class="mom-ico">🏕️</div>
+      </div>
+      <div class="mom">
+        <div class="mom-num">2</div>
+        <div class="mom-body">
+          <div class="mom-label">Momento 2</div>
+          <div class="mom-name">Rottura dell'equilibrio</div>
+          <div class="mom-text">Qualcosa va storto: inizia il problema.</div>
+          <div class="mom-buck">Nel brano: Thornton cade nel fiume gelato e viene trascinato dalla corrente verso le rapide.</div>
+        </div>
+        <div class="mom-ico">💥</div>
+      </div>
+      <div class="mom">
+        <div class="mom-num">3</div>
+        <div class="mom-body">
+          <div class="mom-label">Momento 3</div>
+          <div class="mom-name">Peripezie</div>
+          <div class="mom-text">Il protagonista affronta il pericolo: lotte, ostacoli, prove.</div>
+          <div class="mom-buck">Nel brano: Buck si butta in acqua. Nuota con tutta la forza. Thornton si aggrappa. La corrente è fortissima.</div>
+        </div>
+        <div class="mom-ico">🏊</div>
+      </div>
+      <div class="mom">
+        <div class="mom-num">4</div>
+        <div class="mom-body">
+          <div class="mom-label">Momento 4</div>
+          <div class="mom-name">Momento più intenso (climax)</div>
+          <div class="mom-text">Il punto di massima tensione: non sappiamo come andrà a finire.</div>
+          <div class="mom-buck">Nel brano: Buck e Thornton vengono trascinati verso le rocce. Gli uomini tirano la corda disperatamente.</div>
+        </div>
+        <div class="mom-ico">😰</div>
+      </div>
+      <div class="mom">
+        <div class="mom-num">5</div>
+        <div class="mom-body">
+          <div class="mom-label">Momento 5</div>
+          <div class="mom-name">Soluzione</div>
+          <div class="mom-text">Il problema si risolve — lieto fine.</div>
+          <div class="mom-buck">Nel brano: Buck e Thornton vengono salvati. Thornton piange e abbraccia Buck. Sono vivi.</div>
+        </div>
+        <div class="mom-ico">🏆</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S13 ESERCIZIO V/F ======================== -->
+<div class="slide" id="s13">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Esercizio: <span class="r">Vero o Falso?</span></h2>
+    <span class="stag tred">✅ Comprensione del testo</span>
+  </div>
+  <div class="si">
+    <div class="ibox" style="flex-shrink:0;">💡 Cliccate su <strong>V</strong> se l'affermazione è vera, su <strong>F</strong> se è falsa. Poi cliccate "Controlla".</div>
+    <div class="vf-list">
+      <div class="vf-item" id="vf1">
+        <div class="vf-q">1. Jack London ha vissuto davvero nel Klondike prima di scrivere il libro.</div>
+        <div class="vf-btns">
+          <button class="vf-btn v" onclick="vfClick(1,'V')">V</button>
+          <button class="vf-btn f" onclick="vfClick(1,'F')">F</button>
+        </div>
+      </div>
+      <div class="vf-item" id="vf2">
+        <div class="vf-q">2. Il protagonista del brano è John Thornton, un cercatore d'oro.</div>
+        <div class="vf-btns">
+          <button class="vf-btn v" onclick="vfClick(2,'V')">V</button>
+          <button class="vf-btn f" onclick="vfClick(2,'F')">F</button>
+        </div>
+      </div>
+      <div class="vf-item" id="vf3">
+        <div class="vf-q">3. Buck è un cane meticcio tra San Bernardo e Pastore Scozzese.</div>
+        <div class="vf-btns">
+          <button class="vf-btn v" onclick="vfClick(3,'V')">V</button>
+          <button class="vf-btn f" onclick="vfClick(3,'F')">F</button>
+        </div>
+      </div>
+      <div class="vf-item" id="vf4">
+        <div class="vf-q">4. Thornton cade in un lago tranquillo senza corrente.</div>
+        <div class="vf-btns">
+          <button class="vf-btn v" onclick="vfClick(4,'V')">V</button>
+          <button class="vf-btn f" onclick="vfClick(4,'F')">F</button>
+        </div>
+      </div>
+      <div class="vf-item" id="vf5">
+        <div class="vf-q">5. Nel brano l'antagonista principale è la natura selvaggia, non una persona.</div>
+        <div class="vf-btns">
+          <button class="vf-btn v" onclick="vfClick(5,'V')">V</button>
+          <button class="vf-btn f" onclick="vfClick(5,'F')">F</button>
+        </div>
+      </div>
+      <div class="vf-item" id="vf6">
+        <div class="vf-q">6. Il brano finisce in modo tragico: Thornton non viene salvato.</div>
+        <div class="vf-btns">
+          <button class="vf-btn v" onclick="vfClick(6,'V')">V</button>
+          <button class="vf-btn f" onclick="vfClick(6,'F')">F</button>
+        </div>
+      </div>
+    </div>
+    <div class="check-row">
+      <button class="btn-check btn-ok" onclick="checkVF()">✓ Controlla</button>
+      <button class="btn-check btn-rst" onclick="resetVF()">↺ Ricomincia</button>
+      <div class="res-msg" id="vfMsg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S14 SCELTA MULTIPLA ======================== -->
+<div class="slide" id="s14">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Esercizio: <span class="r">scelta multipla</span></h2>
+    <span class="stag tred">🎯 Comprensione e analisi</span>
+  </div>
+  <div class="si">
+    <div class="mc-list">
+      <div class="mc-item">
+        <div class="mc-q">1. Dove si svolge il brano "Buck salva Thornton"?</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="mcClick(this,false)">A) In una foresta tropicale</button>
+          <button class="mc-opt" onclick="mcClick(this,true)">B) Nel Klondike, zona artica del Canada</button>
+          <button class="mc-opt" onclick="mcClick(this,false)">C) In una città americana dell'Ottocento</button>
+        </div>
+      </div>
+      <div class="mc-item">
+        <div class="mc-q">2. Perché Buck si butta nel fiume?</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="mcClick(this,false)">A) Perché Thornton glielo ordina</button>
+          <button class="mc-opt" onclick="mcClick(this,false)">B) Perché ha caldo e vuole rinfrescarsi</button>
+          <button class="mc-opt" onclick="mcClick(this,true)">C) Per salvare Thornton, spinto dalla fedeltà e dall'istinto</button>
+        </div>
+      </div>
+      <div class="mc-item">
+        <div class="mc-q">3. Che tipo di narratore usa London in questo brano?</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="mcClick(this,false)">A) Narratore interno: è Buck che racconta in prima persona</button>
+          <button class="mc-opt" onclick="mcClick(this,true)">B) Narratore esterno: osserva dall'esterno e descrive le azioni</button>
+          <button class="mc-opt" onclick="mcClick(this,false)">C) Narratore interno: è Thornton che racconta</button>
+        </div>
+      </div>
+      <div class="mc-item">
+        <div class="mc-q">4. Qual è il sottogenere di avventura di questo brano?</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="mcClick(this,false)">A) Avventura di mare</button>
+          <button class="mc-opt" onclick="mcClick(this,false)">B) Avventura urbana</button>
+          <button class="mc-opt" onclick="mcClick(this,true)">C) Avventura di frontiera</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S15 ESERCIZIO COMPLETA ======================== -->
+<div class="slide" id="s15">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Esercizio: <span class="r">completa le frasi</span></h2>
+    <span class="stag tgold">✏️ Scrivi le parole mancanti</span>
+  </div>
+  <div class="si">
+    <div class="ibox" style="flex-shrink:0;">💡 Scrivete la parola corretta negli spazi vuoti. Poi cliccate "Controlla".</div>
+    <div class="fill-list">
+      <div class="fill-item">1. Il brano è ambientato nel <input class="fill-input" id="fi1" data-a="Klondike" placeholder="___________">, una regione artica del Canada.</div>
+      <div class="fill-item">2. Il protagonista si chiama <input class="fill-input" id="fi2" data-a="Buck" placeholder="___________"> ed è un cane enorme e coraggioso.</div>
+      <div class="fill-item">3. Il padrone di Buck si chiama John <input class="fill-input" id="fi3" data-a="Thornton" placeholder="___________"> ed è un cercatore d'oro.</div>
+      <div class="fill-item">4. Il pericolo principale è la <input class="fill-input" id="fi4" data-a="corrente" placeholder="___________"> del fiume gelato che trascina Thornton.</div>
+      <div class="fill-item">5. Il narratore è <input class="fill-input" id="fi5" data-a="esterno" placeholder="___________">: osserva dall'esterno e descrive le azioni dei personaggi.</div>
+      <div class="fill-item">6. Il tema principale del brano è la <input class="fill-input" id="fi6" data-a="fedeltà" placeholder="___________"> tra Buck e il suo padrone.</div>
+    </div>
+    <div class="check-row">
+      <button class="btn-check btn-ok" onclick="checkFill()">✓ Controlla</button>
+      <button class="btn-check btn-rst" onclick="resetFill()">↺ Ricomincia</button>
+      <div class="res-msg" id="fillMsg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S16 SCHEDA QUADERNO ======================== -->
+<div class="slide" id="s16">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">La <span class="r">scheda</span> da copiare</h2>
+    <span class="stag tgreen">✏ Sul quaderno</span>
+  </div>
+  <div class="si">
+    <div class="ibox" style="flex-shrink:0;">📌 Copiate questa scheda sul quaderno. La userete anche per i brani delle Ore 3 e 4 — così potrete confrontare le tre avventure.</div>
+    <div class="scheda">
+      <div class="scheda-top">
+        <div>
+          <div class="scheda-top-title">📋 SCHEDA DEL BRANO — ORA 2</div>
+          <div class="scheda-top-sub">J. London · "Buck salva Thornton" · p. 428</div>
+        </div>
+        <div style="font-size:24px">🐕</div>
+      </div>
+      <div class="scheda-body">
+        <div class="scheda-row">
+          <div class="scheda-key">Autore</div>
+          <div class="scheda-val"><strong>Jack London</strong> — scrittore americano (1876–1916)</div>
+        </div>
+        <div class="scheda-row">
+          <div class="scheda-key">Titolo del romanzo</div>
+          <div class="scheda-val"><strong>Il richiamo della foresta</strong> (1903)</div>
+        </div>
+        <div class="scheda-row">
+          <div class="scheda-key">Sottogenere</div>
+          <div class="scheda-val"><strong>Avventura di frontiera</strong> (natura selvaggia, lotta per sopravvivere)</div>
+        </div>
+        <div class="scheda-row">
+          <div class="scheda-key">Ambientazione</div>
+          <div class="scheda-val"><strong>Klondike</strong> (Canada artico) — fine Ottocento — fiume ghiacciato con corrente impetuosa</div>
+        </div>
+        <div class="scheda-row">
+          <div class="scheda-key">Protagonista</div>
+          <div class="scheda-val"><strong>Buck</strong> — cane (meticcio San Bernardo-Pastore Scozzese) — coraggioso, forte, fedele</div>
+        </div>
+        <div class="scheda-row">
+          <div class="scheda-key">Antagonista</div>
+          <div class="scheda-val">La <strong>natura selvaggia</strong> (il fiume, la corrente, il freddo) — non è una persona</div>
+        </div>
+        <div class="scheda-row">
+          <div class="scheda-key">Pericolo</div>
+          <div class="scheda-val">Thornton cade nel <strong>fiume gelato</strong> e viene trascinato dalle rapide</div>
+        </div>
+        <div class="scheda-row">
+          <div class="scheda-key">Colpo di scena</div>
+          <div class="scheda-val">Buck si <strong>getta da solo in acqua</strong> senza aspettare un ordine</div>
+        </div>
+        <div class="scheda-row">
+          <div class="scheda-key">Soluzione</div>
+          <div class="scheda-val">Buck e Thornton vengono <strong>salvati</strong> grazie alla corda e alla forza di Buck</div>
+        </div>
+        <div class="scheda-row">
+          <div class="scheda-key">Temi principali</div>
+          <div class="scheda-val"><strong>Fedeltà, coraggio, legame uomo-animale, lotta contro la natura</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S17 COLLEGAMENTO ORA 1 ======================== -->
+<div class="slide" id="s17">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Buck è un racconto <span class="r">d'avventura?</span></h2>
+    <span class="stag tblue">🔗 Collegamento con l'Ora 1</span>
+  </div>
+  <div class="si">
+    <div class="ibox">💡 Nell'Ora 1 abbiamo studiato le caratteristiche del racconto d'avventura. Adesso verifichiamo: "Buck salva Thornton" le rispetta tutte?</div>
+    <div class="cmp-grid" style="flex:1;">
+      <div class="cmp-card ora1">
+        <div class="cmp-title">Caratteristiche dell'avventura (Ora 1)</div>
+        <div class="cmp-item">Luoghi lontani, insoliti, misteriosi</div>
+        <div class="cmp-item">Protagonista coraggioso con un obiettivo</div>
+        <div class="cmp-item">Pericolo reale e concreto</div>
+        <div class="cmp-item">Colpi di scena imprevedibili</div>
+        <div class="cmp-item">Ritmo incalzante e frasi brevi</div>
+        <div class="cmp-item">Lieto fine (quasi sempre)</div>
+        <div class="cmp-item">Racconto realistico (no fantasia)</div>
+      </div>
+      <div class="cmp-card ora2">
+        <div class="cmp-title">Nel brano di London (Ora 2)</div>
+        <div class="cmp-item">✅ Klondike artico — lontano e ostile</div>
+        <div class="cmp-item">✅ Buck — fedele, forte, decide da solo</div>
+        <div class="cmp-item">✅ Il fiume trascinato nelle rapide</div>
+        <div class="cmp-item">✅ Buck si butta senza aspettare ordini</div>
+        <div class="cmp-item">✅ Frasi brevi nel momento del pericolo</div>
+        <div class="cmp-item">✅ Entrambi vengono salvati</div>
+        <div class="cmp-item">✅ Il Klondike esiste davvero</div>
+      </div>
+    </div>
+    <div class="cbox">
+      <div class="clbl">✏ Risposta</div>
+      <p>Sì, <strong>"Buck salva Thornton" è un perfetto racconto d'avventura</strong>. Rispetta TUTTE le caratteristiche che abbiamo studiato nell'Ora 1. In più, appartiene al sottogenere <strong>avventura di frontiera</strong>: la natura è il vero antagonista.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S18 ANTICIPAZIONE ORA 3 ======================== -->
+<div class="slide" id="s18">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">La prossima avventura: <span class="g">la giungla</span></h2>
+    <span class="stag tgreen">🌿 Anticipazione Ora 3</span>
+  </div>
+  <div class="si">
+    <div class="g2" style="flex:1;">
+      <div style="display:flex;flex-direction:column;gap:11px;">
+        <div class="card nl">
+          <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px">❄️ Ora 2 — Buck (London)</div>
+          <div class="ilist">
+            <div class="it"><div class="b"></div><div>Ambientazione: <strong>Klondike artico</strong></div></div>
+            <div class="it"><div class="b"></div><div>Protagonista: <strong>un cane</strong></div></div>
+            <div class="it"><div class="b"></div><div>Pericolo: <strong>il fiume gelato</strong></div></div>
+            <div class="it"><div class="b"></div><div>Sottogenere: <strong>frontiera / natura</strong></div></div>
+          </div>
+        </div>
+        <div class="card gl">
+          <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:7px">🌿 Ora 3 — Il libro della giungla (Kipling)</div>
+          <div class="ilist">
+            <div class="it"><div class="b g"></div><div>Ambientazione: <strong>giungla indiana</strong></div></div>
+            <div class="it"><div class="b g"></div><div>Protagonista: <strong>Mowgli</strong>, un bambino cresciuto tra i lupi</div></div>
+            <div class="it"><div class="b g"></div><div>Pericolo: <strong>Shere Khan</strong>, la tigre feroce</div></div>
+            <div class="it"><div class="b g"></div><div>Sottogenere: <strong>giungla / esotica</strong></div></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:11px;">
+        <div class="abox">
+          🌿 <strong>Rudyard Kipling</strong> è uno scrittore britannico (1865–1936). Ha vissuto in India e ha scritto de "Il libro della giungla" nel 1894. Il protagonista, <strong>Mowgli</strong>, è un bambino umano cresciuto da una famiglia di lupi nella giungla. Lo conoscete? È diventato un famoso cartone Disney!
+        </div>
+        <div class="card" style="background:#EDFAE0;border:2px solid #A8D98A;">
+          <div style="font-size:14px;font-weight:700;color:var(--green);margin-bottom:7px">📋 Stesso lavoro dell'Ora 2</div>
+          <div class="ilist">
+            <div class="it"><div class="b g"></div><div>Guarderemo una scena del <strong>cartone Disney</strong></div></div>
+            <div class="it"><div class="b g"></div><div>Leggeremo il brano insieme</div></div>
+            <div class="it"><div class="b g"></div><div>Compileremo la stessa <strong>scheda sul quaderno</strong></div></div>
+            <div class="it"><div class="b g"></div><div>Faremo esercizi di comprensione</div></div>
+          </div>
+        </div>
+        <div class="cbox">
+          <div class="clbl">Per la prossima volta</div>
+          <p>Nessun compito scritto. Se volete, cercate online o chiedete in famiglia: <strong>chi è Mowgli? Chi è Shere Khan? Chi sono Baloo e Bagheera?</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end deck -->
+
+<!-- NAV BAR -->
+<div class="navb">
+  <button onclick="go(-1)" id="bP" disabled>◀ Indietro</button>
+  <div class="ndots" id="dots"></div>
+  <div class="nctr" id="ctr">1 / 18</div>
+  <button onclick="go(1)" id="bN">Avanti ▶</button>
+</div>
+
+<script>
+/* ===== NAV ===== */
+const slides=[...document.querySelectorAll('.slide')];
+const N=slides.length;let cur=0;
+const dotsEl=document.getElementById('dots');
+slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>gt(i);dotsEl.appendChild(d);});
+function gt(n){slides[cur].classList.remove('active');slides[cur].classList.add('prev');setTimeout(()=>slides[cur].classList.remove('prev'),400);cur=n;slides[cur].classList.add('active');dotsEl.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===cur));document.getElementById('ctr').textContent=(cur+1)+' / '+N;document.getElementById('bP').disabled=cur===0;document.getElementById('bN').disabled=cur===N-1;}
+function go(d){if(cur+d>=0&&cur+d<N)gt(cur+d);}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')go(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(-1);});
+
+/* ===== V/F ===== */
+const vfAnswers={1:'V',2:'F',3:'V',4:'F',5:'V',6:'F'};
+const vfSelected={};
+function vfClick(n,ans){
+  vfSelected[n]=ans;
+  const item=document.getElementById('vf'+n);
+  item.querySelectorAll('.vf-btn').forEach(b=>{b.classList.remove('sel');});
+  item.querySelectorAll('.vf-btn').forEach(b=>{if((ans==='V'&&b.classList.contains('v'))||(ans==='F'&&b.classList.contains('f')))b.classList.add('sel');});
+  // clear previous result classes
+  item.querySelectorAll('.vf-btn').forEach(b=>{b.classList.remove('correct','wrong');});
+  const old=item.querySelector('.vf-result');
+  if(old)old.remove();
+}
+function checkVF(){
+  let ok=0,tot=0;
+  Object.keys(vfAnswers).forEach(n=>{
+    const item=document.getElementById('vf'+n);
+    item.querySelectorAll('.vf-btn').forEach(b=>{b.classList.remove('correct','wrong','sel');});
+    if(vfSelected[n]){
+      tot++;
+      const correct=vfSelected[n]===vfAnswers[n];
+      if(correct)ok++;
+      item.querySelectorAll('.vf-btn').forEach(b=>{
+        const isV=b.classList.contains('v');const isF=b.classList.contains('f');
+        if(isV&&vfAnswers[n]==='V')b.classList.add('correct');
+        else if(isF&&vfAnswers[n]==='F')b.classList.add('correct');
+        else if((isV&&vfSelected[n]==='V'&&vfAnswers[n]!=='V')||(isF&&vfSelected[n]==='F'&&vfAnswers[n]!=='F'))b.classList.add('wrong');
+      });
+    }
+  });
+  const msg=document.getElementById('vfMsg');
+  if(tot===0){msg.textContent='Rispondi almeno a una domanda!';msg.className='res-msg';return;}
+  const total=Object.keys(vfAnswers).length;
+  if(ok===total){msg.textContent='🎉 Perfetto! Tutte corrette!';msg.className='res-msg ok';}
+  else{msg.textContent=ok+' su '+total+' corrette';msg.className='res-msg err';}
+}
+function resetVF(){
+  Object.keys(vfAnswers).forEach(n=>{
+    delete vfSelected[n];
+    const item=document.getElementById('vf'+n);
+    item.querySelectorAll('.vf-btn').forEach(b=>{b.classList.remove('sel','correct','wrong');});
+  });
+  document.getElementById('vfMsg').textContent='';
+}
+
+/* ===== MC ===== */
+function mcClick(btn,correct){
+  const parent=btn.closest('.mc-item');
+  parent.querySelectorAll('.mc-opt').forEach(b=>{b.classList.add('disabled');});
+  if(correct){btn.classList.add('correct');}
+  else{
+    btn.classList.add('wrong');
+    parent.querySelectorAll('.mc-opt').forEach(b=>{
+      b.setAttribute('data-c',b.onclick.toString().includes('true')?'1':'0');
+    });
+    // find correct and highlight
+    parent.querySelectorAll('.mc-opt').forEach(b=>{
+      if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes('true'))b.classList.add('correct');
+    });
+  }
+}
+
+/* ===== FILL ===== */
+function checkFill(){
+  const inputs=document.querySelectorAll('.fill-input');
+  let ok=0,tot=0;
+  inputs.forEach(inp=>{
+    if(!inp.value.trim())return;
+    tot++;
+    const correct=inp.value.trim().toLowerCase()===inp.dataset.a.toLowerCase();
+    inp.style.borderBottomColor=correct?'var(--green)':'var(--red)';
+    inp.style.color=correct?'var(--green)':'var(--red)';
+    if(correct)ok++;
+  });
+  const msg=document.getElementById('fillMsg');
+  if(tot===0){msg.textContent='Scrivi almeno una risposta!';msg.className='res-msg';return;}
+  if(ok===inputs.length){msg.textContent='🎉 Perfetto! Tutto corretto!';msg.className='res-msg ok';}
+  else{msg.textContent=ok+' su '+inputs.length+' corretti';msg.className='res-msg err';}
+}
+function resetFill(){
+  document.querySelectorAll('.fill-input').forEach(inp=>{
+    inp.value='';inp.style.borderBottomColor='';inp.style.color='';
+  });
+  document.getElementById('fillMsg').textContent='';
+}
+</script>
+</body>
+</html>
