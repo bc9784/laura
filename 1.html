@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Il Racconto d'Avventura — Ora 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:   #1A2E4A;
+  --red:    #C0392B;
+  --teal:   #0E7C7B;
+  --green:  #27640A;
+  --amber:  #7D4E00;
+  --purple: #44276A;
+  --blue:   #0D4B8C;
+  --coral:  #7D1F3C;
+  --gold:   #8A6200;
+  --text:   #111111;
+  --muted:  #555555;
+  --light:  #F4F4F4;
+  --border: #CCCCCC;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #DEDEDE;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== DECK ===== */
+.deck { width: 100vw; flex: 1; position: relative; overflow: hidden; min-height: 0; }
+
+.slide {
+  position: absolute;
+  inset: 0;
+  background: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(40px);
+  transition: opacity .35s ease, transform .35s ease;
+}
+.slide.active  { opacity: 1; pointer-events: all; transform: translateX(0); }
+.slide.prev    { opacity: 0; transform: translateX(-40px); }
+
+/* ===== TOP BAR ===== */
+.topbar {
+  height: 7px;
+  background: linear-gradient(90deg, var(--navy) 60%, var(--red) 100%);
+  flex-shrink: 0;
+}
+
+/* ===== HEADER ===== */
+.slide-header {
+  padding: 22px 56px 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.slide-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--red);
+  background: #FDECEA;
+  border: 1.5px solid #F5B8B2;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+.slide-tag.blue  { color: var(--blue);   background: #EAF1FB; border-color: #B0CCF0; }
+.slide-tag.teal  { color: var(--teal);   background: #E8F7F7; border-color: #A8DFDE; }
+.slide-tag.green { color: var(--green);  background: #EDFAE0; border-color: #A8D98A; }
+.slide-tag.gold  { color: var(--gold);   background: #FEF7E0; border-color: #EDCE77; }
+.slide-tag.purple{ color: var(--purple); background: #F3EEF9; border-color: #C9B3E8; }
+
+.page-ref {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--light);
+  border: 1.5px solid var(--border);
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-family: monospace;
+}
+
+/* ===== SLIDE INNER ===== */
+.slide-inner {
+  flex: 1;
+  padding: 18px 56px 24px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  gap: 14px;
+}
+
+.slide-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(26px, 4vw, 52px);
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1.1;
+}
+.slide-title .red   { color: var(--red); }
+.slide-title .teal  { color: var(--teal); }
+
+.slide-sub {
+  font-size: 17px;
+  color: var(--muted);
+  font-weight: 400;
+  margin-top: -6px;
+}
+
+.divider {
+  width: 56px; height: 4px;
+  background: var(--red);
+  border-radius: 2px;
+  margin: -6px 0 2px;
+}
+.divider.teal  { background: var(--teal); }
+.divider.green { background: var(--green); }
+.divider.blue  { background: var(--blue); }
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--light);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+.card.navy-accent  { border-left: 4px solid var(--navy); }
+.card.red-accent   { border-left: 4px solid var(--red); }
+.card.teal-accent  { border-left: 4px solid var(--teal); }
+.card.green-accent { border-left: 4px solid var(--green); }
+
+/* ===== COPY BOX ===== */
+.copy-box {
+  border: 2px dashed #AAAAAA;
+  border-radius: 10px;
+  padding: 14px 20px;
+  position: relative;
+  background: #FAFAFA;
+}
+.copy-label {
+  position: absolute;
+  top: -11px;
+  left: 14px;
+  background: #FAFAFA;
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.copy-box p, .copy-box div { font-size: 14.5px; line-height: 1.7; color: var(--text); }
+.copy-box strong { color: var(--navy); }
+
+/* ===== ITEM LIST ===== */
+.item-list { display: flex; flex-direction: column; gap: 9px; }
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text);
+}
+.item .bullet {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--navy);
+  margin-top: 7px;
+  flex-shrink: 0;
+}
+.item .bullet.red    { background: var(--red); }
+.item .bullet.teal   { background: var(--teal); }
+.item .bullet.green  { background: var(--green); }
+.item strong { color: var(--navy); }
+
+/* ===== GRID ===== */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+/* ===== NAV BAR ===== */
+.navb {
+  width: 100%;
+  height: 50px;
+  background: #FFFFFF;
+  border-top: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex-shrink: 0;
+}
+.navb button {
+  background: none;
+  border: 1.5px solid var(--border);
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 5px 18px;
+  border-radius: 6px;
+  transition: background .18s, border-color .18s;
+  font-family: 'Inter', sans-serif;
+}
+.navb button:hover { background: var(--light); border-color: var(--navy); }
+.navb button:disabled { color: var(--border); border-color: #EEE; cursor: not-allowed; }
+.nctr { font-size: 13px; font-weight: 600; color: var(--muted); min-width: 60px; text-align: center; font-family: monospace; }
+.ndots { display: flex; gap: 6px; align-items: center; }
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  cursor: pointer;
+  transition: background .2s, transform .2s;
+}
+.dot.active { background: var(--navy); transform: scale(1.35); }
+
+/* ===== ANIMATIONS ===== */
+.slide.active .slide-inner > *,
+.slide.active .slide-header {
+  animation: fadeUp .4s ease both;
+}
+.slide.active .slide-inner > *:nth-child(1) { animation-delay: .04s; }
+.slide.active .slide-inner > *:nth-child(2) { animation-delay: .10s; }
+.slide.active .slide-inner > *:nth-child(3) { animation-delay: .16s; }
+.slide.active .slide-inner > *:nth-child(4) { animation-delay: .22s; }
+.slide.active .slide-inner > *:nth-child(5) { animation-delay: .28s; }
+.slide.active .slide-inner > *:nth-child(6) { animation-delay: .34s; }
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* =============================================== */
+/* SLIDE 1 — TITOLO                                */
+/* =============================================== */
+.s1-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 56px;
+}
+.s1-unit {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.s1-unit::before { content:''; display:block; width:36px; height:2px; background:var(--red); border-radius:1px; }
+.s1-big {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(44px, 7vw, 88px);
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1.05;
+  margin-bottom: 26px;
+}
+.s1-big .acc { color: var(--red); }
+.s1-meta {
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+}
+.s1-meta-item {
+  font-size: 15px;
+  color: var(--muted);
+  padding: 0 18px;
+  border-right: 1.5px solid var(--border);
+}
+.s1-meta-item:first-child { padding-left: 0; }
+.s1-meta-item:last-child  { border-right: none; }
+.s1-meta-item strong { color: var(--navy); }
+.s1-book {
+  position: absolute;
+  bottom: 80px;
+  right: 56px;
+  background: var(--light);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+}
+.s1-book strong { color: var(--navy); display: block; margin-bottom: 3px; font-size: 14px; }
+.s1-compass {
+  position: absolute;
+  right: 56px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 160px;
+  opacity: .06;
+  pointer-events: none;
+  line-height: 1;
+}
+
+/* =============================================== */
+/* SLIDE 2 — BRAINSTORMING                         */
+/* =============================================== */
+.bs-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--light);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+}
+.bs-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--navy);
+  background: white;
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: background .18s, color .18s, transform .15s;
+}
+.bs-btn:hover { background: var(--navy); color: white; transform: scale(1.05); }
+.bs-btn:disabled { border-color: var(--border); color: var(--border); cursor: not-allowed; transform: none; background: white; }
+.bs-clear {
+  margin-left: auto;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: white;
+  color: var(--muted);
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+}
+.bs-clear:hover { background: var(--light); }
+
+.bs-area {
+  flex: 1;
+  border: 2px dashed #CCCCCC;
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+  background: #FAFAFA;
+  cursor: default;
+}
+.bs-center-word {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(48px, 7vw, 80px);
+  font-weight: 900;
+  color: var(--red);
+  pointer-events: none;
+  z-index: 2;
+  text-align: center;
+  text-shadow: 2px 2px 0 rgba(192,57,43,.1);
+}
+.bs-word {
+  position: absolute;
+  font-size: clamp(13px, 1.6vw, 18px);
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 24px;
+  border: 2px solid;
+  animation: popIn .3s cubic-bezier(.34,1.56,.64,1) forwards;
+  pointer-events: none;
+  white-space: nowrap;
+  background: white;
+}
+@keyframes popIn {
+  from { transform:scale(0) rotate(-8deg); opacity:0; }
+  to   { transform:scale(1) rotate(0);     opacity:1; }
+}
+
+/* =============================================== */
+/* SLIDE 3 — AMBIENTAZIONI                         */
+/* =============================================== */
+.vote-question {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--navy);
+  text-align: center;
+  background: #EAF1FB;
+  border: 1.5px solid #B0CCF0;
+  border-radius: 10px;
+  padding: 12px;
+}
+.vote-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 12px;
+  overflow: hidden;
+}
+.amb-card {
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  border: 2.5px solid var(--border);
+  transition: border-color .2s, box-shadow .2s;
+  cursor: default;
+}
+.amb-card.voted {
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(26,46,74,.25);
+}
+.amb-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: brightness(.75) saturate(1.05);
+}
+.amb-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.75) 0%, rgba(0,0,0,.15) 60%);
+}
+.amb-info {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 12px 14px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+}
+.amb-text {}
+.amb-num-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.7);
+  margin-bottom: 2px;
+}
+.amb-name {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(15px, 1.8vw, 22px);
+  font-weight: 700;
+  color: #fff;
+}
+.amb-sub { font-size: 11px; color: rgba(255,255,255,.75); }
+
+/* VOTE COUNTER */
+.vote-counter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.vote-num {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(30px, 4vw, 52px);
+  font-weight: 900;
+  color: #FFFFFF;
+  line-height: 1;
+  text-shadow: 0 2px 8px rgba(0,0,0,.4);
+  min-width: 44px;
+  text-align: center;
+}
+.vote-num.voted-num { color: #FFE066; }
+.vote-lbl {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.7);
+}
+.vote-controls {
+  display: flex;
+  gap: 4px;
+}
+.vote-btn {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.7);
+  background: rgba(0,0,0,.25);
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s;
+  line-height: 1;
+}
+.vote-btn:hover { background: rgba(255,255,255,.25); }
+
+/* =============================================== */
+/* SLIDE 4 — VIDEO                                 */
+/* =============================================== */
+.video-block {
+  background: #FEF3F2;
+  border: 2px solid #F5B8B2;
+  border-radius: 12px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.play-circle {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.vid-title { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+.vid-url   { font-size: 13px; font-family: monospace; color: var(--red); font-weight: 600; }
+.vid-note  { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+.q-list { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+.q-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: white;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 22px;
+  flex: 1;
+  transition: border-color .2s;
+}
+.q-card:hover { border-color: var(--navy); }
+.q-num {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: white;
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.q-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(16px, 2.2vw, 24px);
+  font-weight: 700;
+  color: var(--navy);
+}
+.q-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+/* =============================================== */
+/* SLIDE 5 — COS'È                                 */
+/* =============================================== */
+.def-box {
+  background: var(--navy);
+  color: white;
+  border-radius: 12px;
+  padding: 20px 26px;
+}
+.def-box p {
+  font-size: clamp(15px, 2vw, 18px);
+  line-height: 1.65;
+  color: rgba(255,255,255,.92);
+}
+.def-box strong { color: #FFE066; }
+
+.props-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.prop {
+  background: var(--light);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.prop-ico { font-size: 24px; flex-shrink: 0; }
+.prop-body { font-size: 14px; line-height: 1.5; color: var(--text); }
+.prop-body strong { color: var(--navy); display: block; margin-bottom: 3px; font-size: 15px; }
+.alert-box {
+  background: #FEF3F2;
+  border: 2px solid #F5B8B2;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 14.5px;
+  color: var(--text);
+  line-height: 1.5;
+}
+.alert-box strong { color: var(--red); }
+
+/* =============================================== */
+/* SLIDE 6 — AMBIENTAZIONE                         */
+/* =============================================== */
+.luogo-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.luogo-chip {
+  padding: 8px 18px;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: 600;
+  background: white;
+  border: 2px solid var(--teal);
+  color: var(--teal);
+  white-space: nowrap;
+}
+
+/* =============================================== */
+/* SLIDE 7 — PERSONAGGI                            */
+/* =============================================== */
+.persona-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  flex: 1;
+}
+.persona-card {
+  border-radius: 14px;
+  border: 2px solid;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.persona-card.hero   { border-color: #B8860B; background: #FFFBF0; }
+.persona-card.villain{ border-color: var(--red); background: #FEF3F2; }
+.persona-card.helper { border-color: var(--teal); background: #F0FAFA; }
+.p-ico   { font-size: 36px; }
+.p-role  { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+.p-name  { font-family: 'Playfair Display', serif; font-size: clamp(17px, 2vw, 22px); font-weight: 900; }
+.persona-card.hero    .p-name { color: #7A5800; }
+.persona-card.villain .p-name { color: var(--red); }
+.persona-card.helper  .p-name { color: var(--teal); }
+.p-traits { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.p-trait {
+  font-size: 13.5px;
+  color: var(--text);
+  line-height: 1.4;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.p-trait::before { content: '—'; color: var(--muted); flex-shrink: 0; }
+.p-trait strong { color: var(--navy); }
+.p-ex {
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+  padding-top: 8px;
+  border-top: 1.5px solid var(--border);
+  margin-top: auto;
+}
+
+/* =============================================== */
+/* SLIDE 8 — STRUTTURA                             */
+/* =============================================== */
+.struct-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.struct-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--light);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 18px;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+.struct-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 5px;
+  border-radius: 4px 0 0 4px;
+}
+.struct-item:nth-child(1)::before { background: var(--teal); }
+.struct-item:nth-child(2)::before { background: #B8860B; }
+.struct-item:nth-child(3)::before { background: var(--amber); }
+.struct-item:nth-child(4)::before { background: var(--red); }
+.struct-item:nth-child(5)::before { background: var(--green); }
+.s-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  font-weight: 900;
+  color: rgba(0,0,0,.1);
+  min-width: 36px;
+  flex-shrink: 0;
+}
+.s-body { flex: 1; }
+.s-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 2px;
+}
+.s-name .eq {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.s-desc { font-size: 13px; color: var(--muted); line-height: 1.4; }
+.s-ico { font-size: 22px; flex-shrink: 0; }
+
+/* =============================================== */
+/* SLIDE 9 — STILE                                 */
+/* =============================================== */
+.stile-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.stile-card {
+  background: var(--light);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.stile-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #A8DFDE;
+}
+.st-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+}
+.st-item .dot3 {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--teal);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+.st-item strong { color: var(--navy); }
+.st-example {
+  background: white;
+  border: 1.5px dashed #AAAAAA;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  color: var(--muted);
+  font-style: italic;
+  line-height: 1.6;
+  margin-top: auto;
+}
+.st-example-label { font-style: normal; font-weight: 700; font-size: 11px; color: var(--navy); display: block; margin-bottom: 4px; }
+
+/* =============================================== */
+/* SLIDE 10 — MAPPA MODELLO                        */
+/* =============================================== */
+.mappa-central {
+  background: var(--red);
+  color: white;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 900;
+  padding: 10px 40px;
+  border-radius: 30px;
+  letter-spacing: 3px;
+  text-align: center;
+  width: fit-content;
+  margin: 0 auto;
+  box-shadow: 0 4px 16px rgba(192,57,43,.25);
+}
+.mappa-hline {
+  width: 75%;
+  height: 2px;
+  background: var(--border);
+  margin: 6px auto;
+}
+.mappa-nodes {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  flex: 1;
+  overflow: hidden;
+}
+.mappa-node {
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1.5px solid var(--border);
+}
+.mappa-node-head {
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .7px;
+  text-align: center;
+}
+.mappa-node-body {
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  flex: 1;
+  background: var(--light);
+  color: var(--text);
+}
+.mappa-node-body strong { color: var(--navy); }
+.mn-green  .mappa-node-head { background: #27640A; color: white; }
+.mn-blue   .mappa-node-head { background: var(--blue); color: white; }
+.mn-amber  .mappa-node-head { background: var(--amber); color: white; }
+.mn-coral  .mappa-node-head { background: var(--coral); color: white; }
+.mn-teal   .mappa-node-head { background: var(--teal); color: white; }
+.mn-purple .mappa-node-head { background: var(--purple); color: white; }
+.mappa-note {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+/* =============================================== */
+/* SLIDE 11 — ESERCIZIO                            */
+/* =============================================== */
+.ex-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #FEF7E0;
+  border: 2px solid #EDCE77;
+  border-radius: 10px;
+}
+.ex-word {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  background: white;
+  border: 2px solid #B8860B;
+  color: var(--gold);
+  cursor: pointer;
+  transition: all .18s;
+}
+.ex-word:hover  { background: var(--gold); color: white; transform: scale(1.04); }
+.ex-word.sel    { background: var(--navy); color: white; border-color: var(--navy); transform: scale(1.06); }
+.ex-word.used   { opacity: .35; text-decoration: line-through; pointer-events: none; }
+
+.ex-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  overflow: hidden;
+}
+.ex-node {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1.5px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+.ex-node-head {
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .7px;
+  text-align: center;
+}
+.ex-node-body {
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.7;
+  flex: 1;
+  background: var(--light);
+  color: var(--text);
+}
+
+.blank {
+  display: inline-block;
+  min-width: 90px;
+  border-bottom: 2.5px solid var(--navy);
+  padding: 1px 6px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 2px 2px 0 0;
+  transition: background .15s;
+  min-height: 21px;
+  vertical-align: bottom;
+  color: var(--navy);
+}
+.blank:hover { background: rgba(26,46,74,.07); }
+.blank.filled { background: rgba(26,46,74,.05); }
+.blank.ok  { background: #D4EDDA !important; border-bottom-color: var(--green) !important; color: var(--green) !important; }
+.blank.err { background: #FDECEA !important; border-bottom-color: var(--red)   !important; color: var(--red)   !important; }
+
+.ex-controls { display: flex; gap: 10px; align-items: center; }
+.ex-btn {
+  padding: 8px 22px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  border: none;
+  transition: all .18s;
+}
+.ex-btn.check { background: var(--green); color: white; }
+.ex-btn.check:hover { background: #1E4D08; }
+.ex-btn.rst   { background: var(--light); color: var(--muted); border: 1.5px solid var(--border); }
+.ex-btn.rst:hover { background: #E0E0E0; }
+.ex-msg { font-size: 13.5px; font-weight: 600; }
+.ex-msg.ok  { color: var(--green); }
+.ex-msg.err { color: var(--red); }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+<!-- ======================== SLIDE 1 — TITOLO ======================== -->
+<div class="slide active" id="s1">
+  <div class="topbar"></div>
+  <div class="s1-wrap">
+    <div class="s1-unit">Italiano · Unità 10 · Anno scolastico 2025–2026</div>
+    <div class="s1-big">Il racconto<br><span class="acc">d'avventura</span></div>
+    <div class="s1-meta">
+      <div class="s1-meta-item">Classe <strong>1ª media</strong></div>
+      <div class="s1-meta-item">Ora <strong>1 di 6</strong></div>
+      <div class="s1-meta-item">60 minuti</div>
+      <div class="s1-meta-item">Generi narrativi</div>
+    </div>
+  </div>
+  <div class="s1-compass">🧭</div>
+  <div class="s1-book">
+    <strong>📖 E tu splendi</strong>
+    Pellizzi · Novembri · Bigli<br>Mursia Scuola · Unità 10
+  </div>
+</div>
+
+<!-- ======================== SLIDE 2 — BRAINSTORMING ======================== -->
+<div class="slide" id="s2">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Cosa ti viene in mente <span class="red">quando senti questa parola?</span></h2>
+    <span class="slide-tag purple">Brainstorming</span>
+  </div>
+  <div class="slide-inner" style="gap:10px">
+    <div class="bs-toolbar" id="bsToolbar">
+      <button class="bs-btn" onclick="bsAdd(this,'Pericolo 🔥')">+ Pericolo</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Eroe 🗡️')">+ Eroe</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Avventura 🌿')">+ Avventura</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Paura 😱')">+ Paura</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Naruto ⚡')">+ Naruto</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Spider-Man 🕷️')">+ Spider-Man</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Mare 🌊')">+ Mare</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Foresta 🌲')">+ Foresta</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Fuga 🏃')">+ Fuga</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Mistero 🔍')">+ Mistero</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Tesoro 💎')">+ Tesoro</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Coraggio 💪')">+ Coraggio</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Minecraft ⛏️')">+ Minecraft</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Dragon Ball 🐉')">+ Dragon Ball</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Isola 🏝️')">+ Isola</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Nemico 👹')">+ Nemico</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Suspense 😬')">+ Suspense</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Lotta ⚔️')">+ Lotta</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Salvare ❤️')">+ Salvare</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Impresa 🎯')">+ Impresa</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Colpo di scena 💥')">+ Colpo di scena</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Protagonista ⭐')">+ Protagonista</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Aiutante 🤝')">+ Aiutante</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Giungla 🌴')">+ Giungla</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Deserto 🏜️')">+ Deserto</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Montagna 🏔️')">+ Montagna</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Nave ⛵')">+ Nave</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Animale feroce 🐆')">+ Animale feroce</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Pirati ☠️')">+ Pirati</button>
+      <button class="bs-btn" onclick="bsAdd(this,'One Piece 🏴‍☠️')">+ One Piece</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Jurassic Park 🦕')">+ Jurassic Park</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Harry Potter 🪄')">+ Harry Potter</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Avengers 🦸')">+ Avengers</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Sopravvivere 🆘')">+ Sopravvivere</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Adrenalina 💨')">+ Adrenalina</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Lieto fine 🌟')">+ Lieto fine</button>
+      <button class="bs-btn" onclick="bsAdd(this,'Viaggio 🧭')">+ Viaggio</button>
+      <button class="bs-clear" onclick="bsClear()">✕ Cancella tutto</button>
+    </div>
+    <div class="bs-area" id="bsArea">
+      <div class="bs-center-word">AVVENTURA</div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 3 — VOTAZIONE ======================== -->
+<div class="slide" id="s3">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title" style="font-size:clamp(22px,3.2vw,42px)">In quale posto vorresti vivere <span class="red">la tua avventura?</span></h2>
+    <span class="slide-tag blue">✋ Alzata di mano</span>
+  </div>
+  <div class="slide-inner" style="gap:10px">
+    <div class="vote-question">👆 Alzate la mano — usate i pulsanti ＋ / ﹣ per contare i voti</div>
+    <div class="vote-grid">
+
+      <div class="amb-card" id="ac1">
+        <img class="amb-img" src="https://images.unsplash.com/photo-1551582045-6ec9c11d8697?auto=format&fit=crop&w=900&q=80" alt="Natura selvaggia">
+        <div class="amb-overlay"></div>
+        <div class="amb-info">
+          <div class="amb-text">
+            <div class="amb-num-label">Ambientazione 01</div>
+            <div class="amb-name">🏔️ La natura selvaggia</div>
+            <div class="amb-sub">Foresta · neve · animali · freddo</div>
+          </div>
+          <div class="vote-counter">
+            <div class="vote-num" id="vn1">0</div>
+            <div class="vote-lbl">voti</div>
+            <div class="vote-controls">
+              <button class="vote-btn" onclick="vote(1,-1)" title="Togli voto">−</button>
+              <button class="vote-btn" onclick="vote(1,1)"  title="Aggiungi voto">＋</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="amb-card" id="ac2">
+        <img class="amb-img" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=900&q=80" alt="Giungla">
+        <div class="amb-overlay"></div>
+        <div class="amb-info">
+          <div class="amb-text">
+            <div class="amb-num-label">Ambientazione 02</div>
+            <div class="amb-name">🌿 La giungla</div>
+            <div class="amb-sub">Piante · animali esotici · caldo</div>
+          </div>
+          <div class="vote-counter">
+            <div class="vote-num" id="vn2">0</div>
+            <div class="vote-lbl">voti</div>
+            <div class="vote-controls">
+              <button class="vote-btn" onclick="vote(2,-1)">−</button>
+              <button class="vote-btn" onclick="vote(2,1)">＋</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="amb-card" id="ac3">
+        <img class="amb-img" src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=900&q=80" alt="Mare">
+        <div class="amb-overlay"></div>
+        <div class="amb-info">
+          <div class="amb-text">
+            <div class="amb-num-label">Ambientazione 03</div>
+            <div class="amb-name">🏴‍☠️ Il mare e i pirati</div>
+            <div class="amb-sub">Isola · veliero · tesoro</div>
+          </div>
+          <div class="vote-counter">
+            <div class="vote-num" id="vn3">0</div>
+            <div class="vote-lbl">voti</div>
+            <div class="vote-controls">
+              <button class="vote-btn" onclick="vote(3,-1)">−</button>
+              <button class="vote-btn" onclick="vote(3,1)">＋</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="amb-card" id="ac4">
+        <img class="amb-img" src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?auto=format&fit=crop&w=900&q=80" alt="Luogo misterioso">
+        <div class="amb-overlay"></div>
+        <div class="amb-info">
+          <div class="amb-text">
+            <div class="amb-num-label">Ambientazione 04</div>
+            <div class="amb-name">🦕 Il luogo misterioso</div>
+            <div class="amb-sub">Isola sperduta · avventura libera</div>
+          </div>
+          <div class="vote-counter">
+            <div class="vote-num" id="vn4">0</div>
+            <div class="vote-lbl">voti</div>
+            <div class="vote-controls">
+              <button class="vote-btn" onclick="vote(4,-1)">−</button>
+              <button class="vote-btn" onclick="vote(4,1)">＋</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 4 — VIDEO ======================== -->
+<div class="slide" id="s4">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Guardiamo un <span class="red">trailer</span></h2>
+    <span class="slide-tag">🎬 Video — 2 minuti</span>
+  </div>
+  <div class="slide-inner">
+    <div class="video-block">
+      <div class="play-circle">▶</div>
+      <div>
+        <div class="vid-title">Jurassic Park (1993) — Trailer ufficiale italiano</div>
+        <div class="vid-url"><a href="https://youtu.be/M7GAiY4mfXY?si=3vzBNaEieAIVhsSQ" target="_blank" style="color:var(--red);text-decoration:none;">▶ https://youtu.be/M7GAiY4mfXY</a></div>
+        <div class="vid-note">⚠ Apri il link in un tab separato PRIMA di entrare in classe · Il romanzo è citato nel libro a p. 434</div>
+      </div>
+    </div>
+
+    <div class="copy-box">
+      <div class="copy-label">Mentre guardate — tenete a mente queste 3 domande</div>
+      <p style="font-size:16px;color:var(--muted);font-style:italic">Non scrivete niente. Solo guardate e pensate.</p>
+    </div>
+
+    <div class="q-list">
+      <div class="q-card">
+        <div class="q-num">①</div>
+        <div>
+          <div class="q-text">Chi è il protagonista?</div>
+          <div class="q-sub">Il personaggio principale — com'è fatto? Come si comporta?</div>
+        </div>
+      </div>
+      <div class="q-card">
+        <div class="q-num">②</div>
+        <div>
+          <div class="q-text">Dove si trova?</div>
+          <div class="q-sub">Descrivi il luogo — che tipo di ambientazione è?</div>
+        </div>
+      </div>
+      <div class="q-card">
+        <div class="q-num">③</div>
+        <div>
+          <div class="q-text">Che pericolo o problema c'è?</div>
+          <div class="q-sub">Cosa minaccia il protagonista? Cosa deve affrontare?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 5 — COS'È ======================== -->
+<div class="slide" id="s5">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Che cos'è il racconto <span class="red">d'avventura?</span></h2>
+    <span class="page-ref">p. 432</span>
+  </div>
+  <div class="slide-inner">
+    <div class="def-box">
+      <p>Il racconto e il romanzo d'avventura sono <strong>testi narrativi</strong> che parlano di esperienze <strong>eccezionali, imprevedibili e pericolose</strong>, lontane dalla realtà della vita quotidiana. Le storie sono <strong>avvincenti</strong> e spingono il lettore a condividere le forti emozioni del protagonista, in <strong>trepidante attesa del lieto fine</strong>.</p>
+    </div>
+    <div class="alert-box">
+      ⚠ <strong>Attenzione:</strong> le storie d'avventura <strong>non presentano mai elementi fantastici o soprannaturali</strong> — sono <strong>racconti realistici</strong>, anche se talvolta al limite della credibilità.
+    </div>
+    <div class="props-grid">
+      <div class="prop">
+        <div class="prop-ico">⚡</div>
+        <div class="prop-body">
+          <strong>Realistiche</strong>
+          Niente magia o soprannaturale — le avventure potrebbero accadere davvero.
+        </div>
+      </div>
+      <div class="prop">
+        <div class="prop-ico">🎭</div>
+        <div class="prop-body">
+          <strong>Coinvolgenti</strong>
+          Il lettore si immedesima nel protagonista e sente le sue paure.
+        </div>
+      </div>
+      <div class="prop">
+        <div class="prop-ico">😰</div>
+        <div class="prop-body">
+          <strong>Ansiose</strong>
+          Tengono il lettore in trepidante attesa — non si riesce a smettere di leggere.
+        </div>
+      </div>
+      <div class="prop">
+        <div class="prop-ico">🏆</div>
+        <div class="prop-body">
+          <strong>Lieto fine (quasi sempre)</strong>
+          I buoni trionfano sui cattivi, come nelle fiabe — ma senza magia.
+        </div>
+      </div>
+    </div>
+    <div class="copy-box">
+      <div class="copy-label">✏ Da copiare sul quaderno — Definizione</div>
+      <p><strong>Il racconto d'avventura</strong> è un testo narrativo che racconta esperienze eccezionali, imprevedibili e pericolose, lontane dalla vita di tutti i giorni. Le storie sono <strong>avvincenti</strong> e tengono il lettore in <strong>trepidante attesa del lieto fine</strong>. Sono <strong>racconti realistici</strong>: non ci sono elementi fantastici.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 6 — AMBIENTAZIONE ======================== -->
+<div class="slide" id="s6">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title"><span class="teal">L'ambientazione</span></h2>
+    <span class="page-ref">p. 432</span>
+  </div>
+  <div class="slide-inner">
+    <div class="grid2">
+      <div class="card teal-accent">
+        <div style="font-size:14px;font-weight:700;color:var(--teal);margin-bottom:8px">DOVE si svolge</div>
+        <div class="item-list">
+          <div class="item"><div class="bullet teal"></div><div>Luoghi <strong>lontani, insoliti, misteriosi</strong></div></div>
+          <div class="item"><div class="bullet teal"></div><div>Dove regna la <strong>natura selvaggia</strong> e il senso di pericolo</div></div>
+          <div class="item"><div class="bullet teal"></div><div>Luoghi di cui il lettore <strong>non ha esperienza diretta</strong> → si accende la fantasia</div></div>
+          <div class="item"><div class="bullet teal"></div><div>L'epoca può essere <strong>indicata chiaramente</strong> oppure solo suggerita attraverso oggetti, abiti, tradizioni</div></div>
+        </div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px">Luoghi tipici dell'avventura</div>
+        <div class="luogo-wrap">
+          <span class="luogo-chip">🏜️ Deserto</span>
+          <span class="luogo-chip">🌴 Giungla</span>
+          <span class="luogo-chip">🌲 Foresta</span>
+          <span class="luogo-chip">🌊 Mare</span>
+          <span class="luogo-chip">🏝️ Isola</span>
+          <span class="luogo-chip">🏔️ Montagna</span>
+          <span class="luogo-chip">🌋 Vulcano</span>
+          <span class="luogo-chip">❄️ Polo</span>
+        </div>
+      </div>
+    </div>
+    <div class="alert-box">
+      💡 I luoghi dell'avventura sono <strong>reali o potrebbero esserlo</strong>. Il Klondike di London esiste davvero. L'India di Kipling è reale. Jurassic Park è ambientato su un'isola reale del Costa Rica.
+    </div>
+    <div class="copy-box">
+      <div class="copy-label">✏ Da copiare</div>
+      <p>L'ambientazione del racconto d'avventura è un luogo <strong>lontano, insolito, misterioso</strong>, dove regna la natura selvaggia e si percepisce pericolo. Luoghi tipici: deserto, giungla, foresta, mare, isola disabitata. Il lettore non li conosce direttamente → si accende la fantasia.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 7 — PERSONAGGI ======================== -->
+<div class="slide" id="s7">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">I <span class="red">personaggi</span></h2>
+    <span class="page-ref">p. 432</span>
+  </div>
+  <div class="slide-inner">
+    <div class="persona-grid fill" style="flex:1">
+      <div class="persona-card hero">
+        <div class="p-ico">🗡️</div>
+        <div class="p-role">Personaggio principale</div>
+        <div class="p-name">Il Protagonista (Eroe)</div>
+        <div class="p-traits">
+          <div class="p-trait">Dotato di <strong>coraggio e forza fisica eccezionali</strong></div>
+          <div class="p-trait"><strong>Intelligente</strong>, rapido a intuire i pericoli</div>
+          <div class="p-trait"><strong>Leale e generoso</strong>, capace di gesti eroici</div>
+          <div class="p-trait">Ha un <strong>obiettivo da raggiungere</strong>: salvare qualcuno, trovare un tesoro, ristabilire la verità</div>
+        </div>
+        <div class="p-ex">Es: Buck (London) · Mowgli (Kipling) · Jim Hawkins (Stevenson)</div>
+      </div>
+      <div class="persona-card villain">
+        <div class="p-ico">👹</div>
+        <div class="p-role">Il cattivo della storia</div>
+        <div class="p-name">L'Antagonista</div>
+        <div class="p-traits">
+          <div class="p-trait">Spesso dotato di qualità fisiche eccezionali come l'eroe</div>
+          <div class="p-trait"><strong>Sleale e disonesto</strong>, pronto al tradimento</div>
+          <div class="p-trait">Persegue i propri scopi con ogni mezzo</div>
+          <div class="p-trait"><strong>Ostacola</strong> il protagonista in ogni modo</div>
+        </div>
+        <div class="p-ex">Es: Shere Khan (Kipling) · Long John Silver (Stevenson)</div>
+      </div>
+      <div class="persona-card helper">
+        <div class="p-ico">🤝</div>
+        <div class="p-role">Personaggi secondari</div>
+        <div class="p-name">Gli Aiutanti</div>
+        <div class="p-traits">
+          <div class="p-trait">Affiancano il protagonista nelle avventure</div>
+          <div class="p-trait">Lo <strong>soccorrono</strong> nei momenti di pericolo</div>
+          <div class="p-trait">Possono essere amici, animali, guide</div>
+          <div class="p-trait">Anche l'antagonista ha i suoi aiutanti</div>
+        </div>
+        <div class="p-ex">Es: Baloo e Bagheera (Kipling) · Capitano Smollett (Stevenson)</div>
+      </div>
+    </div>
+    <div class="copy-box">
+      <div class="copy-label">✏ Da copiare</div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:13.5px">
+        <div><strong>🗡️ PROTAGONISTA:</strong> coraggioso, forte, intelligente, leale — ha un obiettivo</div>
+        <div><strong>👹 ANTAGONISTA:</strong> sleale, disonesto — vuole ostacolare l'eroe</div>
+        <div><strong>🤝 AIUTANTI:</strong> affiancano i personaggi principali</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 8 — STRUTTURA ======================== -->
+<div class="slide" id="s8">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">La <span class="red">struttura</span> narrativa</h2>
+    <span class="page-ref">pp. 432–433</span>
+  </div>
+  <div class="slide-inner">
+    <div class="struct-list fill">
+      <div class="struct-item">
+        <div class="s-num">1</div>
+        <div class="s-body">
+          <div class="s-name">Prevalenza dell'azione</div>
+          <div class="s-desc">L'azione è il centro di tutto. I fatti si susseguono rapidamente senza lunghe pause o riflessioni.</div>
+        </div>
+        <div class="s-ico">⚡</div>
+      </div>
+      <div class="struct-item">
+        <div class="s-num">2</div>
+        <div class="s-body">
+          <div class="s-name">Ritmo incalzante <span class="eq">= molto veloce</span></div>
+          <div class="s-desc">Ogni momento di tranquillità è subito interrotto da un nuovo evento che rimette in moto la storia.</div>
+        </div>
+        <div class="s-ico">🏃</div>
+      </div>
+      <div class="struct-item">
+        <div class="s-num">3</div>
+        <div class="s-body">
+          <div class="s-name">Colpi di scena</div>
+          <div class="s-desc">Mutamenti improvvisi e imprevedibili che colgono di sorpresa il lettore. Non possiamo anticipare cosa succederà.</div>
+        </div>
+        <div class="s-ico">💥</div>
+      </div>
+      <div class="struct-item">
+        <div class="s-num">4</div>
+        <div class="s-body">
+          <div class="s-name">Suspense <span class="eq">= tensione emotiva in attesa di ciò che sta per accadere</span></div>
+          <div class="s-desc">Il lettore sente la tensione salire. È impossibile smettere di leggere.</div>
+        </div>
+        <div class="s-ico">😰</div>
+      </div>
+      <div class="struct-item">
+        <div class="s-num">5</div>
+        <div class="s-body">
+          <div class="s-name">Impresa + Lieto fine</div>
+          <div class="s-desc">Il protagonista ha un <strong>compito</strong> (impresa) da portare a compimento. Quasi sempre i buoni trionfano.</div>
+        </div>
+        <div class="s-ico">🏆</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 9 — STILE ======================== -->
+<div class="slide" id="s9">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Lo <span class="teal">stile</span> e il linguaggio</h2>
+    <span class="page-ref">p. 433</span>
+  </div>
+  <div class="slide-inner">
+    <div class="stile-grid">
+      <div class="stile-card">
+        <div class="stile-card-title">📝 Le frasi</div>
+        <div class="st-item"><div class="dot3"></div><div><strong>Frasi brevi</strong>, spesso una sola proposizione per frase</div></div>
+        <div class="st-item"><div class="dot3"></div><div>Struttura del periodo <strong>semplice e diretta</strong></div></div>
+        <div class="st-item"><div class="dot3"></div><div><strong>Dialoghi rapidi</strong>: veloci scambi di battute tra i personaggi</div></div>
+        <div class="st-item"><div class="dot3"></div><div><strong>Sequenze riflessive brevi</strong>: i pensieri del protagonista occupano poco spazio</div></div>
+        <div class="st-example">
+          <span class="st-example-label">Esempio — stile tipico dell'avventura</span>
+          «Buck vide l'acqua. Capì. Si gettò. La corrente era fortissima. Nuotò con tutto sé stesso. Thornton era lì.»
+        </div>
+      </div>
+      <div class="stile-card">
+        <div class="stile-card-title">📚 Le sequenze e il lessico</div>
+        <div class="st-item"><div class="dot3"></div><div><strong>Sequenze narrative</strong> prevalenti: raccontano i fatti in successione</div></div>
+        <div class="st-item"><div class="dot3"></div><div><strong>Sequenze descrittive brevi</strong>: descrivono solo ciò che serve alla storia</div></div>
+        <div class="st-item"><div class="dot3"></div><div><strong>Lessico tecnico e specialistico</strong>: parole tipiche dell'ambientazione (marinaresco, termini della giungla…)</div></div>
+        <div class="st-item"><div class="dot3"></div><div>Il linguaggio tecnico contribuisce al <strong>realismo</strong> della storia</div></div>
+        <div class="st-example">
+          <span class="st-example-label">Esempio — lessico marinaresco (Verne)</span>
+          «Il brigantino issò le vele, il nostromo gridò ordini, la prua tagliò le onde verso l'isola.»
+        </div>
+      </div>
+    </div>
+    <div class="copy-box">
+      <div class="copy-label">✏ Da copiare</div>
+      <p>Lo stile del racconto d'avventura usa <strong>frasi brevi</strong> e un ritmo veloce. Prevalgono le <strong>sequenze narrative</strong>. I <strong>dialoghi sono rapidi</strong>. Il <strong>lessico è tecnico</strong> e specialistico (parole tipiche dell'ambientazione).</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 10 — MAPPA MODELLO ======================== -->
+<div class="slide" id="s10">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">La <span class="red">mappa</span> del racconto d'avventura</h2>
+    <span class="slide-tag green">✏ Da copiare sul quaderno · p. 431</span>
+  </div>
+  <div class="slide-inner" style="align-items:center">
+    <div class="mappa-central">AVVENTURA</div>
+    <div class="mappa-hline"></div>
+    <div class="mappa-nodes" style="flex:1;width:100%">
+      <div class="mappa-node mn-green">
+        <div class="mappa-node-head">🗺️ Ambientazione</div>
+        <div class="mappa-node-body">Luoghi <strong>lontani, insoliti, misteriosi</strong>, dove regna la natura selvaggia e il senso di pericolo.<br><br>Es: deserto, giungla, foresta, mare, isola disabitata.</div>
+      </div>
+      <div class="mappa-node mn-blue">
+        <div class="mappa-node-head">💥 Colpo di scena</div>
+        <div class="mappa-node-body">Le situazioni di <strong>emozioni</strong> e gli imprevisti si susseguono creando una <strong>suspense</strong> che <strong>affascina</strong> il lettore.</div>
+      </div>
+      <div class="mappa-node mn-amber">
+        <div class="mappa-node-head">✍️ Stile</div>
+        <div class="mappa-node-body">Il ritmo è rapido e <strong>incalzante</strong>. Le frasi sono <strong>spezzate</strong>, spesso costituite da un'unica proposizione.</div>
+      </div>
+      <div class="mappa-node mn-coral">
+        <div class="mappa-node-head">🗡️ Protagonista</div>
+        <div class="mappa-node-body">Personaggio <strong>intelligente</strong>, rapido a intuire i pericoli, dotato di qualità fisiche <strong>eccezionali</strong>. Leale e coraggioso.</div>
+      </div>
+      <div class="mappa-node mn-teal">
+        <div class="mappa-node-head">🏆 Impresa</div>
+        <div class="mappa-node-body">Il protagonista ha un <strong>compito</strong> (o impresa) da portare a compimento. È la sua missione.</div>
+      </div>
+      <div class="mappa-node mn-purple">
+        <div class="mappa-node-head">😊 Conclusione</div>
+        <div class="mappa-node-body">Quasi sempre la storia si conclude con un <strong>lieto fine</strong>, che scioglie la tensione emotiva del lettore.</div>
+      </div>
+    </div>
+    <div class="mappa-note">📌 Copiate questa mappa sul quaderno — vi servirà per tutte le prossime ore</div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 11 — ESERCIZIO ======================== -->
+<div class="slide" id="s11">
+  <div class="topbar"></div>
+  <div class="slide-header">
+    <h2 class="slide-title">Completa la <span class="red">mappa!</span></h2>
+    <span class="slide-tag gold">p. 431 · Attenzione: non usarle tutte!</span>
+  </div>
+  <div class="slide-inner">
+    <div class="ex-words" id="wb">
+      <span class="ex-word" onclick="sw(this)" data-w="compito">compito</span>
+      <span class="ex-word" onclick="sw(this)" data-w="pericoli">pericoli</span>
+      <span class="ex-word" onclick="sw(this)" data-w="affascina">affascina</span>
+      <span class="ex-word" onclick="sw(this)" data-w="intelligente">intelligente</span>
+      <span class="ex-word" onclick="sw(this)" data-w="lieto fine">lieto fine</span>
+      <span class="ex-word" onclick="sw(this)" data-w="spezzate">spezzate</span>
+      <span class="ex-word" onclick="sw(this)" data-w="emozioni">emozioni</span>
+      <span class="ex-word" onclick="sw(this)" data-w="colpo di scena">colpo di scena</span>
+      <span class="ex-word" onclick="sw(this)" data-w="incalzante">incalzante</span>
+      <span class="ex-word" onclick="sw(this)" data-w="eccezionali">eccezionali</span>
+    </div>
+
+    <div class="ex-grid" style="flex:1">
+      <div class="ex-node mn-green">
+        <div class="ex-node-head" style="background:#27640A;color:white">🗺️ Ambientazione</div>
+        <div class="ex-node-body">Luoghi lontani, spesso pieni di <span class="blank" data-a="pericoli" id="b1" onclick="fb(this)">&#8203;</span>.</div>
+      </div>
+      <div class="ex-node mn-blue">
+        <div class="ex-node-head" style="background:#0D4B8C;color:white">💥 Colpo di scena</div>
+        <div class="ex-node-body">Situazioni di <span class="blank" data-a="emozioni" id="b2" onclick="fb(this)">&#8203;</span> e imprevisti si susseguono creando una suspense che <span class="blank" data-a="affascina" id="b3" onclick="fb(this)">&#8203;</span> il lettore.</div>
+      </div>
+      <div class="ex-node mn-amber">
+        <div class="ex-node-head" style="background:#7D4E00;color:white">✍️ Stile</div>
+        <div class="ex-node-body">Il ritmo è rapido e <span class="blank" data-a="incalzante" id="b4" onclick="fb(this)">&#8203;</span>. Le frasi sono <span class="blank" data-a="spezzate" id="b5" onclick="fb(this)">&#8203;</span>, spesso un'unica proposizione.</div>
+      </div>
+      <div class="ex-node mn-coral">
+        <div class="ex-node-head" style="background:#7D1F3C;color:white">🗡️ Protagonista</div>
+        <div class="ex-node-body">È <span class="blank" data-a="intelligente" id="b6" onclick="fb(this)">&#8203;</span>, rapido a intuire i pericoli, con qualità fisiche <span class="blank" data-a="eccezionali" id="b7" onclick="fb(this)">&#8203;</span>.</div>
+      </div>
+      <div class="ex-node mn-teal">
+        <div class="ex-node-head" style="background:#0E7C7B;color:white">🏆 Impresa</div>
+        <div class="ex-node-body">Il protagonista ha un <span class="blank" data-a="compito" id="b8" onclick="fb(this)">&#8203;</span> da portare a compimento.</div>
+      </div>
+      <div class="ex-node mn-purple">
+        <div class="ex-node-head" style="background:#44276A;color:white">😊 Conclusione</div>
+        <div class="ex-node-body">La storia si conclude con un <span class="blank" data-a="lieto fine" id="b9" onclick="fb(this)">&#8203;</span>, che scioglie la tensione del lettore.</div>
+      </div>
+    </div>
+
+    <div class="ex-controls">
+      <button class="ex-btn check" onclick="checkEx()">✓ Controlla</button>
+      <button class="ex-btn rst" onclick="resetEx()">↺ Ricomincia</button>
+      <div class="ex-msg" id="exMsg"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end deck -->
+
+<!-- NAV BAR — parte del layout, non sovrapposta -->
+<div class="navb">
+  <button onclick="go(-1)" id="bP" disabled>◀ Indietro</button>
+  <div class="ndots" id="dots"></div>
+  <div class="nctr" id="ctr">1 / 11</div>
+  <button onclick="go(1)" id="bN">Avanti ▶</button>
+</div>
+
+<script>
+/* ===== NAV ===== */
+const slides = [...document.querySelectorAll('.slide')];
+const N = slides.length;
+let cur = 0;
+const dotsEl = document.getElementById('dots');
+slides.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i===0?' active':'');
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+});
+function goTo(n) {
+  slides[cur].classList.remove('active');
+  slides[cur].classList.add('prev');
+  setTimeout(() => slides[cur].classList.remove('prev'), 400);
+  cur = n;
+  slides[cur].classList.add('active');
+  dotsEl.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i===cur));
+  document.getElementById('ctr').textContent = (cur+1)+' / '+N;
+  document.getElementById('bP').disabled = cur===0;
+  document.getElementById('bN').disabled = cur===N-1;
+}
+function go(d) { if (cur+d>=0 && cur+d<N) goTo(cur+d); }
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowRight'||e.key==='ArrowDown') go(1);
+  if (e.key==='ArrowLeft' ||e.key==='ArrowUp')   go(-1);
+});
+
+/* ===== BRAINSTORMING ===== */
+const bsCols = [
+  {bg:'#FEF3F2',border:'#C0392B',color:'#C0392B'},
+  {bg:'#E8F7F7',border:'#0E7C7B',color:'#0E7C7B'},
+  {bg:'#EAF1FB',border:'#0D4B8C',color:'#0D4B8C'},
+  {bg:'#EDFAE0',border:'#27640A',color:'#27640A'},
+  {bg:'#F3EEF9',border:'#44276A',color:'#44276A'},
+  {bg:'#FEF7E0',border:'#7A5800',color:'#7A5800'},
+];
+let bsCI = 0;
+const bsArea = document.getElementById('bsArea');
+function bsAdd(btn, word) {
+  btn.disabled = true;
+  const c = bsCols[bsCI++ % bsCols.length];
+  const el = document.createElement('div');
+  el.className = 'bs-word';
+  el.textContent = word;
+  el.style.cssText = `background:${c.bg};border-color:${c.border};color:${c.color};`;
+  const W = bsArea.offsetWidth, H = bsArea.offsetHeight;
+  const cxL = W/2-130, cxR = W/2+130;
+  let x, y, tries=0;
+  do {
+    x = 20 + Math.random()*(W-180);
+    y = 20 + Math.random()*(H-50);
+    tries++;
+  } while (x>cxL && x<cxR && y>H/2-60 && y<H/2+60 && tries<25);
+  el.style.left = x+'px'; el.style.top = y+'px';
+  el.style.transform = 'rotate('+(Math.random()*12-6)+'deg)';
+  bsArea.appendChild(el);
+}
+function bsClear() {
+  bsArea.querySelectorAll('.bs-word').forEach(e=>e.remove());
+  document.querySelectorAll('#bsToolbar .bs-btn').forEach(b=>b.disabled=false);
+  bsCI=0;
+}
+
+/* ===== VOTING ===== */
+const votes={1:0,2:0,3:0,4:0};
+function vote(n,d) {
+  votes[n] = Math.max(0, votes[n]+d);
+  const el = document.getElementById('vn'+n);
+  el.textContent = votes[n];
+  const card = document.getElementById('ac'+n);
+  el.classList.toggle('voted-num', votes[n]>0);
+  card.classList.toggle('voted', votes[n]>0);
+}
+
+/* ===== EXERCISE ===== */
+let selW = null;
+function sw(el) {
+  document.querySelectorAll('.ex-word').forEach(w=>w.classList.remove('sel'));
+  if (selW===el){selW=null;return;}
+  selW=el; el.classList.add('sel');
+}
+function fb(blank) {
+  if (!selW) return;
+  blank.textContent = selW.dataset.w;
+  blank.dataset.placed = selW.dataset.w;
+  blank.classList.add('filled');
+  blank.classList.remove('ok','err');
+  selW.classList.remove('sel'); selW.classList.add('used');
+  selW=null;
+  document.getElementById('exMsg').textContent='';
+}
+function checkEx() {
+  const blanks = document.querySelectorAll('.blank');
+  let ok=0, filled=0;
+  blanks.forEach(b => {
+    if (!b.dataset.placed) return;
+    filled++;
+    const correct = b.dataset.placed===b.dataset.a;
+    b.classList.toggle('ok', correct);
+    b.classList.toggle('err', !correct);
+    if (correct) ok++;
+  });
+  const msg = document.getElementById('exMsg');
+  if (!filled){ msg.textContent='Completa almeno uno spazio!'; msg.className='ex-msg'; return; }
+  if (ok===blanks.length){ msg.textContent='🎉 Perfetto! Tutto corretto!'; msg.className='ex-msg ok'; }
+  else { msg.textContent=ok+' su '+blanks.length+' corretti — riprova quelli in rosso'; msg.className='ex-msg err'; }
+}
+function resetEx() {
+  document.querySelectorAll('.blank').forEach(b=>{
+    b.textContent='\u200B'; b.dataset.placed='';
+    b.classList.remove('filled','ok','err');
+  });
+  document.querySelectorAll('.ex-word').forEach(w=>w.classList.remove('used','sel'));
+  selW=null; document.getElementById('exMsg').textContent='';
+}
+</script>
+</body>
+</html>
