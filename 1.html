@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Il Racconto d'Avventura — Ora 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & ROOT ===== */
+:root {
+  --navy: #1A2E4A;
+  --red:  #C0392B;
+  --teal: #0E7C7B;
+  --green:#27640A;
+  --amber:#7D4E00;
+  --purple:#44276A;
+  --blue: #0D4B8C;
+  --coral:#7D1F3C;
+  --gold: #8A6200;
+  --text: #111111;
+  --muted:#555555;
+  --light:#F5F5F5;
+  --border:#CCCCCC;
+
+  /* sizing fluidi */
+  --fs-xs:  clamp(10px, 1.2vw, 13px);
+  --fs-sm:  clamp(12px, 1.4vw, 15px);
+  --fs-md:  clamp(13px, 1.6vw, 17px);
+  --fs-lg:  clamp(15px, 2vw,   20px);
+  --fs-xl:  clamp(18px, 2.8vw, 28px);
+  --fs-2xl: clamp(24px, 4vw,   46px);
+  --fs-3xl: clamp(32px, 6vw,   72px);
+
+  --pad-x: clamp(16px, 4vw, 52px);
+  --pad-y: clamp(10px, 2vh, 20px);
+  --gap:   clamp(8px,  1.5vw, 14px);
+  --r:     clamp(8px,  1vw,   14px);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: var(--fs-md);
+  background: #D8D8D8;
+  height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  color: var(--text);
+}
+
+/* ===== DECK & SLIDES ===== */
+.deck { flex: 1; position: relative; overflow: hidden; min-height: 0; }
+
+.slide {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(30px);
+  transition: opacity .32s ease, transform .32s ease;
+  overflow: hidden;
+}
+.slide.active { opacity: 1; pointer-events: all; transform: translateX(0); }
+.slide.prev   { opacity: 0; transform: translateX(-30px); }
+
+/* top accent bar */
+.topbar {
+  height: clamp(4px, .6vh, 7px);
+  background: linear-gradient(90deg, var(--navy) 55%, var(--red));
+  flex-shrink: 0;
+}
+
+/* slide header */
+.sh {
+  padding: var(--pad-y) var(--pad-x) 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.slide-title {
+  font-family: 'Playfair Display', serif;
+  font-size: var(--fs-2xl);
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1.1;
+  flex: 1;
+}
+.slide-title .r { color: var(--red); }
+.slide-title .t { color: var(--teal); }
+.slide-title .g { color: var(--green); }
+
+/* tag badge */
+.tag {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 4px;
+  border: 1.5px solid;
+}
+.t-red    { color: var(--red);    background: #FDECEA; border-color: #F5B8B2; }
+.t-blue   { color: var(--blue);   background: #EAF1FB; border-color: #B0CCF0; }
+.t-teal   { color: var(--teal);   background: #E8F7F7; border-color: #A8DFDE; }
+.t-green  { color: var(--green);  background: #EDFAE0; border-color: #A8D98A; }
+.t-gold   { color: var(--gold);   background: #FEF7E0; border-color: #EDCE77; }
+.t-purple { color: var(--purple); background: #F3EEF9; border-color: #C9B3E8; }
+.pref     { font-size: var(--fs-xs); font-weight: 600; color: var(--muted); background: var(--light); border: 1.5px solid var(--border); padding: 3px 10px; border-radius: 5px; font-family: monospace; margin-top: 4px; flex-shrink: 0; }
+
+/* slide inner */
+.si {
+  flex: 1;
+  padding: var(--pad-y) var(--pad-x) calc(var(--pad-y) * 1.2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ===== GRIDS (responsive) ===== */
+.g2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px,100%), 1fr)); gap: var(--gap); }
+.g3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px,100%), 1fr)); gap: var(--gap); }
+.g6 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(140px,100%), 1fr)); gap: calc(var(--gap) * .8); }
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--light);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: clamp(10px, 1.5vw, 16px) clamp(12px, 1.8vw, 18px);
+}
+.card.tl { border-left: 4px solid var(--teal); }
+.card.nl { border-left: 4px solid var(--navy); }
+.card.rl { border-left: 4px solid var(--red);  }
+.card.gl { border-left: 4px solid var(--green);}
+
+/* ===== COPY BOX ===== */
+.cbox {
+  border: 2px dashed #AAAAAA;
+  border-radius: var(--r);
+  padding: clamp(10px,1.5vw,14px) clamp(12px,1.8vw,17px);
+  position: relative;
+  background: #FAFAFA;
+  flex-shrink: 0;
+}
+.clbl {
+  position: absolute; top: -11px; left: 14px;
+  background: #FAFAFA; padding: 0 6px;
+  font-size: var(--fs-xs); font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--muted);
+}
+.cbox p { font-size: var(--fs-sm); line-height: 1.65; color: var(--text); }
+.cbox strong { color: var(--navy); }
+
+/* ===== ALERT / INFO BOXES ===== */
+.abox {
+  background: #FEF3F2; border: 2px solid #F5B8B2; border-radius: var(--r);
+  padding: clamp(8px,1.2vw,12px) clamp(12px,1.6vw,16px);
+  font-size: var(--fs-sm); color: var(--text); line-height: 1.5; flex-shrink: 0;
+}
+.abox strong { color: var(--red); }
+.ibox {
+  background: #EAF1FB; border: 2px solid #B0CCF0; border-radius: var(--r);
+  padding: clamp(8px,1.2vw,12px) clamp(12px,1.6vw,16px);
+  font-size: var(--fs-sm); color: var(--text); line-height: 1.5; flex-shrink: 0;
+}
+.ibox strong { color: var(--blue); }
+
+/* ===== ITEM LIST ===== */
+.ilist { display: flex; flex-direction: column; gap: 6px; }
+.it { display: flex; align-items: flex-start; gap: 8px; font-size: var(--fs-sm); line-height: 1.45; color: var(--text); }
+.it .b { width: 6px; height: 6px; border-radius: 50%; background: var(--navy); margin-top: 5px; flex-shrink: 0; }
+.it .b.t { background: var(--teal); }
+.it .b.r { background: var(--red); }
+.it .b.g { background: var(--green); }
+.it strong { color: var(--navy); }
+
+/* ===== CHIPS ===== */
+.chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.chip { padding: 5px 13px; border-radius: 30px; font-size: var(--fs-sm); font-weight: 600; background: white; border: 2px solid var(--teal); color: var(--teal); white-space: nowrap; }
+
+/* ===== ANIMATIONS ===== */
+@keyframes fu { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+.slide.active .sh,
+.slide.active .si > * {
+  animation: fu .38s ease both;
+}
+.slide.active .sh             { animation-delay:.03s; }
+.slide.active .si > *:nth-child(1) { animation-delay:.08s; }
+.slide.active .si > *:nth-child(2) { animation-delay:.14s; }
+.slide.active .si > *:nth-child(3) { animation-delay:.20s; }
+.slide.active .si > *:nth-child(4) { animation-delay:.26s; }
+.slide.active .si > *:nth-child(5) { animation-delay:.32s; }
+
+/* ===== NAV BAR ===== */
+.navb {
+  width: 100%;
+  height: clamp(44px, 6vh, 54px);
+  background: #fff;
+  border-top: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(10px, 2vw, 20px);
+  flex-shrink: 0;
+  padding: 0 12px;
+}
+.navb button {
+  background: none;
+  border: 1.5px solid var(--border);
+  color: var(--navy);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  cursor: pointer;
+  padding: 5px clamp(10px, 2vw, 18px);
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  transition: background .18s, border-color .18s;
+  white-space: nowrap;
+}
+.navb button:hover    { background: var(--light); border-color: var(--navy); }
+.navb button:disabled { color: var(--border); border-color: #EEE; cursor: not-allowed; }
+.nctr { font-size: var(--fs-sm); font-weight: 600; color: var(--muted); min-width: 52px; text-align: center; font-family: monospace; }
+.ndots { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; max-width: clamp(120px, 30vw, 260px); justify-content: center; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); cursor: pointer; transition: background .2s, transform .2s; flex-shrink: 0; }
+.dot.active { background: var(--navy); transform: scale(1.4); }
+
+/* ============================================================
+   SLIDE 1 — TITOLO
+   ============================================================ */
+.s1-body {
+  flex: 1; display: flex; flex-direction: column;
+  justify-content: center; padding: 0 var(--pad-x);
+}
+.s1-ey {
+  font-size: var(--fs-xs); font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted); margin-bottom: clamp(10px,2vh,18px);
+  display: flex; align-items: center; gap: 10px;
+}
+.s1-ey::before { content:''; display:block; width:28px; height:2px; background:var(--red); border-radius:1px; }
+.s1-big {
+  font-family: 'Playfair Display', serif;
+  font-size: var(--fs-3xl);
+  font-weight: 900; color: var(--navy); line-height: 1.05;
+  margin-bottom: clamp(12px,2vh,22px);
+}
+.s1-big .a { color: var(--red); }
+.s1-mt { display: flex; flex-wrap: wrap; gap: 0; }
+.s1-mi { font-size: var(--fs-sm); color: var(--muted); padding: 0 clamp(8px,1.5vw,16px); border-right: 1.5px solid var(--border); }
+.s1-mi:first-child { padding-left: 0; }
+.s1-mi:last-child  { border-right: none; }
+.s1-mi strong { color: var(--navy); }
+.s1-deco { position: absolute; right: var(--pad-x); top: 50%; transform: translateY(-50%); font-size: clamp(60px,14vw,160px); opacity: .06; pointer-events: none; line-height: 1; }
+.s1-bk { position: absolute; bottom: clamp(60px,8vh,80px); right: var(--pad-x); background: var(--light); border: 1.5px solid var(--border); border-radius: var(--r); padding: 9px 14px; font-size: var(--fs-xs); color: var(--muted); text-align: center; }
+.s1-bk strong { color: var(--navy); display: block; margin-bottom: 2px; font-size: var(--fs-sm); }
+
+/* ============================================================
+   SLIDE 2 — BRAINSTORMING
+   ============================================================ */
+.bstb {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  padding: 9px 12px;
+  background: var(--light); border: 1.5px solid var(--border); border-radius: var(--r);
+  max-height: clamp(90px, 18vh, 130px); overflow-y: auto;
+  flex-shrink: 0;
+}
+.bsbtn {
+  padding: 4px 11px; border-radius: 18px;
+  border: 1.5px solid var(--navy); background: white; color: var(--navy);
+  font-size: var(--fs-xs); font-weight: 600;
+  font-family: 'Inter', sans-serif; cursor: pointer; white-space: nowrap;
+  transition: background .15s, color .15s, transform .12s;
+}
+.bsbtn:hover    { background: var(--navy); color: white; transform: scale(1.04); }
+.bsbtn:disabled { border-color: var(--border); color: var(--border); cursor: not-allowed; transform: none; background: white; }
+.bsclr { padding: 4px 11px; border-radius: 18px; border: 1.5px solid var(--border); background: white; color: var(--muted); font-size: var(--fs-xs); font-family: 'Inter', sans-serif; cursor: pointer; }
+.bsclr:hover { background: var(--light); }
+.bsar { flex: 1; border: 2px dashed #C8C8C8; border-radius: var(--r); position: relative; overflow: hidden; background: #FAFAFA; min-height: 0; }
+.bscw { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-family: 'Playfair Display', serif; font-size: var(--fs-3xl); font-weight: 900; color: var(--red); pointer-events: none; z-index: 2; text-align: center; white-space: nowrap; }
+.bsw { position: absolute; font-size: var(--fs-sm); font-weight: 700; padding: 4px 12px; border-radius: 20px; border: 2px solid; background: white; animation: pi .28s cubic-bezier(.34,1.56,.64,1) forwards; pointer-events: none; white-space: nowrap; }
+@keyframes pi { from { transform:scale(0) rotate(-8deg); opacity:0; } to { transform:scale(1) rotate(0); opacity:1; } }
+
+/* ============================================================
+   SLIDE 3 — VOTAZIONE AMBIENTAZIONI
+   ============================================================ */
+.vq { font-size: var(--fs-sm); font-weight: 600; color: var(--navy); text-align: center; background: #EAF1FB; border: 1.5px solid #B0CCF0; border-radius: var(--r); padding: 8px 12px; flex-shrink: 0; }
+.vgrid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: var(--gap); min-height: 0; overflow: hidden; }
+.ambc { border-radius: var(--r); overflow: hidden; position: relative; border: 2.5px solid var(--border); transition: border-color .2s, box-shadow .2s; }
+.ambc.voted { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(26,46,74,.2); }
+.ambi { width: 100%; height: 100%; object-fit: cover; display: block; filter: brightness(.7); }
+.ambo { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.78) 0%, rgba(0,0,0,.1) 55%); }
+.ambinfo { position: absolute; bottom: 0; left: 0; right: 0; padding: clamp(8px,1.5vw,13px) clamp(10px,1.8vw,14px); display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; }
+.ambnl { font-size: var(--fs-xs); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.7); margin-bottom: 2px; }
+.ambname { font-family: 'Playfair Display', serif; font-size: var(--fs-lg); font-weight: 700; color: #fff; line-height: 1.2; }
+.ambsub { font-size: var(--fs-xs); color: rgba(255,255,255,.72); margin-top: 1px; }
+.vc { display: flex; flex-direction: column; align-items: center; gap: 2px; flex-shrink: 0; }
+.vnum { font-family: 'Playfair Display', serif; font-size: clamp(24px, 4vw, 52px); font-weight: 900; color: #fff; line-height: 1; min-width: 36px; text-align: center; text-shadow: 0 2px 8px rgba(0,0,0,.4); transition: color .2s; }
+.vnum.on { color: #FFE066; }
+.vlbl { font-size: var(--fs-xs); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,.7); }
+.vbtns { display: flex; gap: 4px; margin-top: 2px; }
+.vb { width: clamp(24px,3vw,30px); height: clamp(24px,3vw,30px); border-radius: 50%; border: 2px solid rgba(255,255,255,.7); background: rgba(0,0,0,.3); color: white; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s; line-height: 1; }
+.vb:hover { background: rgba(255,255,255,.25); }
+
+/* ============================================================
+   SLIDE 4 — VIDEO
+   ============================================================ */
+.vidbox { background: #FEF3F2; border: 2px solid #F5B8B2; border-radius: var(--r); padding: clamp(10px,1.5vw,14px) clamp(12px,1.8vw,18px); display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+.plyic { width: clamp(40px,5vw,52px); height: clamp(40px,5vw,52px); border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; font-size: clamp(16px,2vw,22px); color: white; flex-shrink: 0; }
+.vtit { font-size: var(--fs-md); font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+.vurl { font-size: var(--fs-sm); font-family: monospace; color: var(--red); font-weight: 600; }
+.vnote { font-size: var(--fs-xs); color: var(--muted); margin-top: 2px; }
+.qlist { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.qcard { display: flex; align-items: center; gap: 14px; background: white; border: 2px solid var(--border); border-radius: var(--r); padding: clamp(10px,1.5vw,14px) clamp(14px,2vw,20px); flex: 1; transition: border-color .2s; }
+.qcard:hover { border-color: var(--navy); }
+.qnum { width: clamp(32px,4vw,42px); height: clamp(32px,4vw,42px); border-radius: 50%; background: var(--navy); color: white; font-family: 'Playfair Display', serif; font-size: var(--fs-lg); font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.qtxt { font-family: 'Playfair Display', serif; font-size: var(--fs-lg); font-weight: 700; color: var(--navy); }
+.qsub { font-size: var(--fs-xs); color: var(--muted); margin-top: 2px; }
+
+/* ============================================================
+   SLIDE 5 — COS'È
+   ============================================================ */
+.defn { background: var(--navy); border-radius: var(--r); padding: clamp(14px,2vh,20px) clamp(16px,2.5vw,24px); flex-shrink: 0; }
+.defn p { font-size: var(--fs-md); line-height: 1.65; color: rgba(255,255,255,.92); }
+.defn strong { color: #FFE066; }
+.props-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px,100%), 1fr)); gap: var(--gap); }
+.prop { background: var(--light); border: 1.5px solid var(--border); border-radius: var(--r); padding: clamp(10px,1.4vw,14px); display: flex; align-items: flex-start; gap: 10px; }
+.pric { font-size: clamp(18px,2.5vw,24px); flex-shrink: 0; }
+.prb { font-size: var(--fs-sm); line-height: 1.5; color: var(--text); }
+.prb strong { color: var(--navy); display: block; margin-bottom: 2px; font-size: var(--fs-md); }
+
+/* ============================================================
+   SLIDE 6 — AMBIENTAZIONE
+   ============================================================ */
+/* già coperta da g2 + card + chips */
+
+/* ============================================================
+   SLIDE 7 — PERSONAGGI
+   ============================================================ */
+.persona-row { flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px,100%), 1fr)); gap: var(--gap); min-height: 0; }
+.pcard { border-radius: var(--r); border: 2px solid; padding: clamp(12px,1.5vw,16px); display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
+.pcard.hero   { border-color: #B8860B; background: #FFFBF0; }
+.pcard.vill   { border-color: var(--red); background: #FEF3F2; }
+.pcard.helper { border-color: var(--teal); background: #F0FAFA; }
+.pic  { font-size: clamp(24px,3.5vw,34px); }
+.prl  { font-size: var(--fs-xs); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+.pnm  { font-family: 'Playfair Display', serif; font-size: var(--fs-lg); font-weight: 900; }
+.pcard.hero .pnm   { color: #7A5800; }
+.pcard.vill .pnm   { color: var(--red); }
+.pcard.helper .pnm { color: var(--teal); }
+.ptrs { display: flex; flex-direction: column; gap: 5px; flex: 1; overflow: hidden; }
+.ptr { font-size: var(--fs-sm); color: var(--text); line-height: 1.4; display: flex; align-items: flex-start; gap: 7px; }
+.ptr::before { content: '—'; color: var(--muted); flex-shrink: 0; }
+.ptr strong { color: var(--navy); }
+.pex { font-size: var(--fs-xs); color: var(--muted); font-style: italic; padding-top: 6px; border-top: 1.5px solid var(--border); margin-top: auto; }
+
+/* ============================================================
+   SLIDE 8 — STRUTTURA
+   ============================================================ */
+.slist { flex: 1; display: flex; flex-direction: column; gap: clamp(5px,1vh,8px); min-height: 0; }
+.sit { display: flex; align-items: center; gap: 12px; background: var(--light); border: 1.5px solid var(--border); border-radius: var(--r); padding: clamp(8px,1.2vh,12px) clamp(12px,1.5vw,16px); flex: 1; position: relative; overflow: hidden; }
+.sit::before { content:''; position:absolute; left:0; top:0; bottom:0; width:5px; border-radius:4px 0 0 4px; }
+.sit:nth-child(1)::before { background: var(--teal); }
+.sit:nth-child(2)::before { background: #B8860B; }
+.sit:nth-child(3)::before { background: var(--amber); }
+.sit:nth-child(4)::before { background: var(--red); }
+.sit:nth-child(5)::before { background: var(--green); }
+.snu { font-family: 'Playfair Display', serif; font-size: clamp(22px,3vw,32px); font-weight: 900; color: rgba(0,0,0,.08); min-width: 28px; flex-shrink: 0; }
+.sbdy { flex: 1; }
+.snm { font-size: var(--fs-md); font-weight: 700; color: var(--navy); margin-bottom: 2px; }
+.snm .eq { font-size: var(--fs-xs); color: var(--muted); font-weight: 400; }
+.sdc { font-size: var(--fs-sm); color: var(--muted); line-height: 1.4; }
+.sic { font-size: clamp(16px,2.2vw,22px); flex-shrink: 0; }
+
+/* ============================================================
+   SLIDE 9 — STILE
+   ============================================================ */
+.stg { flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px,100%), 1fr)); gap: var(--gap); min-height: 0; overflow: hidden; }
+.stcard { background: var(--light); border: 1.5px solid var(--border); border-radius: var(--r); padding: clamp(12px,1.5vw,16px); display: flex; flex-direction: column; gap: 7px; overflow: hidden; }
+.sctit { font-family: 'Playfair Display', serif; font-size: var(--fs-lg); font-weight: 700; color: var(--teal); padding-bottom: 8px; border-bottom: 2px solid #A8DFDE; display: flex; align-items: center; gap: 8px; }
+.sti { display: flex; align-items: flex-start; gap: 8px; font-size: var(--fs-sm); color: var(--text); line-height: 1.45; }
+.std { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); flex-shrink: 0; margin-top: 5px; }
+.sti strong { color: var(--navy); }
+.stex { background: white; border: 1.5px dashed #AAA; border-radius: 7px; padding: 8px 12px; font-size: var(--fs-sm); color: var(--muted); font-style: italic; line-height: 1.55; margin-top: auto; }
+.stexl { font-style: normal; font-weight: 700; font-size: var(--fs-xs); color: var(--navy); display: block; margin-bottom: 4px; }
+
+/* ============================================================
+   SLIDE 10 — MAPPA MODELLO
+   ============================================================ */
+.mpc { background: var(--red); color: white; font-family: 'Playfair Display', serif; font-size: var(--fs-xl); font-weight: 900; padding: clamp(7px,1vh,11px) clamp(24px,3vw,38px); border-radius: 30px; letter-spacing: 2px; text-align: center; width: fit-content; margin: 0 auto; box-shadow: 0 4px 16px rgba(192,57,43,.2); flex-shrink: 0; }
+.mph { width: 72%; height: 2px; background: var(--border); margin: 5px auto; flex-shrink: 0; }
+.mpn { flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(140px,100%), 1fr)); gap: clamp(7px,1vw,10px); min-height: 0; overflow: hidden; }
+.mn { border-radius: var(--r); overflow: hidden; display: flex; flex-direction: column; border: 1.5px solid var(--border); }
+.mnh { padding: clamp(5px,.8vh,8px) clamp(8px,1vw,11px); font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: .6px; text-align: center; }
+.mnb { padding: clamp(7px,1vh,10px) clamp(8px,1vw,11px); font-size: var(--fs-sm); line-height: 1.5; flex: 1; background: var(--light); color: var(--text); overflow: hidden; }
+.mnb strong { color: var(--navy); }
+.gr .mnh { background: #27640A; color: white; }
+.bl .mnh { background: var(--blue); color: white; }
+.am .mnh { background: var(--amber); color: white; }
+.co .mnh { background: var(--coral); color: white; }
+.tl .mnh { background: var(--teal); color: white; }
+.pu .mnh { background: var(--purple); color: white; }
+.mpnote { text-align: center; font-size: var(--fs-xs); font-weight: 600; color: var(--muted); flex-shrink: 0; }
+
+/* ============================================================
+   SLIDE 11 — ESERCIZIO
+   ============================================================ */
+.exw { display: flex; flex-wrap: wrap; gap: 6px; padding: 9px 12px; background: #FEF7E0; border: 2px solid #EDCE77; border-radius: var(--r); flex-shrink: 0; }
+.exword { padding: 4px 11px; border-radius: 18px; font-size: var(--fs-xs); font-weight: 600; background: white; border: 2px solid #B8860B; color: var(--gold); cursor: pointer; transition: all .16s; user-select: none; }
+.exword:hover  { background: var(--gold); color: white; transform: scale(1.04); }
+.exword.sel    { background: var(--navy); color: white; border-color: var(--navy); transform: scale(1.06); }
+.exword.used   { opacity: .32; text-decoration: line-through; pointer-events: none; }
+.exgrid { flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(140px,100%), 1fr)); gap: clamp(7px,1vw,10px); min-height: 0; overflow: hidden; }
+.exnode { border-radius: var(--r); overflow: hidden; display: flex; flex-direction: column; border: 1.5px solid var(--border); }
+.exnh { padding: clamp(5px,.8vh,7px) clamp(8px,1vw,11px); font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: .6px; text-align: center; }
+.exnb { padding: clamp(7px,1vh,10px) clamp(8px,1vw,11px); font-size: var(--fs-sm); line-height: 1.7; flex: 1; background: var(--light); color: var(--text); }
+.blank { display: inline-block; min-width: clamp(70px,8vw,92px); border-bottom: 2.5px solid var(--navy); padding: 1px 5px; font-weight: 700; text-align: center; cursor: pointer; border-radius: 2px 2px 0 0; transition: background .15s; min-height: 19px; vertical-align: bottom; color: var(--navy); font-size: var(--fs-sm); }
+.blank:hover  { background: rgba(26,46,74,.07); }
+.blank.filled { background: rgba(26,46,74,.05); }
+.blank.ok  { background: #D4EDDA !important; border-bottom-color: var(--green) !important; color: var(--green) !important; }
+.blank.err { background: #FDECEA !important; border-bottom-color: var(--red)   !important; color: var(--red)   !important; }
+.exctrl { display: flex; gap: 9px; align-items: center; flex-shrink: 0; }
+.exbtn { padding: 6px clamp(12px,1.8vw,20px); border-radius: 7px; font-size: var(--fs-sm); font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; border: none; transition: all .18s; }
+.exbtn.ck { background: var(--green); color: white; }
+.exbtn.ck:hover { background: #1E4D08; }
+.exbtn.rs { background: var(--light); color: var(--muted); border: 1.5px solid var(--border); }
+.exbtn.rs:hover { background: #E0E0E0; }
+.exmsg { font-size: var(--fs-sm); font-weight: 600; }
+.exmsg.ok  { color: var(--green); }
+.exmsg.err { color: var(--red); }
+
+/* ============================================================
+   RESPONSIVE — SMARTPHONE portrait
+   ============================================================ */
+@media (max-width: 600px) {
+  .s1-deco, .s1-bk { display: none; }
+  .vgrid { grid-template-columns: 1fr 1fr; }
+  .ndots { max-width: 200px; }
+  .persona-row { grid-template-columns: 1fr; }
+  .stg { grid-template-columns: 1fr; }
+  .mpn { grid-template-columns: 1fr 1fr; }
+  .exgrid { grid-template-columns: 1fr 1fr; }
+  .props-grid { grid-template-columns: 1fr; }
+  .g2 { grid-template-columns: 1fr; }
+  .g3 { grid-template-columns: 1fr; }
+}
+@media (max-height: 500px) {
+  .s1-big { font-size: clamp(22px, 5vw, 44px); margin-bottom: 8px; }
+  .sit { flex: none; min-height: 40px; }
+}
+
+
+/* ===== SCHEDA VERNE ===== */
+.verne-wrap { flex:1; display:grid; grid-template-columns:1fr 1.6fr; gap:var(--gap); min-height:0; overflow:hidden; }
+.verne-left { display:flex; flex-direction:column; gap:var(--gap); }
+.verne-cover { background:linear-gradient(160deg,#1A2E4A 0%,#0D4B8C 100%); border-radius:var(--r); padding:clamp(14px,2vw,22px); display:flex; flex-direction:column; gap:8px; justify-content:center; align-items:center; text-align:center; flex:1; }
+.verne-ico { font-size:clamp(40px,6vw,72px); margin-bottom:4px; }
+.verne-titolo { font-family:'Playfair Display',serif; font-size:var(--fs-xl); font-weight:900; color:#FFE066; line-height:1.1; }
+.verne-autore { font-size:var(--fs-sm); color:rgba(255,255,255,.75); font-style:italic; }
+.verne-anno { font-size:var(--fs-xs); font-weight:700; letter-spacing:2px; color:rgba(255,255,255,.5); text-transform:uppercase; margin-top:4px; }
+.verne-trailer { background:#FEF3F2; border:2px solid #F5B8B2; border-radius:var(--r); padding:clamp(9px,1.3vw,13px); display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.verne-play { width:clamp(34px,4vw,44px); height:clamp(34px,4vw,44px); border-radius:50%; background:var(--red); display:flex; align-items:center; justify-content:center; font-size:clamp(14px,1.8vw,18px); color:white; flex-shrink:0; }
+.verne-right { display:flex; flex-direction:column; gap:var(--gap); overflow:hidden; }
+.scheda-grid { display:grid; grid-template-columns:1fr; gap:5px; flex:1; overflow:hidden; }
+.sr { display:flex; align-items:flex-start; gap:10px; border-bottom:1px solid var(--border); padding-bottom:7px; }
+.sr:last-child { border-bottom:none; padding-bottom:0; }
+.sk { font-size:var(--fs-xs); font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); min-width:clamp(90px,10vw,130px); flex-shrink:0; padding-top:2px; }
+.sv { font-size:var(--fs-sm); line-height:1.5; color:var(--text); }
+.sv strong { color:var(--navy); }
+
+/* ===== MAPPA FONT PIÙ GRANDE ===== */
+.mnh { padding:clamp(6px,1vh,10px) clamp(9px,1.2vw,13px); font-size:clamp(12px,1.4vw,16px) !important; font-weight:700; text-transform:uppercase; letter-spacing:.5px; text-align:center; }
+.mnb { padding:clamp(8px,1.2vh,12px) clamp(9px,1.2vw,13px); font-size:clamp(13px,1.5vw,17px) !important; line-height:1.55; flex:1; background:var(--light); color:var(--text); overflow:hidden; }
+
+/* ===== AMBIENTAZIONE VISUALE ===== */
+.amb-def { background:var(--navy); border-radius:var(--r); padding:clamp(12px,1.8vh,18px) clamp(14px,2vw,22px); flex-shrink:0; }
+.amb-def p { font-size:var(--fs-md); line-height:1.65; color:rgba(255,255,255,.92); }
+.amb-def strong { color:#FFE066; }
+.luoghi-grid { flex:1; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(120px,100%),1fr)); gap:var(--gap); min-height:0; overflow:hidden; }
+.luogo-card { border-radius:var(--r); overflow:hidden; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; min-height:clamp(70px,10vh,110px); }
+.luogo-card img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:brightness(.62) saturate(1.1); }
+.luogo-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(0,0,0,.75) 0%,transparent 55%); }
+.luogo-label { position:relative; z-index:1; text-align:center; padding:6px 8px; }
+.luogo-ico { font-size:clamp(18px,2.5vw,28px); display:block; }
+.luogo-name { font-size:var(--fs-xs); font-weight:700; color:white; letter-spacing:.5px; margin-top:2px; display:block; }
+.amb-nota { background:#E8F7F7; border:2px solid #A8DFDE; border-radius:var(--r); padding:clamp(8px,1.2vw,12px) clamp(12px,1.6vw,16px); font-size:var(--fs-sm); color:var(--text); line-height:1.5; flex-shrink:0; }
+.amb-nota strong { color:var(--teal); }
+
+/* ===== PERSONAGGI SCHEMA ===== */
+.pers-summary { background:var(--light); border:1.5px solid var(--border); border-radius:var(--r); padding:clamp(9px,1.3vw,13px) clamp(12px,1.8vw,16px); display:flex; gap:clamp(10px,2vw,22px); flex-wrap:wrap; }
+.ps-item { display:flex; align-items:center; gap:8px; font-size:var(--fs-sm); }
+.ps-item strong { color:var(--navy); }
+
+@media (max-width:600px) {
+  .verne-wrap { grid-template-columns:1fr; }
+  .luoghi-grid { grid-template-columns:repeat(4,1fr); }
+}
+
+</style>
+
+<div class="deck">
+
+<!-- S1 TITOLO -->
+<div class="slide active" id="s1">
+  <div class="topbar"></div>
+  <div class="s1-body">
+    <div class="s1-ey">Italiano · Unità 10 · Anno scolastico 2025–2026</div>
+    <div class="s1-big">Il racconto<br><span class="a">d'avventura</span></div>
+    <div class="s1-mt">
+      <div class="s1-mi">Classe <strong>1ª media</strong></div>
+      <div class="s1-mi">Ora <strong>1 di 6</strong></div>
+      <div class="s1-mi">60 minuti</div>
+      <div class="s1-mi">Generi narrativi</div>
+    </div>
+  </div>
+  <div class="s1-deco">🧭</div>
+  <div class="s1-bk"><strong>📖 E tu splendi</strong>Pellizzi · Novembri · Bigli<br>Mursia Scuola · Unità 10</div>
+</div>
+
+<!-- S2 BRAINSTORMING -->
+<div class="slide" id="s2">
+  <div class="topbar"></div>
+  <div class="sh">
+    <h2 class="slide-title">Cosa ti viene in mente quando senti questa parola?</h2>
+    <span class="tag t-purple">🧠 Brainstorming</span>
+  </div>
+  <div class="si">
+    <div class="bstb" id="bst">
+      <button class="bsbtn" onclick="ba(this,'Pericolo 🔥')">+ Pericolo</button>
+      <button class="bsbtn" onclick="ba(this,'Eroe 🗡️')">+ Eroe</button>
+      <button class="bsbtn" onclick="ba(this,'Paura 😱')">+ Paura</button>
+      <button class="bsbtn" onclick="ba(this,'Coraggio 💪')">+ Coraggio</button>
+      <button class="bsbtn" onclick="ba(this,'Mistero 🔍')">+ Mistero</button>
+      <button class="bsbtn" onclick="ba(this,'Fuga 🏃')">+ Fuga</button>
+      <button class="bsbtn" onclick="ba(this,'Tesoro 💎')">+ Tesoro</button>
+      <button class="bsbtn" onclick="ba(this,'Nemico 👹')">+ Nemico</button>
+      <button class="bsbtn" onclick="ba(this,'Suspense 😬')">+ Suspense</button>
+      <button class="bsbtn" onclick="ba(this,'Lotta ⚔️')">+ Lotta</button>
+      <button class="bsbtn" onclick="ba(this,'Salvare ❤️')">+ Salvare</button>
+      <button class="bsbtn" onclick="ba(this,'Impresa 🎯')">+ Impresa</button>
+      <button class="bsbtn" onclick="ba(this,'Colpo di scena 💥')">+ Colpo di scena</button>
+      <button class="bsbtn" onclick="ba(this,'Protagonista ⭐')">+ Protagonista</button>
+      <button class="bsbtn" onclick="ba(this,'Aiutante 🤝')">+ Aiutante</button>
+      <button class="bsbtn" onclick="ba(this,'Sopravvivere 🆘')">+ Sopravvivere</button>
+      <button class="bsbtn" onclick="ba(this,'Adrenalina 💨')">+ Adrenalina</button>
+      <button class="bsbtn" onclick="ba(this,'Lieto fine 🌟')">+ Lieto fine</button>
+      <button class="bsbtn" onclick="ba(this,'Viaggio 🧭')">+ Viaggio</button>
+      <button class="bsbtn" onclick="ba(this,'Esplorazione 🗺️')">+ Esplorazione</button>
+      <button class="bsbtn" onclick="ba(this,'Mare 🌊')">+ Mare</button>
+      <button class="bsbtn" onclick="ba(this,'Foresta 🌲')">+ Foresta</button>
+      <button class="bsbtn" onclick="ba(this,'Giungla 🌴')">+ Giungla</button>
+      <button class="bsbtn" onclick="ba(this,'Isola 🏝️')">+ Isola</button>
+      <button class="bsbtn" onclick="ba(this,'Deserto 🏜️')">+ Deserto</button>
+      <button class="bsbtn" onclick="ba(this,'Montagna 🏔️')">+ Montagna</button>
+      <button class="bsbtn" onclick="ba(this,'Nave ⛵')">+ Nave</button>
+      <button class="bsbtn" onclick="ba(this,'Animale feroce 🐆')">+ Animale feroce</button>
+      <button class="bsbtn" onclick="ba(this,'Pirati ☠️')">+ Pirati</button>
+      <button class="bsbtn" onclick="ba(this,'Naruto ⚡')">+ Naruto</button>
+      <button class="bsbtn" onclick="ba(this,'Spider-Man 🕷️')">+ Spider-Man</button>
+      <button class="bsbtn" onclick="ba(this,'Minecraft ⛏️')">+ Minecraft</button>
+      <button class="bsbtn" onclick="ba(this,'Dragon Ball 🐉')">+ Dragon Ball</button>
+      <button class="bsbtn" onclick="ba(this,'One Piece 🏴‍☠️')">+ One Piece</button>
+      <button class="bsbtn" onclick="ba(this,'Jurassic Park 🦕')">+ Jurassic Park</button>
+      <button class="bsbtn" onclick="ba(this,'Harry Potter 🪄')">+ Harry Potter</button>
+      <button class="bsbtn" onclick="ba(this,'Avengers 🦸')">+ Avengers</button>
+      <button class="bsbtn" onclick="ba(this,'Frozen ❄️')">+ Frozen</button>
+      <button class="bsbtn" onclick="ba(this,'Moana 🌺')">+ Moana</button>
+      <button class="bsbtn" onclick="ba(this,'Velocità 🏎️')">+ Velocità</button>
+      <button class="bsclr" onclick="bc()">✕ Cancella tutto</button>
+    </div>
+    <div class="bsar" id="bsa"><div class="bscw">AVVENTURA</div></div>
+  </div>
+</div>
+
+<!-- S3 VOTAZIONE -->
+<div class="slide" id="s3">
+  <div class="topbar"></div>
+  <div class="sh">
+    <h2 class="slide-title">In quale posto vorresti vivere la tua <span class="r">avventura?</span></h2>
+    <span class="tag t-blue">✋ Alzata di mano</span>
+  </div>
+  <div class="si">
+    <div class="vq">👆 Alzate la mano — usate ＋ e − per contare i voti in tempo reale</div>
+    <div class="vgrid">
+      <div class="ambc" id="ac1">
+        <img class="ambi" src="https://images.unsplash.com/photo-1551582045-6ec9c11d8697?auto=format&fit=crop&w=900&q=80" alt="Natura">
+        <div class="ambo"></div>
+        <div class="ambinfo">
+          <div><div class="ambnl">01</div><div class="ambname">🏔️ La natura selvaggia</div><div class="ambsub">Foresta · neve · freddo</div></div>
+          <div class="vc"><div class="vnum" id="vn1">0</div><div class="vlbl">voti</div><div class="vbtns"><button class="vb" onclick="vt(1,-1)">−</button><button class="vb" onclick="vt(1,1)">＋</button></div></div>
+        </div>
+      </div>
+      <div class="ambc" id="ac2">
+        <img class="ambi" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=900&q=80" alt="Giungla">
+        <div class="ambo"></div>
+        <div class="ambinfo">
+          <div><div class="ambnl">02</div><div class="ambname">🌿 La giungla</div><div class="ambsub">Piante · animali esotici</div></div>
+          <div class="vc"><div class="vnum" id="vn2">0</div><div class="vlbl">voti</div><div class="vbtns"><button class="vb" onclick="vt(2,-1)">−</button><button class="vb" onclick="vt(2,1)">＋</button></div></div>
+        </div>
+      </div>
+      <div class="ambc" id="ac3">
+        <img class="ambi" src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=900&q=80" alt="Mare">
+        <div class="ambo"></div>
+        <div class="ambinfo">
+          <div><div class="ambnl">03</div><div class="ambname">🏴‍☠️ Il mare e i pirati</div><div class="ambsub">Isola · veliero · tesoro</div></div>
+          <div class="vc"><div class="vnum" id="vn3">0</div><div class="vlbl">voti</div><div class="vbtns"><button class="vb" onclick="vt(3,-1)">−</button><button class="vb" onclick="vt(3,1)">＋</button></div></div>
+        </div>
+      </div>
+      <div class="ambc" id="ac4">
+        <img class="ambi" src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?auto=format&fit=crop&w=900&q=80" alt="Misterioso">
+        <div class="ambo"></div>
+        <div class="ambinfo">
+          <div><div class="ambnl">04</div><div class="ambname">🦕 Il luogo misterioso</div><div class="ambsub">Isola sperduta · libera scelta</div></div>
+          <div class="vc"><div class="vnum" id="vn4">0</div><div class="vlbl">voti</div><div class="vbtns"><button class="vb" onclick="vt(4,-1)">−</button><button class="vb" onclick="vt(4,1)">＋</button></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S4 COS'È IL RACCONTO D'AVVENTURA -->
+<div class="slide" id="s4">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Che cos'è il racconto <span class="r">d'avventura?</span></h2><span class="pref">p. 432</span></div>
+  <div class="si">
+    <div class="defn">
+      <p>Il racconto e il romanzo d'avventura sono <strong>testi narrativi</strong> che parlano di esperienze <strong>eccezionali, imprevedibili e pericolose</strong>, lontane dalla realtà della vita quotidiana. Le storie sono <strong>avvincenti</strong> e spingono il lettore a condividere le forti emozioni del protagonista, in <strong>trepidante attesa del lieto fine</strong>.</p>
+    </div>
+    <div class="abox">⚠ <strong>Attenzione:</strong> le storie d'avventura <strong>non presentano mai elementi fantastici o soprannaturali</strong> — sono <strong>racconti realistici</strong>, anche se talvolta al limite della credibilità.</div>
+    <div class="props-grid">
+      <div class="prop"><div class="pric">⚡</div><div class="prb"><strong>Realistiche</strong>Niente magia o soprannaturale — le avventure potrebbero accadere davvero.</div></div>
+      <div class="prop"><div class="pric">🎭</div><div class="prb"><strong>Coinvolgenti</strong>Il lettore si immedesima nel protagonista e sente le sue paure.</div></div>
+      <div class="prop"><div class="pric">😰</div><div class="prb"><strong>Ansiose</strong>Tengono il lettore in trepidante attesa — non si riesce a smettere di leggere.</div></div>
+      <div class="prop"><div class="pric">🏆</div><div class="prb"><strong>Lieto fine (quasi sempre)</strong>I buoni trionfano sui cattivi, come nelle fiabe — ma senza magia.</div></div>
+    </div>
+    <div class="cbox">
+      <p><strong>Il racconto d'avventura</strong> è un testo narrativo con esperienze eccezionali, imprevedibili e pericolose, lontane dalla vita quotidiana. Le storie sono <strong>avvincenti</strong> e tengono il lettore in attesa ansiosa del lieto fine. Sono <strong>racconti realistici</strong>: non ci sono elementi fantastici.</p>
+    </div>
+  </div>
+</div>
+
+<!-- S5 ESEMPIO: IL GIRO DEL MONDO IN 80 GIORNI -->
+<div class="slide" id="s5">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Un esempio: <span class="r">Il giro del mondo in 80 giorni</span></h2><span class="tag t-blue">📖 Scheda tecnica</span></div>
+  <div class="si">
+    <div class="verne-wrap">
+      <div class="verne-left">
+        <div class="verne-cover">
+          <div class="verne-ico">🌍</div>
+          <div class="verne-titolo">Il giro del mondo in 80 giorni</div>
+          <div class="verne-autore">di Jules Verne</div>
+          <div class="verne-anno">1872 · Romanzo d'avventura</div>
+        </div>
+        <div class="verne-trailer">
+          <div class="verne-play">▶</div>
+          <div>
+            <div style="font-size:var(--fs-sm);font-weight:700;color:var(--navy);margin-bottom:2px">Trailer del film</div>
+            <a href="https://youtu.be/5a_mR7HB5EM?si=3iMDUBe_L8pI2scC" target="_blank" style="font-size:var(--fs-xs);font-family:monospace;color:var(--red);font-weight:600;text-decoration:none;">▶ youtu.be/5a_mR7HB5EM</a>
+          </div>
+        </div>
+      </div>
+      <div class="verne-right">
+        <div class="scheda-grid">
+          <div class="sr"><div class="sk">Autore</div><div class="sv"><strong>Jules Verne</strong> — scrittore francese (1828–1905), padre della fantascienza e del romanzo d'avventura moderno</div></div>
+          <div class="sr"><div class="sk">Anno</div><div class="sv"><strong>1872</strong> — pubblicato prima a puntate su un quotidiano parigino, poi come romanzo</div></div>
+          <div class="sr"><div class="sk">Protagonista</div><div class="sv"><strong>Phileas Fogg</strong> — ricco gentiluomo inglese, preciso e metodico, scommette di riuscire a girare il mondo in 80 giorni. Con lui: Passepartout, il suo fedele domestico</div></div>
+          <div class="sr"><div class="sk">Antagonista</div><div class="sv"><strong>Il detective Fix</strong> — ispettore di polizia convinto che Fogg sia un criminale ricercato; lo insegue per tutto il mondo</div></div>
+          <div class="sr"><div class="sk">Ambientazione</div><div class="sv">Il <strong>mondo intero</strong>: Londra, India, Giappone, America, Oceano Pacifico — ambienti esotici e lontanissimi dall'Europa dell'Ottocento</div></div>
+          <div class="sr"><div class="sk">Pericolo / impresa</div><div class="sv">Compiere il giro del mondo in esattamente <strong>80 giorni</strong> — una sfida considerata impossibile. Ogni ritardo mette a rischio la scommessa e la reputazione di Fogg</div></div>
+          <div class="sr"><div class="sk">Temi</div><div class="sv"><strong>Avventura</strong>, tenacia, amicizia, progresso tecnologico (treni, piroscafi), incontro tra culture diverse</div></div>
+          <div class="sr"><div class="sk">Perché leggerlo</div><div class="sv">È uno dei romanzi d'avventura più famosi della storia. Ha inventato il viaggio come avventura moderna e ha ispirato decine di film, serie e fumetti</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S6 LA MAPPA DEL RACCONTO D'AVVENTURA -->
+<div class="slide" id="s6">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">La <span class="r">mappa</span> del racconto d'avventura</h2><span class="pref">p. 431</span></div>
+  <div class="si" style="gap:8px">
+    <div style="background:var(--red);color:white;font-family:'Playfair Display',serif;font-size:clamp(18px,2.8vw,30px);font-weight:900;padding:clamp(8px,1.2vh,14px) clamp(20px,3vw,40px);border-radius:30px;letter-spacing:2px;text-align:center;width:fit-content;margin:0 auto;box-shadow:0 4px 16px rgba(192,57,43,.2);flex-shrink:0">AVVENTURA</div>
+    <div style="width:70%;height:2px;background:var(--border);margin:0 auto;flex-shrink:0"></div>
+    <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(7px,1vw,12px);min-height:0;overflow:hidden;width:100%">
+      <div style="border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;border:1.5px solid var(--border)">
+        <div style="padding:clamp(7px,1vh,11px) clamp(9px,1.2vw,14px);font-size:clamp(13px,1.6vw,18px);font-weight:700;text-transform:uppercase;letter-spacing:.5px;text-align:center;background:#27640A;color:white">🗺️ Ambientazione</div>
+        <div style="padding:clamp(9px,1.3vh,14px) clamp(9px,1.2vw,14px);font-size:clamp(14px,1.6vw,18px);line-height:1.55;flex:1;background:var(--light);color:var(--text)">Luoghi <strong>lontani, insoliti, misteriosi</strong>, dove regna la natura selvaggia e si percepisce pericolo.</div>
+      </div>
+      <div style="border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;border:1.5px solid var(--border)">
+        <div style="padding:clamp(7px,1vh,11px) clamp(9px,1.2vw,14px);font-size:clamp(13px,1.6vw,18px);font-weight:700;text-transform:uppercase;letter-spacing:.5px;text-align:center;background:#0D4B8C;color:white">💥 Colpo di scena</div>
+        <div style="padding:clamp(9px,1.3vh,14px) clamp(9px,1.2vw,14px);font-size:clamp(14px,1.6vw,18px);line-height:1.55;flex:1;background:var(--light);color:var(--text)">Situazioni di <strong>emozioni</strong> e imprevisti che creano una suspense capace di <strong>affascinare</strong> il lettore.</div>
+      </div>
+      <div style="border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;border:1.5px solid var(--border)">
+        <div style="padding:clamp(7px,1vh,11px) clamp(9px,1.2vw,14px);font-size:clamp(13px,1.6vw,18px);font-weight:700;text-transform:uppercase;letter-spacing:.5px;text-align:center;background:#7D4E00;color:white">✍️ Stile</div>
+        <div style="padding:clamp(9px,1.3vh,14px) clamp(9px,1.2vw,14px);font-size:clamp(14px,1.6vw,18px);line-height:1.55;flex:1;background:var(--light);color:var(--text)">Ritmo rapido e <strong>incalzante</strong>. Frasi <strong>brevi e spezzate</strong>, spesso formate da un'unica proposizione.</div>
+      </div>
+      <div style="border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;border:1.5px solid var(--border)">
+        <div style="padding:clamp(7px,1vh,11px) clamp(9px,1.2vw,14px);font-size:clamp(13px,1.6vw,18px);font-weight:700;text-transform:uppercase;letter-spacing:.5px;text-align:center;background:#7D1F3C;color:white">🗡️ Protagonista</div>
+        <div style="padding:clamp(9px,1.3vh,14px) clamp(9px,1.2vw,14px);font-size:clamp(14px,1.6vw,18px);line-height:1.55;flex:1;background:var(--light);color:var(--text)">Personaggio <strong>intelligente</strong>, dotato di qualità fisiche <strong>eccezionali</strong>. Leale, coraggioso, con un obiettivo preciso.</div>
+      </div>
+      <div style="border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;border:1.5px solid var(--border)">
+        <div style="padding:clamp(7px,1vh,11px) clamp(9px,1.2vw,14px);font-size:clamp(13px,1.6vw,18px);font-weight:700;text-transform:uppercase;letter-spacing:.5px;text-align:center;background:#0E7C7B;color:white">🏆 Impresa</div>
+        <div style="padding:clamp(9px,1.3vh,14px) clamp(9px,1.2vw,14px);font-size:clamp(14px,1.6vw,18px);line-height:1.55;flex:1;background:var(--light);color:var(--text)">Il protagonista ha sempre un <strong>compito</strong> da portare a compimento: la missione che muove tutta la storia.</div>
+      </div>
+      <div style="border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;border:1.5px solid var(--border)">
+        <div style="padding:clamp(7px,1vh,11px) clamp(9px,1.2vw,14px);font-size:clamp(13px,1.6vw,18px);font-weight:700;text-transform:uppercase;letter-spacing:.5px;text-align:center;background:#44276A;color:white">😊 Conclusione</div>
+        <div style="padding:clamp(9px,1.3vh,14px) clamp(9px,1.2vw,14px);font-size:clamp(14px,1.6vw,18px);line-height:1.55;flex:1;background:var(--light);color:var(--text)">Quasi sempre la storia si conclude con un <strong>lieto fine</strong>, che scioglie la tensione emotiva del lettore.</div>
+      </div>
+    </div>
+    <div style="text-align:center;font-size:clamp(11px,1.3vw,14px);font-weight:600;color:var(--muted);flex-shrink:0">📌 Copiate questa mappa sul quaderno — vi servirà per tutte le prossime ore</div>
+  </div>
+</div>
+
+<!-- S7 AMBIENTAZIONE -->
+<div class="slide" id="s7">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">L'<span class="t">ambientazione</span></h2><span class="pref">p. 432</span></div>
+  <div class="si">
+    <div class="amb-def">
+      <p>La maggior parte delle avventure è ambientata in luoghi <strong>lontani, insoliti e misteriosi</strong>, dove regna la natura selvaggia e si percepisce un senso di <strong>minaccia e pericolo</strong>. Si tratta di luoghi di cui il lettore di solito non ha esperienza diretta — e questo <strong>accende la fantasia</strong> e lo fa evadere dalla vita quotidiana.</p>
+    </div>
+    <div class="luoghi-grid">
+      <div class="luogo-card">
+        <img src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=400&q=70" alt="Deserto">
+        <div class="luogo-overlay"></div>
+        <div class="luogo-label"><span class="luogo-ico">🏜️</span><span class="luogo-name">Deserto</span></div>
+      </div>
+      <div class="luogo-card">
+        <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=400&q=70" alt="Giungla">
+        <div class="luogo-overlay"></div>
+        <div class="luogo-label"><span class="luogo-ico">🌴</span><span class="luogo-name">Giungla</span></div>
+      </div>
+      <div class="luogo-card">
+        <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=400&q=70" alt="Foresta">
+        <div class="luogo-overlay"></div>
+        <div class="luogo-label"><span class="luogo-ico">🌲</span><span class="luogo-name">Foresta</span></div>
+      </div>
+      <div class="luogo-card">
+        <img src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=400&q=70" alt="Mare">
+        <div class="luogo-overlay"></div>
+        <div class="luogo-label"><span class="luogo-ico">🌊</span><span class="luogo-name">Mare</span></div>
+      </div>
+      <div class="luogo-card">
+        <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?auto=format&fit=crop&w=400&q=70" alt="Isola">
+        <div class="luogo-overlay"></div>
+        <div class="luogo-label"><span class="luogo-ico">🏝️</span><span class="luogo-name">Isola</span></div>
+      </div>
+      <div class="luogo-card">
+        <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400&q=70" alt="Montagna">
+        <div class="luogo-overlay"></div>
+        <div class="luogo-label"><span class="luogo-ico">🏔️</span><span class="luogo-name">Montagna</span></div>
+      </div>
+      <div class="luogo-card">
+        <img src="https://images.unsplash.com/photo-1551582045-6ec9c11d8697?auto=format&fit=crop&w=400&q=70" alt="Polo">
+        <div class="luogo-overlay"></div>
+        <div class="luogo-label"><span class="luogo-ico">❄️</span><span class="luogo-name">Polo</span></div>
+      </div>
+      <div class="luogo-card">
+        <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400&q=70" alt="Vulcano">
+        <div class="luogo-overlay"></div>
+        <div class="luogo-label"><span class="luogo-ico">🌋</span><span class="luogo-name">Vulcano</span></div>
+      </div>
+    </div>
+    <div class="amb-nota">💡 I luoghi dell'avventura sono <strong>reali o potrebbero esserlo</strong>: il Klondike di London, la giungla indiana di Kipling, il mondo percorso da Verne. La finzione non esclude la realtà geografica.</div>
+  </div>
+</div>
+
+<!-- S8 PERSONAGGI -->
+<div class="slide" id="s8">
+  <div class="topbar"></div>
+  <div class="sh">
+    <h2 class="slide-title">I <span class="r">personaggi</span> del racconto d'avventura</h2>
+    <span class="pref">p. 432</span>
+  </div>
+  <div class="si" style="gap:clamp(8px,1.2vh,13px)">
+
+    <!-- OBIETTIVO -->
+    <div style="background:var(--navy);border-radius:var(--r);padding:clamp(8px,1.1vh,12px) clamp(12px,1.6vw,18px);display:flex;align-items:center;gap:12px;flex-shrink:0">
+      <span style="font-size:clamp(18px,2.5vw,26px);flex-shrink:0">🎯</span>
+      <p style="font-size:var(--fs-sm);color:rgba(255,255,255,.9);line-height:1.5">
+        Nel racconto d'avventura, <strong style="color:#FFE066">ogni personaggio ha un ruolo preciso</strong> nella storia. Imparare a riconoscerli ci aiuta a capire meglio come funziona il racconto.
+      </p>
+    </div>
+
+    <!-- TRE CARD PERSONAGGI -->
+    <div style="flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:clamp(8px,1.2vw,14px);min-height:0;overflow:hidden">
+
+      <!-- PROTAGONISTA -->
+      <div style="border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;border:2.5px solid #B8860B;background:#FFFBF0">
+        <div style="background:linear-gradient(135deg,#7A5800,#B8860B);padding:clamp(10px,1.5vh,16px) clamp(12px,1.6vw,18px);display:flex;align-items:center;gap:10px">
+          <span style="font-size:clamp(24px,3.5vw,40px)">🗡️</span>
+          <div>
+            <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:2px">Personaggio principale</div>
+            <div style="font-family:'Playfair Display',serif;font-size:clamp(16px,2.2vw,24px);font-weight:900;color:#FFE066">Il Protagonista</div>
+          </div>
+        </div>
+        <div style="padding:clamp(10px,1.4vh,14px) clamp(12px,1.6vw,16px);display:flex;flex-direction:column;gap:6px;flex:1">
+          <p style="font-size:var(--fs-sm);line-height:1.55;color:#3D2800">
+            È il <strong>personaggio centrale</strong> attorno al quale si sviluppa tutta la storia. È lui il principale artefice degli eventi e deve raggiungere un obiettivo preciso.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:5px;margin-top:4px">
+            <div style="display:flex;align-items:flex-start;gap:7px;font-size:var(--fs-sm);color:#3D2800"><span style="color:#B8860B;font-weight:700;flex-shrink:0">→</span><span><strong>Coraggioso e forte</strong>, con qualità fisiche fuori dal comune</span></div>
+            <div style="display:flex;align-items:flex-start;gap:7px;font-size:var(--fs-sm);color:#3D2800"><span style="color:#B8860B;font-weight:700;flex-shrink:0">→</span><span><strong>Leale e generoso</strong>: agisce per il bene degli altri</span></div>
+            <div style="display:flex;align-items:flex-start;gap:7px;font-size:var(--fs-sm);color:#3D2800"><span style="color:#B8860B;font-weight:700;flex-shrink:0">→</span><span>Ha sempre un <strong>obiettivo da raggiungere</strong>: salvare qualcuno, trovare un tesoro, portare a termine una missione</span></div>
+          </div>
+          <div style="margin-top:auto;padding-top:8px;border-top:1.5px solid #E8C87A;font-size:var(--fs-xs);color:#7A5800;font-style:italic">
+            Es: Buck (London) · Phileas Fogg (Verne) · Jim Hawkins (Stevenson)
+          </div>
+        </div>
+      </div>
+
+      <!-- ANTAGONISTA -->
+      <div style="border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;border:2.5px solid var(--red);background:#FEF3F2">
+        <div style="background:linear-gradient(135deg,#8B1A1A,var(--red));padding:clamp(10px,1.5vh,16px) clamp(12px,1.6vw,18px);display:flex;align-items:center;gap:10px">
+          <span style="font-size:clamp(24px,3.5vw,40px)">👹</span>
+          <div>
+            <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:2px">Il nemico della storia</div>
+            <div style="font-family:'Playfair Display',serif;font-size:clamp(16px,2.2vw,24px);font-weight:900;color:#FFE066">L'Antagonista</div>
+          </div>
+        </div>
+        <div style="padding:clamp(10px,1.4vh,14px) clamp(12px,1.6vw,16px);display:flex;flex-direction:column;gap:6px;flex:1">
+          <p style="font-size:var(--fs-sm);line-height:1.55;color:#4A1208">
+            È il personaggio che <strong>si oppone al protagonista</strong> e cerca di impedirgli di raggiungere il suo obiettivo. La sua presenza crea il conflitto che muove tutta la storia.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:5px;margin-top:4px">
+            <div style="display:flex;align-items:flex-start;gap:7px;font-size:var(--fs-sm);color:#4A1208"><span style="color:var(--red);font-weight:700;flex-shrink:0">→</span><span>Può essere <strong>una persona malvagia</strong>, un animale feroce o — nelle avventure di frontiera — <strong>la natura stessa</strong></span></div>
+            <div style="display:flex;align-items:flex-start;gap:7px;font-size:var(--fs-sm);color:#4A1208"><span style="color:var(--red);font-weight:700;flex-shrink:0">→</span><span>Agisce con <strong>slealtà e inganno</strong> per ostacolare il protagonista</span></div>
+            <div style="display:flex;align-items:flex-start;gap:7px;font-size:var(--fs-sm);color:#4A1208"><span style="color:var(--red);font-weight:700;flex-shrink:0">→</span><span>Ha spesso abilità notevoli, il che lo rende un avversario <strong>temibile</strong></span></div>
+          </div>
+          <div style="margin-top:auto;padding-top:8px;border-top:1.5px solid #F5B8B2;font-size:var(--fs-xs);color:#8B1A1A;font-style:italic">
+            Es: Shere Khan (Kipling) · Detective Fix (Verne) · Long John Silver (Stevenson)
+          </div>
+        </div>
+      </div>
+
+      <!-- AIUTANTI -->
+      <div style="border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;border:2.5px solid var(--teal);background:#F0FAFA">
+        <div style="background:linear-gradient(135deg,#065A58,var(--teal));padding:clamp(10px,1.5vh,16px) clamp(12px,1.6vw,18px);display:flex;align-items:center;gap:10px">
+          <span style="font-size:clamp(24px,3.5vw,40px)">🤝</span>
+          <div>
+            <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:2px">Personaggi secondari</div>
+            <div style="font-family:'Playfair Display',serif;font-size:clamp(16px,2.2vw,24px);font-weight:900;color:#FFE066">Gli Aiutanti</div>
+          </div>
+        </div>
+        <div style="padding:clamp(10px,1.4vh,14px) clamp(12px,1.6vw,16px);display:flex;flex-direction:column;gap:6px;flex:1">
+          <p style="font-size:var(--fs-sm);line-height:1.55;color:#04342C">
+            Sono i personaggi che <strong>affiancano il protagonista</strong> durante le avventure. Non portano avanti la trama in modo diretto, ma sono fondamentali per lo svolgimento della storia.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:5px;margin-top:4px">
+            <div style="display:flex;align-items:flex-start;gap:7px;font-size:var(--fs-sm);color:#04342C"><span style="color:var(--teal);font-weight:700;flex-shrink:0">→</span><span>Aiutano e soccorrono il protagonista nei momenti di pericolo</span></div>
+            <div style="display:flex;align-items:flex-start;gap:7px;font-size:var(--fs-sm);color:#04342C"><span style="color:var(--teal);font-weight:700;flex-shrink:0">→</span><span>Possono essere <strong>amici fidati, animali fedeli o guide esperte</strong></span></div>
+            <div style="display:flex;align-items:flex-start;gap:7px;font-size:var(--fs-sm);color:#04342C"><span style="color:var(--teal);font-weight:700;flex-shrink:0">→</span><span>Anche l'antagonista ha i suoi aiutanti, detti <strong>oppositori</strong>, che ostacolano l'eroe</span></div>
+          </div>
+          <div style="margin-top:auto;padding-top:8px;border-top:1.5px solid #A8DFDE;font-size:var(--fs-xs);color:#065A58;font-style:italic">
+            Es: Passepartout (Verne) · Baloo e Bagheera (Kipling) · Capitano Smollett (Stevenson)
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SCHEMA CONFLITTO -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:clamp(8px,2vw,20px);background:var(--light);border:1.5px solid var(--border);border-radius:var(--r);padding:clamp(7px,1vh,11px) clamp(12px,1.6vw,18px);flex-shrink:0;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:7px;font-size:var(--fs-sm)"><span style="background:#7A5800;color:#FFE066;padding:3px 10px;border-radius:16px;font-weight:700;font-size:var(--fs-xs)">🗡️ PROTAGONISTA</span><span style="color:var(--muted)">raggiunge un obiettivo</span></div>
+      <div style="font-size:clamp(16px,2vw,22px);color:var(--red);font-weight:900">⟵ conflitto ⟶</div>
+      <div style="display:flex;align-items:center;gap:7px;font-size:var(--fs-sm)"><span style="background:#8B1A1A;color:#FFE066;padding:3px 10px;border-radius:16px;font-weight:700;font-size:var(--fs-xs)">👹 ANTAGONISTA</span><span style="color:var(--muted)">ostacola l'eroe</span></div>
+      <div style="width:1.5px;height:22px;background:var(--border);flex-shrink:0;display:none" class="sep"></div>
+      <div style="display:flex;align-items:center;gap:7px;font-size:var(--fs-sm)"><span style="background:#065A58;color:#FFE066;padding:3px 10px;border-radius:16px;font-weight:700;font-size:var(--fs-xs)">🤝 AIUTANTI</span><span style="color:var(--muted)">supportano entrambi</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- S9 STRUTTURA NARRATIVA -->
+<div class="slide" id="s9">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">La <span class="r">struttura</span> narrativa</h2><span class="pref">pp. 432–433</span></div>
+  <div class="si">
+    <div class="slist">
+      <div class="sit"><div class="snu">1</div><div class="sbdy"><div class="snm">Prevalenza dell'azione</div><div class="sdc">L'azione è il centro di tutto. I fatti si susseguono rapidamente senza lunghe pause o riflessioni.</div></div><div class="sic">⚡</div></div>
+      <div class="sit"><div class="snu">2</div><div class="sbdy"><div class="snm">Ritmo incalzante <span class="eq">= molto veloce</span></div><div class="sdc">Ogni momento di tranquillità è subito interrotto da un nuovo evento che rimette in moto la storia.</div></div><div class="sic">🏃</div></div>
+      <div class="sit"><div class="snu">3</div><div class="sbdy"><div class="snm">Colpi di scena</div><div class="sdc">Mutamenti improvvisi e imprevedibili che colgono di sorpresa il lettore. Non possiamo anticipare cosa succederà.</div></div><div class="sic">💥</div></div>
+      <div class="sit"><div class="snu">4</div><div class="sbdy"><div class="snm">Suspense <span class="eq">= tensione emotiva in attesa di ciò che sta per accadere</span></div><div class="sdc">La tensione sale progressivamente. È impossibile smettere di leggere.</div></div><div class="sic">😰</div></div>
+      <div class="sit"><div class="snu">5</div><div class="sbdy"><div class="snm">Impresa + Lieto fine</div><div class="sdc">Il protagonista ha un compito preciso da portare a compimento. Quasi sempre i buoni trionfano.</div></div><div class="sic">🏆</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- S10 STILE E LINGUAGGIO -->
+<div class="slide" id="s10">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Lo <span class="t">stile</span> e il linguaggio</h2><span class="pref">p. 433</span></div>
+  <div class="si">
+    <div class="stg">
+      <div class="stcard">
+        <div class="sctit">📝 Le frasi</div>
+        <div class="sti"><div class="std"></div><div><strong>Frasi brevi</strong>, spesso una sola proposizione per frase</div></div>
+        <div class="sti"><div class="std"></div><div>Struttura del periodo <strong>semplice e diretta</strong></div></div>
+        <div class="sti"><div class="std"></div><div><strong>Dialoghi rapidi</strong>: veloci scambi di battute tra i personaggi</div></div>
+        <div class="sti"><div class="std"></div><div><strong>Sequenze riflessive brevi</strong>: i pensieri del protagonista occupano poco spazio</div></div>
+        <div class="stex"><span class="stexl">Esempio — stile tipico</span>«Buck vide l'acqua. Capì. Si gettò. La corrente era fortissima. Nuotò con tutto sé stesso.»</div>
+      </div>
+      <div class="stcard">
+        <div class="sctit">📚 Sequenze e lessico</div>
+        <div class="sti"><div class="std"></div><div><strong>Sequenze narrative</strong> prevalenti: raccontano i fatti in successione rapida</div></div>
+        <div class="sti"><div class="std"></div><div><strong>Sequenze descrittive brevi</strong>: descrivono solo ciò che è utile alla storia</div></div>
+        <div class="sti"><div class="std"></div><div><strong>Lessico tecnico e specialistico</strong>: parole tipiche dell'ambientazione (marinaresche, della giungla…)</div></div>
+        <div class="sti"><div class="std"></div><div>Il linguaggio tecnico contribuisce al <strong>realismo</strong> della storia</div></div>
+        <div class="stex"><span class="stexl">Esempio — lessico marinaresco</span>«Il brigantino issò le vele, il nostromo gridò ordini, la prua tagliò le onde.»</div>
+      </div>
+    </div>
+    <div class="cbox">
+      <p>Lo stile del racconto d'avventura usa <strong>frasi brevi</strong> e ritmo incalzante. Prevalgono le <strong>sequenze narrative</strong>. I <strong>dialoghi sono rapidi</strong>. Il <strong>lessico è tecnico</strong> e specialistico, in base all'ambientazione scelta.</p>
+    </div>
+  </div>
+</div>
+
+<!-- S11 ESERCIZIO COMPLETA LA MAPPA -->
+<div class="slide" id="s11">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Completa la <span class="r">mappa!</span></h2><span class="tag t-gold">p. 431 · Attenzione: non usarle tutte!</span></div>
+  <div class="si">
+    <div class="exw" id="wb">
+      <span class="exword" onclick="sw(this)" data-w="compito">compito</span>
+      <span class="exword" onclick="sw(this)" data-w="pericoli">pericoli</span>
+      <span class="exword" onclick="sw(this)" data-w="affascina">affascina</span>
+      <span class="exword" onclick="sw(this)" data-w="intelligente">intelligente</span>
+      <span class="exword" onclick="sw(this)" data-w="lieto fine">lieto fine</span>
+      <span class="exword" onclick="sw(this)" data-w="spezzate">spezzate</span>
+      <span class="exword" onclick="sw(this)" data-w="emozioni">emozioni</span>
+      <span class="exword" onclick="sw(this)" data-w="colpo di scena">colpo di scena</span>
+      <span class="exword" onclick="sw(this)" data-w="incalzante">incalzante</span>
+      <span class="exword" onclick="sw(this)" data-w="eccezionali">eccezionali</span>
+    </div>
+    <div class="exgrid">
+      <div class="exnode"><div class="exnh" style="background:#27640A;color:white">🗺️ Ambientazione</div><div class="exnb">Luoghi lontani, spesso pieni di <span class="blank" data-a="pericoli" id="b1" onclick="fb(this)">&#8203;</span>.</div></div>
+      <div class="exnode"><div class="exnh" style="background:#0D4B8C;color:white">💥 Colpo di scena</div><div class="exnb">Situazioni di <span class="blank" data-a="emozioni" id="b2" onclick="fb(this)">&#8203;</span> e imprevisti creano suspense che <span class="blank" data-a="affascina" id="b3" onclick="fb(this)">&#8203;</span> il lettore.</div></div>
+      <div class="exnode"><div class="exnh" style="background:#7D4E00;color:white">✍️ Stile</div><div class="exnb">Ritmo rapido e <span class="blank" data-a="incalzante" id="b4" onclick="fb(this)">&#8203;</span>. Frasi <span class="blank" data-a="spezzate" id="b5" onclick="fb(this)">&#8203;</span>, spesso un'unica proposizione.</div></div>
+      <div class="exnode"><div class="exnh" style="background:#7D1F3C;color:white">🗡️ Protagonista</div><div class="exnb">È <span class="blank" data-a="intelligente" id="b6" onclick="fb(this)">&#8203;</span>, rapido a intuire i pericoli, con qualità fisiche <span class="blank" data-a="eccezionali" id="b7" onclick="fb(this)">&#8203;</span>.</div></div>
+      <div class="exnode"><div class="exnh" style="background:#0E7C7B;color:white">🏆 Impresa</div><div class="exnb">Il protagonista ha un <span class="blank" data-a="compito" id="b8" onclick="fb(this)">&#8203;</span> da portare a compimento.</div></div>
+      <div class="exnode"><div class="exnh" style="background:#44276A;color:white">😊 Conclusione</div><div class="exnb">La storia si conclude quasi sempre con un <span class="blank" data-a="lieto fine" id="b9" onclick="fb(this)">&#8203;</span>, che scioglie la tensione del lettore.</div></div>
+    </div>
+    <div class="exctrl">
+      <button class="exbtn ck" onclick="chk()">✓ Controlla</button>
+      <button class="exbtn rs" onclick="rst()">↺ Ricomincia</button>
+      <div class="exmsg" id="emsg"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end deck -->
+
+<!-- NAV BAR -->
+<div class="navb">
+  <button onclick="go(-1)" id="bP" disabled>◀ Indietro</button>
+  <div class="ndots" id="dots"></div>
+  <div class="nctr" id="ctr">1 / 11</div>
+  <button onclick="go(1)" id="bN">Avanti ▶</button>
+</div>
+
+<script>
+/* ===== NAV ===== */
+const slides=[...document.querySelectorAll('.slide')];
+const N=slides.length;let cur=0;
+const dotsEl=document.getElementById('dots');
+slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>gt(i);dotsEl.appendChild(d);});
+function gt(n){slides[cur].classList.remove('active');slides[cur].classList.add('prev');setTimeout(()=>slides[cur].classList.remove('prev'),400);cur=n;slides[cur].classList.add('active');dotsEl.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===cur));document.getElementById('ctr').textContent=(cur+1)+' / '+N;document.getElementById('bP').disabled=cur===0;document.getElementById('bN').disabled=cur===N-1;}
+function go(d){if(cur+d>=0&&cur+d<N)gt(cur+d);}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')go(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(-1);});
+
+/* ===== BRAINSTORMING ===== */
+const cols=[{bg:'#FEF3F2',br:'#C0392B',c:'#C0392B'},{bg:'#E8F7F7',br:'#0E7C7B',c:'#0E7C7B'},{bg:'#EAF1FB',br:'#0D4B8C',c:'#0D4B8C'},{bg:'#EDFAE0',br:'#27640A',c:'#27640A'},{bg:'#F3EEF9',br:'#44276A',c:'#44276A'},{bg:'#FEF7E0',br:'#7A5800',c:'#7A5800'}];
+let ci=0;const bsa=document.getElementById('bsa');
+function ba(btn,word){
+  btn.disabled=true;
+  const c=cols[ci++%cols.length];
+  const el=document.createElement('div');el.className='bsw';el.textContent=word;
+  el.style.cssText='background:'+c.bg+';border-color:'+c.br+';color:'+c.c+';';
+  const W=bsa.offsetWidth,H=bsa.offsetHeight;
+  let x,y,t=0;
+  do{x=20+Math.random()*(W-200);y=20+Math.random()*(H-50);t++;}
+  while(Math.abs(x-W/2)<130&&Math.abs(y-H/2)<55&&t<20);
+  el.style.left=x+'px';el.style.top=y+'px';
+  el.style.transform='rotate('+(Math.random()*12-6)+'deg)';
+  bsa.appendChild(el);
+}
+function bc(){bsa.querySelectorAll('.bsw').forEach(e=>e.remove());document.querySelectorAll('#bst .bsbtn').forEach(b=>b.disabled=false);ci=0;}
+
+/* ===== VOTAZIONE ===== */
+const votes={1:0,2:0,3:0,4:0};
+function vt(n,d){
+  votes[n]=Math.max(0,votes[n]+d);
+  const el=document.getElementById('vn'+n);
+  el.textContent=votes[n];
+  el.classList.toggle('on',votes[n]>0);
+  document.getElementById('ac'+n).classList.toggle('voted',votes[n]>0);
+}
+
+/* ===== ESERCIZIO ===== */
+let selW=null;
+function sw(el){document.querySelectorAll('.exword').forEach(w=>w.classList.remove('sel'));if(selW===el){selW=null;return;}selW=el;el.classList.add('sel');}
+function fb(blank){if(!selW)return;blank.textContent=selW.dataset.w;blank.dataset.placed=selW.dataset.w;blank.classList.add('filled');blank.classList.remove('ok','err');selW.classList.remove('sel');selW.classList.add('used');selW=null;document.getElementById('emsg').textContent='';}
+function chk(){
+  const bl=document.querySelectorAll('.blank');let ok=0,fi=0;
+  bl.forEach(b=>{if(!b.dataset.placed)return;fi++;const cr=b.dataset.placed===b.dataset.a;b.classList.toggle('ok',cr);b.classList.toggle('err',!cr);if(cr)ok++;});
+  const m=document.getElementById('emsg');
+  if(!fi){m.textContent='Completa almeno uno spazio!';m.className='exmsg';return;}
+  if(ok===bl.length){m.textContent='🎉 Perfetto! Tutto corretto!';m.className='exmsg ok';}
+  else{m.textContent=ok+' su '+bl.length+' corretti — riprova quelli in rosso';m.className='exmsg err';}
+}
+function rst(){document.querySelectorAll('.blank').forEach(b=>{b.textContent='\u200B';b.dataset.placed='';b.classList.remove('filled','ok','err');});document.querySelectorAll('.exword').forEach(w=>w.classList.remove('used','sel'));selW=null;document.getElementById('emsg').textContent='';}
+</script>
+</body>
+</html>
