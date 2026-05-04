@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Il libro della giungla — Ora 3</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1A2E4A;--red:#C0392B;--teal:#0E7C7B;--green:#27640A;
+  --amber:#7D4E00;--purple:#44276A;--blue:#0D4B8C;--coral:#7D1F3C;
+  --gold:#8A6200;--text:#111;--muted:#555;--light:#F4F4F4;--border:#CCC;
+  /* jungle palette */
+  --jungle:#1B4D1B;--jungle-mid:#2E7D2E;--jungle-light:#E8F5E9;
+  --tiger:#C0530A;--tiger-light:#FFF3E0;
+  --fs-xs:clamp(10px,1.2vw,13px);--fs-sm:clamp(12px,1.4vw,15px);
+  --fs-md:clamp(13px,1.6vw,17px);--fs-lg:clamp(15px,2vw,20px);
+  --fs-xl:clamp(18px,2.8vw,28px);--fs-2xl:clamp(22px,3.6vw,44px);
+  --fs-3xl:clamp(28px,5.5vw,68px);
+  --pad-x:clamp(16px,4vw,52px);--pad-y:clamp(10px,2vh,18px);
+  --gap:clamp(8px,1.4vw,13px);--r:clamp(8px,1vw,13px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;font-size:var(--fs-md);background:#2D2D2D;height:100vh;min-height:100dvh;overflow:hidden;display:flex;flex-direction:column;color:var(--text);}
+.deck{flex:1;position:relative;overflow:hidden;min-height:0;}
+.slide{position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateX(30px);transition:opacity .32s ease,transform .32s ease;overflow:hidden;}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
+.slide.prev{opacity:0;transform:translateX(-30px);}
+.topbar{height:clamp(4px,.6vh,7px);background:linear-gradient(90deg,var(--jungle) 40%,var(--jungle-mid) 70%,var(--tiger));flex-shrink:0;}
+.sh{padding:var(--pad-y) var(--pad-x) 0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-shrink:0;}
+.slide-title{font-family:'Playfair Display',serif;font-size:var(--fs-2xl);font-weight:900;color:var(--navy);line-height:1.1;flex:1;}
+.slide-title .r{color:var(--red);}.slide-title .g{color:var(--jungle-mid);}.slide-title .t{color:var(--teal);}.slide-title .o{color:var(--tiger);}
+.tag{font-size:var(--fs-xs);font-weight:700;letter-spacing:1.8px;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:4px;border:1.5px solid;}
+.t-red{color:var(--red);background:#FDECEA;border-color:#F5B8B2;}
+.t-green{color:var(--green);background:#EDFAE0;border-color:#A8D98A;}
+.t-jungle{color:var(--jungle);background:var(--jungle-light);border-color:#A5D6A7;}
+.t-gold{color:var(--gold);background:#FEF7E0;border-color:#EDCE77;}
+.t-tiger{color:var(--tiger);background:var(--tiger-light);border-color:#FFCC80;}
+.t-blue{color:var(--blue);background:#EAF1FB;border-color:#B0CCF0;}
+.t-purple{color:var(--purple);background:#F3EEF9;border-color:#C9B3E8;}
+.t-teal{color:var(--teal);background:#E8F7F7;border-color:#A8DFDE;}
+.pref{font-size:var(--fs-xs);font-weight:600;color:var(--muted);background:var(--light);border:1.5px solid var(--border);padding:3px 10px;border-radius:5px;font-family:monospace;margin-top:4px;flex-shrink:0;}
+.si{flex:1;padding:var(--pad-y) var(--pad-x) calc(var(--pad-y)*1.2);display:flex;flex-direction:column;gap:var(--gap);overflow:hidden;min-height:0;}
+/* cards */
+.card{background:var(--light);border:1.5px solid var(--border);border-radius:var(--r);padding:clamp(10px,1.5vw,16px) clamp(12px,1.8vw,18px);}
+.card.gl{border-left:4px solid var(--jungle-mid);}.card.rl{border-left:4px solid var(--red);}.card.tl{border-left:4px solid var(--teal);}.card.nl{border-left:4px solid var(--navy);}
+.cbox{border:2px dashed #AAA;border-radius:var(--r);padding:clamp(10px,1.5vw,14px) clamp(12px,1.8vw,17px);position:relative;background:#FAFAFA;}
+.clbl{position:absolute;top:-11px;left:14px;background:#FAFAFA;padding:0 6px;font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.cbox p,.cbox div{font-size:var(--fs-sm);line-height:1.7;color:var(--text);}
+.cbox strong{color:var(--navy);}
+.abox{background:#FEF3F2;border:2px solid #F5B8B2;border-radius:var(--r);padding:clamp(8px,1.2vw,12px) clamp(12px,1.6vw,16px);font-size:var(--fs-sm);color:var(--text);line-height:1.5;flex-shrink:0;}
+.abox strong{color:var(--red);}
+.ibox{background:#EAF1FB;border:2px solid #B0CCF0;border-radius:var(--r);padding:clamp(8px,1.2vw,12px) clamp(12px,1.6vw,16px);font-size:var(--fs-sm);color:var(--text);line-height:1.5;flex-shrink:0;}
+.ibox strong{color:var(--blue);}
+.gbox{background:var(--jungle-light);border:2px solid #A5D6A7;border-radius:var(--r);padding:clamp(8px,1.2vw,12px) clamp(12px,1.6vw,16px);font-size:var(--fs-sm);color:var(--text);line-height:1.5;flex-shrink:0;}
+.gbox strong{color:var(--jungle);}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--gap);}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(170px,100%),1fr));gap:var(--gap);}
+.ilist{display:flex;flex-direction:column;gap:6px;}
+.it{display:flex;align-items:flex-start;gap:8px;font-size:var(--fs-sm);line-height:1.45;color:var(--text);}
+.it .b{width:6px;height:6px;border-radius:50%;background:var(--navy);margin-top:5px;flex-shrink:0;}
+.it .b.g{background:var(--jungle-mid);}.it .b.r{background:var(--red);}.it .b.t{background:var(--teal);}
+.it strong{color:var(--navy);}
+@keyframes fu{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.slide.active .sh,.slide.active .si>*{animation:fu .38s ease both;}
+.slide.active .sh{animation-delay:.03s;}
+.slide.active .si>*:nth-child(1){animation-delay:.08s;}
+.slide.active .si>*:nth-child(2){animation-delay:.14s;}
+.slide.active .si>*:nth-child(3){animation-delay:.20s;}
+.slide.active .si>*:nth-child(4){animation-delay:.26s;}
+.slide.active .si>*:nth-child(5){animation-delay:.32s;}
+.slide.active .si>*:nth-child(6){animation-delay:.38s;}
+/* NAV */
+.navb{width:100%;height:clamp(44px,6vh,54px);background:#fff;border-top:2px solid var(--border);display:flex;align-items:center;justify-content:center;gap:clamp(10px,2vw,20px);flex-shrink:0;padding:0 12px;}
+.navb button{background:none;border:1.5px solid var(--border);color:var(--navy);font-size:var(--fs-sm);font-weight:700;cursor:pointer;padding:5px clamp(10px,2vw,18px);border-radius:6px;font-family:'Inter',sans-serif;transition:background .18s,border-color .18s;white-space:nowrap;}
+.navb button:hover{background:var(--light);border-color:var(--navy);}
+.navb button:disabled{color:var(--border);border-color:#EEE;cursor:not-allowed;}
+.nctr{font-size:var(--fs-sm);font-weight:600;color:var(--muted);min-width:52px;text-align:center;font-family:monospace;}
+.ndots{display:flex;gap:5px;align-items:center;flex-wrap:wrap;max-width:clamp(120px,30vw,260px);justify-content:center;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:background .2s,transform .2s;flex-shrink:0;}
+.dot.active{background:var(--jungle-mid);transform:scale(1.4);}
+/* S1 TITOLO */
+.s1b{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 var(--pad-x);}
+.s1ey{font-size:var(--fs-xs);font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:clamp(10px,2vh,18px);display:flex;align-items:center;gap:10px;}
+.s1ey::before{content:'';display:block;width:28px;height:2px;background:var(--jungle-mid);border-radius:1px;}
+.s1big{font-family:'Playfair Display',serif;font-size:var(--fs-3xl);font-weight:900;color:var(--navy);line-height:1.05;margin-bottom:clamp(6px,1.5vh,14px);}
+.s1big .g{color:var(--jungle-mid);}
+.s1sub{font-size:var(--fs-md);color:var(--muted);font-style:italic;margin-bottom:clamp(12px,2vh,20px);}
+.s1mt{display:flex;flex-wrap:wrap;}
+.s1mi{font-size:var(--fs-sm);color:var(--muted);padding:0 clamp(8px,1.5vw,16px);border-right:1.5px solid var(--border);}
+.s1mi:first-child{padding-left:0;}.s1mi:last-child{border-right:none;}
+.s1mi strong{color:var(--navy);}
+.s1deco{position:absolute;right:var(--pad-x);top:50%;transform:translateY(-50%);font-size:clamp(60px,14vw,160px);opacity:.07;pointer-events:none;line-height:1;}
+.s1bk{position:absolute;bottom:clamp(55px,7vh,75px);right:var(--pad-x);background:var(--jungle-light);border:1.5px solid #A5D6A7;border-radius:var(--r);padding:9px 14px;font-size:var(--fs-xs);color:var(--jungle);text-align:center;}
+.s1bk strong{color:var(--jungle);display:block;margin-bottom:2px;font-size:var(--fs-sm);}
+/* AUTORE */
+.author-band{background:linear-gradient(135deg,var(--jungle),var(--jungle-mid));border-radius:var(--r);padding:clamp(14px,2vh,20px) clamp(16px,2.5vw,24px);display:flex;gap:clamp(14px,2vw,22px);align-items:flex-start;flex-shrink:0;}
+.author-ico{font-size:clamp(36px,5.5vw,60px);flex-shrink:0;}
+.author-name{font-family:'Playfair Display',serif;font-size:var(--fs-xl);font-weight:900;color:#FFE066;margin-bottom:4px;}
+.author-dates{font-size:var(--fs-xs);color:rgba(255,255,255,.65);margin-bottom:8px;font-style:italic;}
+.author-text{font-size:var(--fs-sm);line-height:1.6;color:rgba(255,255,255,.9);}
+.author-text strong{color:#FFE066;}
+/* VIDEO */
+.vid-hero{background:linear-gradient(135deg,var(--jungle),#1B5E20);border-radius:var(--r);padding:clamp(12px,1.8vh,18px) clamp(14px,2vw,22px);display:flex;align-items:center;gap:clamp(12px,1.8vw,18px);flex-shrink:0;}
+.vid-play{width:clamp(44px,6vw,58px);height:clamp(44px,6vw,58px);border-radius:50%;background:var(--tiger);display:flex;align-items:center;justify-content:center;font-size:clamp(18px,2.5vw,24px);color:white;flex-shrink:0;}
+.vid-title{font-family:'Playfair Display',serif;font-size:var(--fs-lg);font-weight:900;color:#FFE066;margin-bottom:4px;}
+.vid-sub{font-size:var(--fs-xs);color:rgba(255,255,255,.75);}
+.vid-url{font-family:monospace;font-size:var(--fs-sm);font-weight:700;margin-top:5px;}
+.vid-note{font-size:var(--fs-xs);color:rgba(255,255,255,.55);margin-top:2px;}
+.qlist{display:flex;flex-direction:column;gap:var(--gap);flex:1;}
+.qcard{display:flex;align-items:center;gap:clamp(12px,1.8vw,18px);background:white;border:2px solid var(--border);border-radius:var(--r);padding:clamp(10px,1.4vh,14px) clamp(14px,2vw,20px);flex:1;transition:border-color .2s;}
+.qcard:hover{border-color:var(--jungle-mid);}
+.qnum{width:clamp(32px,4vw,42px);height:clamp(32px,4vw,42px);border-radius:50%;background:var(--jungle);color:white;font-family:'Playfair Display',serif;font-size:var(--fs-lg);font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.qtxt{font-family:'Playfair Display',serif;font-size:var(--fs-lg);font-weight:700;color:var(--navy);}
+.qsub{font-size:var(--fs-xs);color:var(--muted);margin-top:2px;}
+/* BRANO */
+.brano-header{background:linear-gradient(135deg,var(--jungle),var(--jungle-mid));border-radius:var(--r) var(--r) 0 0;padding:clamp(8px,1.2vh,14px) clamp(14px,2vw,20px);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.brano-titolo{font-family:'Playfair Display',serif;font-size:var(--fs-lg);font-weight:900;color:#FFE066;}
+.brano-fonte{font-size:var(--fs-xs);color:rgba(255,255,255,.7);font-style:italic;}
+.brano-body{flex:1;background:linear-gradient(to bottom,#F9FBF6,#F1F8E9);border:2px solid #A5D6A7;border-top:none;border-radius:0 0 var(--r) var(--r);padding:clamp(14px,2vh,20px) clamp(16px,2.5vw,26px);overflow:hidden;min-height:0;}
+.brano-text{font-size:clamp(14px,1.7vw,19px);line-height:1.85;color:#1B2E1B;font-family:'Playfair Display',serif;font-weight:400;}
+.brano-text strong{color:var(--jungle);font-weight:700;}
+.brano-text em{color:var(--tiger);font-style:italic;}
+.brano-consegna{background:var(--jungle-light);border:1.5px solid #A5D6A7;border-radius:var(--r);padding:clamp(8px,1.2vw,12px) clamp(12px,1.6vw,16px);font-size:var(--fs-sm);color:var(--jungle);flex-shrink:0;}
+.brano-consegna strong{color:var(--jungle);}
+/* PERSONA CARDS */
+.prow{flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));gap:var(--gap);min-height:0;}
+.pcard{border-radius:var(--r);border:2px solid;padding:clamp(12px,1.5vw,16px);display:flex;flex-direction:column;gap:6px;overflow:hidden;}
+.pcard.mowgli{border-color:#2E7D2E;background:#F1F8E9;}
+.pcard.shere{border-color:var(--tiger);background:var(--tiger-light);}
+.pcard.baloo{border-color:#7B4F00;background:#FFF8E1;}
+.pcard.bagheera{border-color:#37474F;background:#ECEFF1;}
+.pcard.akela{border-color:#1565C0;background:#E3F2FD;}
+.pic{font-size:clamp(24px,3.5vw,38px);}
+.prl{font-size:var(--fs-xs);font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.pnm{font-family:'Playfair Display',serif;font-size:var(--fs-lg);font-weight:900;}
+.pcard.mowgli .pnm{color:#1B5E20;}.pcard.shere .pnm{color:var(--tiger);}
+.pcard.baloo .pnm{color:#4E342E;}.pcard.bagheera .pnm{color:#263238;}.pcard.akela .pnm{color:#0D47A1;}
+.ptrs{display:flex;flex-direction:column;gap:5px;flex:1;}
+.ptr{font-size:var(--fs-sm);color:var(--text);line-height:1.4;display:flex;align-items:flex-start;gap:7px;}
+.ptr::before{content:'→';color:var(--muted);flex-shrink:0;font-weight:700;}
+.ptr strong{color:var(--navy);}
+.pex{font-size:var(--fs-xs);color:var(--muted);font-style:italic;padding-top:6px;border-top:1.5px solid var(--border);margin-top:auto;}
+/* MOMENTI */
+.mom-list{flex:1;display:flex;flex-direction:column;gap:clamp(5px,1vh,8px);min-height:0;}
+.mom{display:flex;align-items:flex-start;gap:clamp(10px,1.5vw,14px);background:var(--light);border:1.5px solid var(--border);border-radius:var(--r);padding:clamp(8px,1.2vh,12px) clamp(12px,1.5vw,16px);flex:1;position:relative;overflow:hidden;}
+.mom::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;border-radius:4px 0 0 4px;}
+.mom:nth-child(1)::before{background:var(--teal);}
+.mom:nth-child(2)::before{background:#B8860B;}
+.mom:nth-child(3)::before{background:var(--jungle-mid);}
+.mom:nth-child(4)::before{background:var(--tiger);}
+.mom:nth-child(5)::before{background:var(--green);}
+.mom-num{font-family:'Playfair Display',serif;font-size:clamp(22px,3vw,32px);font-weight:900;color:rgba(0,0,0,.08);min-width:28px;flex-shrink:0;}
+.mom-body{flex:1;}
+.mom-label{font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.mom-name{font-size:var(--fs-md);font-weight:700;color:var(--navy);margin-bottom:2px;}
+.mom-desc{font-size:var(--fs-sm);color:var(--muted);line-height:1.4;}
+.mom-jungle{font-size:var(--fs-sm);font-weight:600;color:var(--jungle);font-style:italic;margin-top:2px;}
+.mom-ico{font-size:clamp(16px,2.2vw,22px);flex-shrink:0;margin-top:2px;}
+/* VF */
+.vf-list{display:flex;flex-direction:column;gap:var(--gap);flex:1;}
+.vf-row{display:flex;align-items:center;gap:12px;background:var(--light);border:2px solid var(--border);border-radius:var(--r);padding:clamp(10px,1.4vh,14px) clamp(14px,2vw,18px);transition:border-color .2s;}
+.vf-q{flex:1;font-size:var(--fs-sm);line-height:1.45;color:var(--text);}
+.vf-btns{display:flex;gap:7px;flex-shrink:0;}
+.vf-btn{padding:5px 15px;border-radius:8px;border:2px solid var(--border);background:white;font-size:var(--fs-sm);font-weight:700;cursor:pointer;transition:all .18s;font-family:'Inter',sans-serif;}
+.vf-btn.v{color:var(--green);border-color:var(--green);}
+.vf-btn.f{color:var(--red);border-color:var(--red);}
+.vf-btn.v:hover,.vf-btn.v.sel{background:var(--green);color:white;}
+.vf-btn.f:hover,.vf-btn.f.sel{background:var(--red);color:white;}
+.vf-btn.correct{background:var(--green)!important;color:white!important;border-color:var(--green)!important;}
+.vf-btn.wrong{background:var(--red)!important;color:white!important;border-color:var(--red)!important;}
+/* MC */
+.mc-list{display:flex;flex-direction:column;gap:clamp(9px,1.3vh,14px);flex:1;}
+.mc-item{background:var(--light);border:1.5px solid var(--border);border-radius:var(--r);padding:clamp(10px,1.4vh,14px) clamp(12px,1.6vw,18px);}
+.mc-q{font-size:var(--fs-md);font-weight:700;color:var(--navy);margin-bottom:8px;line-height:1.4;}
+.mc-opts{display:flex;flex-direction:column;gap:5px;}
+.mc-opt{padding:6px 13px;border-radius:7px;border:1.5px solid var(--border);background:white;font-size:var(--fs-sm);cursor:pointer;transition:all .18s;text-align:left;font-family:'Inter',sans-serif;color:var(--text);}
+.mc-opt:hover{border-color:var(--jungle-mid);background:var(--jungle-light);}
+.mc-opt.correct{background:#D4EDDA!important;border-color:var(--green)!important;color:var(--green)!important;font-weight:700;}
+.mc-opt.wrong{background:#FDECEA!important;border-color:var(--red)!important;color:var(--red)!important;}
+.mc-opt.disabled{pointer-events:none;}
+/* FILL */
+.fill-list{display:flex;flex-direction:column;gap:var(--gap);flex:1;}
+.fill-item{background:var(--light);border:1.5px solid var(--border);border-radius:var(--r);padding:clamp(10px,1.4vh,14px) clamp(12px,1.6vw,16px);font-size:var(--fs-sm);line-height:1.9;color:var(--text);}
+.fill-inp{border:none;border-bottom:2.5px solid var(--jungle);background:transparent;font-size:var(--fs-sm);font-weight:700;color:var(--jungle);font-family:'Inter',sans-serif;min-width:clamp(90px,10vw,130px);padding:1px 6px;outline:none;text-align:center;}
+.fill-inp:focus{border-bottom-color:var(--jungle-mid);}
+/* SCHEDA */
+.scheda{border:2px solid var(--jungle);border-radius:var(--r);overflow:hidden;flex:1;display:flex;flex-direction:column;min-height:0;}
+.scheda-top{background:var(--jungle);padding:clamp(8px,1.2vh,13px) clamp(14px,2vw,20px);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.scheda-top-title{font-family:'Playfair Display',serif;font-size:var(--fs-lg);font-weight:900;color:#FFE066;}
+.scheda-top-sub{font-size:var(--fs-xs);color:rgba(255,255,255,.7);}
+.scheda-body{padding:clamp(10px,1.5vh,16px) clamp(14px,2vw,20px);display:flex;flex-direction:column;gap:7px;flex:1;overflow:hidden;}
+.sr{display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid var(--border);padding-bottom:6px;}
+.sr:last-child{border-bottom:none;padding-bottom:0;}
+.sk{font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);min-width:clamp(90px,10vw,130px);flex-shrink:0;padding-top:2px;}
+.sv{font-size:var(--fs-sm);line-height:1.5;color:var(--text);}
+.sv strong{color:var(--jungle);}
+/* CONFRONTO */
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);flex:1;}
+.cmp-card{border-radius:var(--r);padding:clamp(12px,1.6vh,18px) clamp(12px,1.6vw,18px);display:flex;flex-direction:column;gap:7px;}
+.cmp-card.ora2{background:#EAF1FB;border:2px solid #B0CCF0;}
+.cmp-card.ora3{background:var(--jungle-light);border:2px solid #A5D6A7;}
+.cmp-title{font-size:var(--fs-xs);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
+.cmp-card.ora2 .cmp-title{color:var(--blue);}
+.cmp-card.ora3 .cmp-title{color:var(--jungle);}
+.cmp-item{font-size:var(--fs-sm);line-height:1.4;color:var(--text);display:flex;gap:8px;align-items:flex-start;}
+.cmp-item::before{content:'✓';font-weight:700;flex-shrink:0;}
+.cmp-card.ora2 .cmp-item::before{color:var(--blue);}
+.cmp-card.ora3 .cmp-item::before{color:var(--jungle);}
+/* CTRL */
+.ctrl-row{display:flex;gap:9px;align-items:center;flex-shrink:0;}
+.btn-ok{padding:6px clamp(12px,1.8vw,20px);border-radius:7px;font-size:var(--fs-sm);font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;border:none;transition:all .18s;background:var(--jungle);color:white;}
+.btn-ok:hover{background:var(--jungle-mid);}
+.btn-rst{padding:6px clamp(12px,1.8vw,20px);border-radius:7px;font-size:var(--fs-sm);font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;background:var(--light);color:var(--muted);border:1.5px solid var(--border);transition:all .18s;}
+.btn-rst:hover{background:#E0E0E0;}
+.res-msg{font-size:var(--fs-sm);font-weight:600;}
+.res-msg.ok{color:var(--green);}.res-msg.err{color:var(--red);}
+@media(max-width:600px){
+  .s1deco,.s1bk{display:none;}
+  .prow{grid-template-columns:1fr;}
+  .cmp-grid{grid-template-columns:1fr;}
+  .g2{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- ======================== S1 TITOLO ======================== -->
+<div class="slide active" id="s1">
+  <div class="topbar"></div>
+  <div class="s1b">
+    <div class="s1ey">Italiano · Unità 10 · L'avventura · Anno scolastico 2025–2026</div>
+    <div class="s1big">Il libro<br><span class="g">della giungla</span></div>
+    <div class="s1sub">Rudyard Kipling · 1894</div>
+    <div class="s1mt">
+      <div class="s1mi">Classe <strong>1ª media</strong></div>
+      <div class="s1mi">Ora <strong>3 di 6</strong></div>
+      <div class="s1mi">60 minuti</div>
+      <div class="s1mi">Avventura <strong>esotica</strong></div>
+    </div>
+  </div>
+  <div class="s1deco">🌿</div>
+  <div class="s1bk"><strong>📖 E tu splendi</strong>Pellizzi · Novembri · Bigli<br>Mursia Scuola · Unità 10</div>
+</div>
+
+<!-- ======================== S2 CHI È KIPLING ======================== -->
+<div class="slide" id="s2">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Chi è <span class="g">Rudyard Kipling?</span></h2><span class="tag t-jungle">✍️ L'autore</span></div>
+  <div class="si">
+    <div class="author-band">
+      <div class="author-ico">✍️</div>
+      <div>
+        <div class="author-name">Rudyard Kipling</div>
+        <div class="author-dates">Bombay (India), 1865 — Londra, 1936 · Scrittore britannico</div>
+        <div class="author-text">Kipling nasce a Bombay da genitori inglesi e cresce in India. A sei anni viene mandato in Inghilterra per studiare, lontano dalla famiglia. Questa <strong>separazione dolorosa</strong> segnerà tutta la sua scrittura: il tema dell'abbandono e del ritorno ricorre in molti suoi libri. Ritorna in India da giovane e lavora come giornalista, esplorando luoghi remoti e osservando la natura. <strong>Ha vissuto davvero la giungla che descrive.</strong> Nel 1907 vince il Premio Nobel per la letteratura, primo scrittore di lingua inglese a riceverlo.</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card gl">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--jungle);margin-bottom:7px">📚 Opere principali</div>
+        <div class="ilist">
+          <div class="it"><div class="b g"></div><div><strong>Il libro della giungla</strong> (1894) — il libro di oggi</div></div>
+          <div class="it"><div class="b g"></div><div><strong>Il secondo libro della giungla</strong> (1895)</div></div>
+          <div class="it"><div class="b g"></div><div><strong>Kim</strong> (1901) — il suo romanzo più lungo</div></div>
+        </div>
+      </div>
+      <div class="card rl">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:7px">🏆 Curiosità</div>
+        <div class="ilist">
+          <div class="it"><div class="b r"></div><div>È il <strong>primo autore di lingua inglese</strong> a vincere il Premio Nobel (1907)</div></div>
+          <div class="it"><div class="b r"></div><div>I personaggi del Libro della giungla sono usati dai <strong>lupetti scout</strong> di tutto il mondo</div></div>
+          <div class="it"><div class="b r"></div><div>Disney ne ha fatto il cartone animato nel <strong>1967</strong> — uno dei classici più amati</div></div>
+          <div class="it"><div class="b r"></div><div>I nomi dei personaggi vengono dall'<strong>hindi</strong>: "Baloo" significa orso, "Bagheera" significa pantera</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="gbox">💡 <strong>Da ricordare:</strong> Kipling conosce l'India per averci vissuto. I suoi racconti respirano caldo, odori, suoni della giungla perché li ha vissuti sul serio.</div>
+  </div>
+</div>
+
+<!-- ======================== S3 CONTESTO ======================== -->
+<div class="slide" id="s3">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Il contesto: <span class="g">l'India dell'Ottocento</span></h2><span class="tag t-teal">🗺️ Ambientazione storica</span></div>
+  <div class="si">
+    <div class="ibox"><strong>India centrale, fine Ottocento.</strong> All'epoca l'India è una colonia dell'Impero britannico. Le giungle del Madhya Pradesh — dove è ambientata la storia — sono piene di tigri, lupi, orsi, pantere. La giungla è immensa, misteriosa e pericolosa.</div>
+    <div class="g2">
+      <div class="card gl">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--jungle);margin-bottom:7px">🌍 Dove siamo</div>
+        <div class="ilist">
+          <div class="it"><div class="b g"></div><div>Giungla di <strong>Seoni</strong>, India centrale (Madhya Pradesh)</div></div>
+          <div class="it"><div class="b g"></div><div>Clima <strong>tropicale</strong>: caldo umido, stagione delle piogge</div></div>
+          <div class="it"><div class="b g"></div><div>Foreste fitte con alberi enormi, liane, fiumi e rocce</div></div>
+          <div class="it"><div class="b g"></div><div>Animali selvatici: tigri, lupi, orsi, pantere, pitoni, elefanti</div></div>
+        </div>
+      </div>
+      <div class="card nl">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px">⏰ Quando</div>
+        <div class="ilist">
+          <div class="it"><div class="b"></div><div>Fine <strong>Ottocento</strong> (1890 circa)</div></div>
+          <div class="it"><div class="b"></div><div>L'India è colonia britannica: gli inglesi governano ma la giungla rimane selvaggia</div></div>
+          <div class="it"><div class="b"></div><div>Niente telefoni, niente automobile — il mondo è ancora <strong>inesplorato</strong></div></div>
+          <div class="it"><div class="b"></div><div>I villaggi ai bordi della giungla vivono nella <strong>paura delle tigri</strong></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="abox">⚠ <strong>Attenzione:</strong> la giungla di Kipling esiste davvero. La riserva delle tigri di <strong>Kanha</strong>, in India, è considerata il luogo reale delle storie di Mowgli. L'avventura è realisticamente possibile.</div>
+  </div>
+</div>
+
+<!-- ======================== S4 TRAILER ======================== -->
+<div class="slide" id="s4">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Guardiamo il <span class="r">trailer</span></h2><span class="tag t-red">🎬 Cartone Disney 1967</span></div>
+  <div class="si">
+    <div class="vid-hero">
+      <div class="vid-play">▶</div>
+      <div>
+        <div class="vid-title">Il libro della giungla — Cartone Disney (1967)</div>
+        <div class="vid-sub">L'ultimo film prodotto da Walt Disney · Basato sul romanzo di Rudyard Kipling del 1894</div>
+        <div class="vid-url"><a href="https://youtu.be/0AfgyMwDyN0?si=_tc6wJxwwmY_vDUf" target="_blank" style="color:#FFE066;text-decoration:none;">▶ youtu.be/0AfgyMwDyN0</a></div>
+        <div class="vid-note">⚠ Carica il link PRIMA di entrare in classe</div>
+      </div>
+    </div>
+    <div class="cbox">
+      <div class="clbl">Mentre guardate — tenete a mente queste domande</div>
+      <p style="font-style:italic;color:var(--muted)">Non scrivete niente. Solo guardate e pensate.</p>
+    </div>
+    <div class="qlist">
+      <div class="qcard"><div class="qnum">①</div><div><div class="qtxt">Chi è Mowgli e dove vive?</div><div class="qsub">Come è cresciuto? Chi lo ha allevato?</div></div></div>
+      <div class="qcard"><div class="qnum">②</div><div><div class="qtxt">Chi sono i suoi amici?</div><div class="qsub">Che tipo di animali lo accompagnano? Come si comportano con lui?</div></div></div>
+      <div class="qcard"><div class="qnum">③</div><div><div class="qtxt">Qual è il pericolo principale?</div><div class="qsub">Chi minaccia Mowgli? Perché la giungla è pericolosa?</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S5 PRIMA DI LEGGERE ======================== -->
+<div class="slide" id="s5">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Prima di leggere: <span class="t">attiviamoci</span></h2><span class="tag t-teal">💬 Discussione</span></div>
+  <div class="si">
+    <div class="gbox">💡 Prima di aprire il libro, richiamiamo le nostre conoscenze. Rispondere a queste domande ci aiuterà a capire meglio il brano.</div>
+    <div class="ilist" style="flex:1;justify-content:space-around;">
+      <div class="card gl" style="padding:clamp(12px,1.6vh,18px)">
+        <div style="font-size:clamp(18px,2.5vw,26px);margin-bottom:6px">🐺</div>
+        <div style="font-size:var(--fs-md);font-weight:700;color:var(--jungle);margin-bottom:5px">Un bambino cresciuto dagli animali: è possibile?</div>
+        <div style="font-size:var(--fs-sm);color:var(--muted)">Avete sentito storie di bambini trovati nelle foreste? Cosa succederebbe a un bambino cresciuto senza contatto con gli uomini?</div>
+      </div>
+      <div class="card rl" style="padding:clamp(12px,1.6vh,18px)">
+        <div style="font-size:clamp(18px,2.5vw,26px);margin-bottom:6px">🔥</div>
+        <div style="font-size:var(--fs-md);font-weight:700;color:var(--red);margin-bottom:5px">Gli animali hanno paura del fuoco. Perché?</div>
+        <div style="font-size:var(--fs-sm);color:var(--muted)">Nel libro, Mowgli usa il fuoco come arma contro la tigre. Secondo voi, perché il fuoco spaventa così tanto gli animali selvatici?</div>
+      </div>
+      <div class="card nl" style="padding:clamp(12px,1.6vh,18px)">
+        <div style="font-size:clamp(18px,2.5vw,26px);margin-bottom:6px">🌿</div>
+        <div style="font-size:var(--fs-md);font-weight:700;color:var(--navy);margin-bottom:5px">Appartenere a due mondi: la giungla e il villaggio</div>
+        <div style="font-size:var(--fs-sm);color:var(--muted)">Mowgli è un essere umano ma è cresciuto tra gli animali. Secondo voi, dove dovrebbe vivere? Con gli uomini o con gli animali?</div>
+      </div>
+    </div>
+    <div class="cbox">
+      <div class="clbl">📖 Ora leggiamo</div>
+      <p>Aprite il libro alla pagina indicata. La professoressa legge ad alta voce. Seguite con il dito e con la matita sottolineate <strong>una frase</strong> che vi colpisce.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S6 BRANO ALLA LIM ======================== -->
+<div class="slide" id="s6">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Leggiamo: <span class="g">Mowgli e la tigre</span></h2><span class="tag t-jungle">📖 Adattamento da R. Kipling</span></div>
+  <div class="si" style="gap:var(--gap)">
+    <div class="brano-consegna">🎯 <strong>Mentre ascolti:</strong> individua il protagonista, il pericolo e il colpo di scena. Sottolinea con la matita la frase che ti sembra più emozionante.</div>
+    <div class="brano-header">
+      <div class="brano-titolo">Il libro della giungla — La notte del consiglio</div>
+      <div class="brano-fonte">Adattamento didattico da R. Kipling, Il libro della giungla (1894)</div>
+    </div>
+    <div class="brano-body">
+      <div class="brano-text">
+        Era notte fonda nella giungla. La luna illuminava la <strong>Rupe del Consiglio</strong>, dove tutti gli animali si erano riuniti. Al centro del cerchio stava Mowgli: un bambino di circa dieci anni, <strong>cresciuto dai lupi</strong> fin da piccolo. Era agile come una pantera, silenzioso come un serpente e coraggioso come nessun altro.<br><br>
+        Dall'oscurità arrivò un ruggito profondo, che fece tremare le foglie degli alberi. Era la voce di <strong><em>Shere Khan</em></strong>, la tigre.<br>
+        — <em>Il cucciolo d'uomo è mio!</em> — ruggì. — <em>Datemi Mowgli!</em><br><br>
+        Il vecchio lupo <strong>Akela</strong> abbassò la testa sulle zampe e non rispose. Baloo, l'orso grosso e saggio, e Bagheera, la pantera nera, si avvicinarono a Mowgli. Il ragazzo guardò la tigre dritto negli occhi, senza paura.<br><br>
+        Allora Mowgli fece una cosa che nessun animale aveva mai visto: <strong>raccolse un ramo incandescente</strong> dal fuoco e lo agitò verso Shere Khan. La tigre arretrò di un passo, poi di un altro. Gli animali selvatici temono una sola cosa al mondo: il <em>fiore rosso</em>, come chiamavano il fuoco.<br><br>
+        — <em>Vai!</em> — disse Mowgli con una voce che sembrava più grande di lui. — <em>Vai e non tornare più. Perché un giorno verrò a cercarti, Shere Khan!</em><br><br>
+        La tigre fuggì nell'oscurità. Ma tutti sapevano che <strong>non era finita</strong>.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S7 PROTAGONISTA: MOWGLI ======================== -->
+<div class="slide" id="s7">
+  <div class="topbar"></div>
+  <div class="sh">
+    <h2 class="slide-title">Il protagonista: <span class="g">Mowgli</span></h2>
+    <span class="tag t-jungle">🌿 Il cucciolo d'uomo</span>
+  </div>
+  <div class="si" style="gap:var(--gap)">
+
+    <!-- HERO BANNER -->
+    <div style="background:linear-gradient(135deg,#0D3B0D 0%,#1B5E20 50%,#2E7D32 100%);border-radius:var(--r);padding:clamp(14px,2vh,22px) clamp(16px,2.5vw,28px);display:flex;align-items:center;gap:clamp(14px,2vw,24px);flex-shrink:0">
+      <div style="font-size:clamp(48px,8vw,90px);filter:drop-shadow(0 4px 12px rgba(0,0,0,.4));flex-shrink:0">👦</div>
+      <div style="flex:1">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:4px">Protagonista · Eroe</div>
+        <div style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,56px);font-weight:900;color:#FFE066;line-height:1">Mowgli</div>
+        <div style="font-size:var(--fs-md);color:rgba(255,255,255,.8);margin-top:5px;font-style:italic">«Il cucciolo d'uomo» — cresciuto dai lupi nella giungla di Seoni</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:var(--r);padding:6px 14px;text-align:center">
+          <div style="font-size:var(--fs-xs);color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px">età</div>
+          <div style="font-family:'Playfair Display',serif;font-size:var(--fs-xl);font-weight:900;color:#FFE066">~10</div>
+          <div style="font-size:var(--fs-xs);color:rgba(255,255,255,.6)">anni</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRAIT CARDS -->
+    <div style="flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(140px,100%),1fr));gap:var(--gap);min-height:0;overflow:hidden">
+
+      <div style="border-radius:var(--r);background:var(--jungle-light);border:2px solid #A5D6A7;padding:clamp(10px,1.4vh,14px) clamp(10px,1.4vw,14px);display:flex;flex-direction:column;gap:5px">
+        <div style="font-size:clamp(22px,3.5vw,34px)">🏃</div>
+        <div style="font-size:var(--fs-md);font-weight:700;color:var(--jungle)">Agilità</div>
+        <div style="font-size:var(--fs-sm);color:#2E4A2E;line-height:1.4">Si muove nella giungla come un animale: veloce, silenzioso, preciso. Conosce ogni sentiero e ogni pericolo.</div>
+      </div>
+
+      <div style="border-radius:var(--r);background:var(--jungle-light);border:2px solid #A5D6A7;padding:clamp(10px,1.4vh,14px) clamp(10px,1.4vw,14px);display:flex;flex-direction:column;gap:5px">
+        <div style="font-size:clamp(22px,3.5vw,34px)">🧠</div>
+        <div style="font-size:var(--fs-md);font-weight:700;color:var(--jungle)">Intelligenza</div>
+        <div style="font-size:var(--fs-sm);color:#2E4A2E;line-height:1.4">Capisce le leggi della giungla e usa l'astuzia al posto della forza bruta. Pensa prima di agire.</div>
+      </div>
+
+      <div style="border-radius:var(--r);background:var(--jungle-light);border:2px solid #A5D6A7;padding:clamp(10px,1.4vh,14px) clamp(10px,1.4vw,14px);display:flex;flex-direction:column;gap:5px">
+        <div style="font-size:clamp(22px,3.5vw,34px)">💪</div>
+        <div style="font-size:var(--fs-md);font-weight:700;color:var(--jungle)">Coraggio</div>
+        <div style="font-size:var(--fs-sm);color:#2E4A2E;line-height:1.4">Affronta Shere Khan — la tigre più temuta della giungla — senza esitare. Non ha paura del pericolo.</div>
+      </div>
+
+      <div style="border-radius:var(--r);background:#FFF8E1;border:2px solid #FFCC80;padding:clamp(10px,1.4vh,14px) clamp(10px,1.4vw,14px);display:flex;flex-direction:column;gap:5px">
+        <div style="font-size:clamp(22px,3.5vw,34px)">🔥</div>
+        <div style="font-size:var(--fs-md);font-weight:700;color:var(--tiger)">Il fuoco</div>
+        <div style="font-size:var(--fs-sm);color:#4E342E;line-height:1.4">La sua arma segreta: è l'unico a saper usare il «fiore rosso». Gli animali ne hanno paura e lui lo sa.</div>
+      </div>
+
+    </div>
+
+    <!-- IDENTITÀ SPLIT -->
+    <div style="background:var(--navy);border-radius:var(--r);padding:clamp(10px,1.5vh,16px) clamp(14px,2vw,22px);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;flex-shrink:0">
+      <div style="text-align:center">
+        <div style="font-size:clamp(18px,3vw,30px);margin-bottom:4px">🌿</div>
+        <div style="font-size:var(--fs-sm);font-weight:700;color:#A5D6A7">La giungla</div>
+        <div style="font-size:var(--fs-xs);color:rgba(255,255,255,.55);margin-top:3px">La sua casa, la sua famiglia</div>
+      </div>
+      <div style="text-align:center;padding:0 8px">
+        <div style="font-family:'Playfair Display',serif;font-size:var(--fs-xl);font-weight:900;color:#FFE066">?</div>
+        <div style="font-size:var(--fs-xs);color:rgba(255,255,255,.5);font-style:italic">Dove appartengo?</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:clamp(18px,3vw,30px);margin-bottom:4px">🏡</div>
+        <div style="font-size:var(--fs-sm);font-weight:700;color:#FFCC80">Il villaggio</div>
+        <div style="font-size:var(--fs-xs);color:rgba(255,255,255,.55);margin-top:3px">Il suo popolo, gli uomini</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======================== S8 ANTAGONISTA: SHERE KHAN ======================== -->
+<div class="slide" id="s8">
+  <div class="topbar"></div>
+  <div class="sh">
+    <h2 class="slide-title">L'antagonista: <span class="r">Shere Khan</span></h2>
+    <span class="tag t-red">🐯 La tigre del Bengala</span>
+  </div>
+  <div class="si" style="gap:var(--gap)">
+
+    <!-- HERO BANNER TIGRE -->
+    <div style="background:linear-gradient(135deg,#5D1A00 0%,#B33000 50%,#C0530A 100%);border-radius:var(--r);padding:clamp(14px,2vh,22px) clamp(16px,2.5vw,28px);display:flex;align-items:center;gap:clamp(14px,2vw,24px);flex-shrink:0">
+      <div style="font-size:clamp(48px,8vw,90px);filter:drop-shadow(0 4px 12px rgba(0,0,0,.5));flex-shrink:0">🐯</div>
+      <div style="flex:1">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:4px">Antagonista · Il nemico</div>
+        <div style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,56px);font-weight:900;color:#FFE066;line-height:1">Shere Khan</div>
+        <div style="font-size:var(--fs-md);color:rgba(255,255,255,.8);margin-top:5px;font-style:italic">«Il cucciolo è mio!» — Tigre reale del Bengala, terrore della giungla</div>
+      </div>
+    </div>
+
+    <!-- DUEL BAR -->
+    <div style="background:var(--light);border:2px solid var(--border);border-radius:var(--r);padding:clamp(10px,1.4vh,14px) clamp(14px,2vw,20px);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-shrink:0;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:clamp(20px,3vw,32px)">👦</span>
+        <div>
+          <div style="font-size:var(--fs-sm);font-weight:700;color:var(--jungle)">Mowgli</div>
+          <div style="font-size:var(--fs-xs);color:var(--muted)">🧠 Intelligenza · 🔥 Fuoco · 🏃 Agilità</div>
+        </div>
+      </div>
+      <div style="font-family:'Playfair Display',serif;font-size:var(--fs-xl);font-weight:900;color:var(--red)">⚔ VS ⚔</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="text-align:right">
+          <div style="font-size:var(--fs-sm);font-weight:700;color:var(--tiger)">Shere Khan</div>
+          <div style="font-size:var(--fs-xs);color:var(--muted)">💪 Forza · 😱 Ferocia · 🦷 Artigli</div>
+        </div>
+        <span style="font-size:clamp(20px,3vw,32px)">🐯</span>
+      </div>
+    </div>
+
+    <!-- TRAIT CARDS -->
+    <div style="flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(140px,100%),1fr));gap:var(--gap);min-height:0;overflow:hidden">
+
+      <div style="border-radius:var(--r);background:var(--tiger-light);border:2px solid #FFCC80;padding:clamp(10px,1.4vh,14px) clamp(10px,1.4vw,14px);display:flex;flex-direction:column;gap:5px">
+        <div style="font-size:clamp(22px,3.5vw,34px)">💀</div>
+        <div style="font-size:var(--fs-md);font-weight:700;color:var(--tiger)">Nemico da sempre</div>
+        <div style="font-size:var(--fs-sm);color:#4E342E;line-height:1.4">Ha ucciso il padre di Mowgli da neonato. Da allora lo insegue, perché non tollera un essere umano nella sua giungla.</div>
+      </div>
+
+      <div style="border-radius:var(--r);background:var(--tiger-light);border:2px solid #FFCC80;padding:clamp(10px,1.4vh,14px) clamp(10px,1.4vw,14px);display:flex;flex-direction:column;gap:5px">
+        <div style="font-size:clamp(22px,3.5vw,34px)">😤</div>
+        <div style="font-size:var(--fs-md);font-weight:700;color:var(--tiger)">Prepotenza</div>
+        <div style="font-size:var(--fs-sm);color:#4E342E;line-height:1.4">Si considera padrona assoluta della giungla. Pretende obbedienza da tutti gli animali. È il simbolo del tiranno.</div>
+      </div>
+
+      <div style="border-radius:var(--r);background:#FEF3F2;border:2px solid #F5B8B2;padding:clamp(10px,1.4vh,14px) clamp(10px,1.4vw,14px);display:flex;flex-direction:column;gap:5px">
+        <div style="font-size:clamp(22px,3.5vw,34px)">🔥</div>
+        <div style="font-size:var(--fs-md);font-weight:700;color:var(--red)">Unica paura</div>
+        <div style="font-size:var(--fs-sm);color:#4A1208;line-height:1.4">Teme solo il fuoco — il «fiore rosso» — che non capisce e non sa controllare. Questa è la debolezza che Mowgli sfrutta.</div>
+      </div>
+
+      <div style="border-radius:var(--r);background:#FEF3F2;border:2px solid #F5B8B2;padding:clamp(10px,1.4vh,14px) clamp(10px,1.4vw,14px);display:flex;flex-direction:column;gap:5px">
+        <div style="font-size:clamp(22px,3.5vw,34px)">⚖️</div>
+        <div style="font-size:var(--fs-md);font-weight:700;color:var(--red)">Persona o natura?</div>
+        <div style="font-size:var(--fs-sm);color:#4A1208;line-height:1.4">Nell'Ora 2 (Buck) il nemico era il <em>fiume gelato</em>. Qui il nemico ha nome, faccia, intenzioni: è più simile a una fiaba.</div>
+      </div>
+
+    </div>
+
+    <!-- CITAZIONE -->
+    <div style="background:var(--navy);border-radius:var(--r);padding:clamp(10px,1.5vh,16px) clamp(14px,2vw,22px);display:flex;align-items:center;gap:14px;flex-shrink:0">
+      <span style="font-size:clamp(22px,3vw,32px);flex-shrink:0">💬</span>
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:var(--fs-md);font-style:italic;color:#FFE066">«Il cucciolo d'uomo è mio! Datemi Mowgli!»</div>
+        <div style="font-size:var(--fs-xs);color:rgba(255,255,255,.55);margin-top:4px">— Shere Khan, alla Rupe del Consiglio</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======================== S9 GLI AIUTANTI ======================== -->
+<div class="slide" id="s9">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Gli <span class="t">aiutanti</span> di Mowgli</h2><span class="tag t-teal">🤝 I personaggi secondari</span></div>
+  <div class="si">
+    <div class="gbox" style="flex-shrink:0">🎯 Nel racconto d'avventura gli aiutanti affiancano il protagonista e lo soccorrono nelle difficoltà. Mowgli ne ha tre molto diversi tra loro — ma tutti fondamentali.</div>
+    <div style="flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(170px,100%),1fr));gap:var(--gap);min-height:0">
+      <div class="pcard baloo">
+        <div class="pic">🐻</div>
+        <div class="prl">Aiutante — il maestro</div>
+        <div class="pnm">Baloo</div>
+        <div class="ptrs">
+          <div class="ptr">Orso bruno, grosso e pacifico. Rappresenta la <strong>saggezza</strong></div>
+          <div class="ptr">È il <strong>maestro di Mowgli</strong>: gli insegna la Legge della Giungla e i versi di caccia</div>
+          <div class="ptr">Lento nei movimenti ma <strong>saggio nelle parole</strong>. Gli piace molto il miele</div>
+          <div class="ptr">Difende Mowgli di fronte al consiglio dei lupi</div>
+        </div>
+        <div class="pex">«La giungla è grande, il cucciolo è piccolo: che faccia silenzio e mediti.» — Baloo</div>
+      </div>
+      <div class="pcard bagheera">
+        <div class="pic">🐆</div>
+        <div class="prl">Aiutante — il protettore</div>
+        <div class="pnm">Bagheera</div>
+        <div class="ptrs">
+          <div class="ptr">Pantera nera, agile, silenziosa e <strong>fortissima</strong>. Rappresenta la forza fisica</div>
+          <div class="ptr">È il <strong>protettore di Mowgli</strong>: lo segue come un genitore vigile</div>
+          <div class="ptr">Pragmatica e diretta: dice sempre la verità, anche quando è dura da sentire</div>
+          <div class="ptr">È lei a pagare un toro al consiglio dei lupi per far accettare Mowgli nel branco</div>
+        </div>
+        <div class="pex">«Zampe che non fanno rumore, occhi che vedono nell'oscurità.» — Bagheera</div>
+      </div>
+      <div class="pcard akela">
+        <div class="pic">🐺</div>
+        <div class="prl">Aiutante — il capo</div>
+        <div class="pnm">Akela</div>
+        <div class="ptrs">
+          <div class="ptr">Lupo grigio, vecchio e saggio: è il <strong>capo del branco</strong> del Popolo Libero</div>
+          <div class="ptr">Accetta Mowgli nel branco e lo <strong>protegge da Shere Khan</strong> fin dall'inizio</div>
+          <div class="ptr">Rappresenta la <strong>giustizia e il rispetto delle regole</strong>: fa rispettare la Legge della Giungla</div>
+          <div class="ptr">Affianca Mowgli nello scontro finale contro la tigre</div>
+        </div>
+        <div class="pex">«La forza del lupo è nel branco, la forza del branco è nel lupo.» — Akela</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S10 AMBIENTAZIONE ======================== -->
+<div class="slide" id="s10">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">L'<span class="g">ambientazione</span>: la giungla indiana</h2><span class="tag t-jungle">🌿 Avventura esotica</span></div>
+  <div class="si">
+    <div class="g2">
+      <div class="card gl">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--jungle);margin-bottom:7px">🌿 La giungla come luogo</div>
+        <div class="ilist">
+          <div class="it"><div class="b g"></div><div><strong>Alberi enormi</strong> con radici che emergono dal suolo, liane, ombra perenne</div></div>
+          <div class="it"><div class="b g"></div><div><strong>Caldo umido</strong>: la stagione delle piogge trasforma tutto in fango; quella secca prosciuga i fiumi</div></div>
+          <div class="it"><div class="b g"></div><div>La <strong>Rupe del Consiglio</strong>: il luogo dove gli animali si riuniscono di notte sotto la luna</div></div>
+          <div class="it"><div class="b g"></div><div>La giungla ha <strong>le sue leggi</strong>: la Legge della Giungla, che tutti devono rispettare</div></div>
+        </div>
+      </div>
+      <div class="card rl">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:7px">🌍 Sottogenere: avventura esotica</div>
+        <div class="ilist">
+          <div class="it"><div class="b r"></div><div>L'<strong>avventura esotica</strong> è ambientata in luoghi lontani, caldi, sconosciuti all'Occidente</div></div>
+          <div class="it"><div class="b r"></div><div>L'India dell'Ottocento è per i lettori europei un mondo <strong>misterioso e affascinante</strong></div></div>
+          <div class="it"><div class="b r"></div><div>La giungla è il luogo perfetto: bellissima ma <strong>piena di pericoli</strong>, con regole proprie</div></div>
+          <div class="it"><div class="b r"></div><div>Diversa dall'Ora 2 (frontiera artica): qui fa <strong>caldo</strong>, ci sono colori e odori tropicali</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="cbox">
+      <p><strong>La giungla di Kipling</strong> non è solo uno sfondo: è un personaggio essa stessa. Ha le sue leggi, i suoi ritmi, i suoi misteri. Mowgli la conosce tutta — ogni albero, ogni sentiero, ogni odore — e questo è il suo vantaggio su chiunque altro.</p>
+    </div>
+    <div class="ibox">💡 <strong>Confronto con Buck:</strong> Nell'Ora 2 la natura era <em>fredda, bianca, silenziosa</em> (il Klondike). Qui è <em>calda, verde, rumorosa</em> (la giungla). Stesso sottogenere "avventura nella natura" — ambienti opposti.</div>
+  </div>
+</div>
+
+<!-- ======================== S11 PERICOLO E CONFLITTO ======================== -->
+<div class="slide" id="s11">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Il <span class="r">pericolo</span> e il conflitto</h2><span class="tag t-red">⚡ La tensione narrativa</span></div>
+  <div class="si">
+    <div class="g2" style="flex:1">
+      <div style="display:flex;flex-direction:column;gap:var(--gap)">
+        <div class="card rl">
+          <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:7px">⚡ Qual è il pericolo?</div>
+          <div class="ilist">
+            <div class="it"><div class="b r"></div><div><strong>Shere Khan</strong> vuole uccidere Mowgli fin da quando era neonato</div></div>
+            <div class="it"><div class="b r"></div><div>La tigre è <strong>più forte fisicamente</strong> di qualsiasi altro animale della giungla</div></div>
+            <div class="it"><div class="b r"></div><div>Quando Mowgli cresce, Shere Khan cerca alleati tra i <strong>lupi più giovani</strong> per scacciarlo</div></div>
+            <div class="it"><div class="b r"></div><div>Il pericolo è <strong>continuo e crescente</strong>: non è un momento solo, ma dura tutta la storia</div></div>
+          </div>
+        </div>
+        <div class="card gl">
+          <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--jungle);margin-bottom:7px">✅ Come si risolve?</div>
+          <div class="ilist">
+            <div class="it"><div class="b g"></div><div>Mowgli usa il <strong>fuoco</strong> — il "fiore rosso" — come arma contro la tigre</div></div>
+            <div class="it"><div class="b g"></div><div>Con l'aiuto di <strong>Akela</strong>, il vecchio capo dei lupi, intrappola Shere Khan</div></div>
+            <div class="it"><div class="b g"></div><div>La tigre viene <strong>sconfitta</strong> — ma Mowgli capisce che non appartiene più alla giungla</div></div>
+            <div class="it"><div class="b g"></div><div>La vittoria porta una <strong>perdita</strong>: dovrà lasciare la giungla per il villaggio degli uomini</div></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--gap)">
+        <div class="gbox">
+          🌿 <strong>Il conflitto profondo</strong> di Mowgli non è solo con Shere Khan. È anche il conflitto interiore tra due mondi: <em>Sono un animale della giungla? O sono un essere umano?</em> Questo è il vero motore della storia.
+        </div>
+        <div class="card nl">
+          <div style="font-size:var(--fs-xs);font-weight:700;color:var(--muted);margin-bottom:7px;text-transform:uppercase;letter-spacing:1px">📐 La struttura del conflitto</div>
+          <div class="ilist">
+            <div class="it"><div class="b"></div><div><strong>PROBLEMA:</strong> Shere Khan vuole Mowgli morto</div></div>
+            <div class="it"><div class="b"></div><div><strong>TENTATIVO:</strong> Mowgli usa il fuoco alla Rupe del Consiglio</div></div>
+            <div class="it"><div class="b"></div><div><strong>OSTACOLO:</strong> alcuni lupi tradiscono Mowgli; la tigre non si arrende</div></div>
+            <div class="it"><div class="b"></div><div><strong>SOLUZIONE:</strong> scontro finale — Shere Khan sconfitta</div></div>
+            <div class="it"><div class="b"></div><div><strong>ESITO AMARO:</strong> Mowgli vince ma deve lasciare la giungla</div></div>
+          </div>
+        </div>
+        <div class="abox">⚠ <strong>Il lieto fine di Mowgli</strong> è diverso da quello di Buck. Non è una vittoria piena: Mowgli salva sé stesso, ma perde la sua casa. Kipling ci dice che crescere ha sempre un costo.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S12 I 5 MOMENTI ======================== -->
+<div class="slide" id="s12">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">I <span class="r">5 momenti</span> applicati al Libro della giungla</h2><span class="tag t-gold">📐 Struttura narrativa</span></div>
+  <div class="si">
+    <div class="gbox" style="flex-shrink:0">💡 Applichiamo lo schema dei <strong>5 momenti del racconto</strong> al Libro della giungla. Li riconoscete?</div>
+    <div class="mom-list">
+      <div class="mom">
+        <div class="mom-num">1</div>
+        <div class="mom-body">
+          <div class="mom-label">Momento 1</div>
+          <div class="mom-name">Situazione iniziale</div>
+          <div class="mom-desc">Il mondo della storia nel suo stato di partenza.</div>
+          <div class="mom-jungle">Mowgli è un cucciolo d'uomo cresciuto dai lupi nella giungla di Seoni. Vive con il branco, impara la Legge della Giungla da Baloo e corre con Bagheera. La giungla è la sua casa.</div>
+        </div>
+        <div class="mom-ico">🌿</div>
+      </div>
+      <div class="mom">
+        <div class="mom-num">2</div>
+        <div class="mom-body">
+          <div class="mom-label">Momento 2</div>
+          <div class="mom-name">Rottura dell'equilibrio</div>
+          <div class="mom-desc">L'evento che mette in moto la storia.</div>
+          <div class="mom-jungle">Akela, il vecchio capo, è troppo anziano per difendere Mowgli. I lupi più giovani, istigati da Shere Khan, vogliono consegnare il cucciolo d'uomo alla tigre. Mowgli è in pericolo.</div>
+        </div>
+        <div class="mom-ico">💥</div>
+      </div>
+      <div class="mom">
+        <div class="mom-num">3</div>
+        <div class="mom-body">
+          <div class="mom-label">Momento 3</div>
+          <div class="mom-name">Peripezie</div>
+          <div class="mom-desc">Il protagonista affronta pericoli e ostacoli.</div>
+          <div class="mom-jungle">Mowgli affronta il consiglio dei lupi, usa il fuoco per allontanare Shere Khan, viene rapito dalle scimmie e liberato da Baloo, Bagheera e il pitone Kaa. Ogni prova lo fa crescere.</div>
+        </div>
+        <div class="mom-ico">🏃</div>
+      </div>
+      <div class="mom">
+        <div class="mom-num">4</div>
+        <div class="mom-body">
+          <div class="mom-label">Momento 4</div>
+          <div class="mom-name">Momento più intenso — Spannung</div>
+          <div class="mom-desc">Il punto di massima tensione: non sappiamo come andrà.</div>
+          <div class="mom-jungle">Lo scontro finale con Shere Khan: Mowgli usa il bestiame come esca e affronta la tigre. Shere Khan viene sconfitta. Ma gli abitanti del villaggio cacciano Mowgli, credendolo un demone.</div>
+        </div>
+        <div class="mom-ico">😰</div>
+      </div>
+      <div class="mom">
+        <div class="mom-num">5</div>
+        <div class="mom-body">
+          <div class="mom-label">Momento 5</div>
+          <div class="mom-name">Soluzione</div>
+          <div class="mom-desc">Il conflitto si chiude — il nuovo equilibrio.</div>
+          <div class="mom-jungle">Mowgli sconfigge Shere Khan, ma capisce che non appartiene né alla giungla né al villaggio. Torna nella giungla, accolto dai suoi amici. Vittoria amara: ha vinto, ma ha perso qualcosa.</div>
+        </div>
+        <div class="mom-ico">🌿</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S13 ESERCIZIO VF ======================== -->
+<div class="slide" id="s13">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Esercizio: <span class="r">Vero o Falso?</span></h2><span class="tag t-green">✅ Comprensione del brano</span></div>
+  <div class="si">
+    <div class="gbox" style="flex-shrink:0">💡 Cliccate <strong>V</strong> se l'affermazione è vera, <strong>F</strong> se è falsa. Poi cliccate "Controlla".</div>
+    <div class="vf-list">
+      <div class="vf-row" id="vf1">
+        <div class="vf-q">1. Rudyard Kipling è nato in Inghilterra e non ha mai visitato l'India.</div>
+        <div class="vf-btns"><button class="vf-btn v" onclick="vfC(1,'V')">V</button><button class="vf-btn f" onclick="vfC(1,'F')">F</button></div>
+      </div>
+      <div class="vf-row" id="vf2">
+        <div class="vf-q">2. Mowgli è un bambino umano cresciuto da un branco di lupi nella giungla indiana.</div>
+        <div class="vf-btns"><button class="vf-btn v" onclick="vfC(2,'V')">V</button><button class="vf-btn f" onclick="vfC(2,'F')">F</button></div>
+      </div>
+      <div class="vf-row" id="vf3">
+        <div class="vf-q">3. Baloo è una pantera nera che insegna a Mowgli la Legge della Giungla.</div>
+        <div class="vf-btns"><button class="vf-btn v" onclick="vfC(3,'V')">V</button><button class="vf-btn f" onclick="vfC(3,'F')">F</button></div>
+      </div>
+      <div class="vf-row" id="vf4">
+        <div class="vf-q">4. Shere Khan teme il fuoco, che gli animali chiamano "il fiore rosso".</div>
+        <div class="vf-btns"><button class="vf-btn v" onclick="vfC(4,'V')">V</button><button class="vf-btn f" onclick="vfC(4,'F')">F</button></div>
+      </div>
+      <div class="vf-row" id="vf5">
+        <div class="vf-q">5. Il libro della giungla appartiene al sottogenere "avventura di frontiera", come il brano di London.</div>
+        <div class="vf-btns"><button class="vf-btn v" onclick="vfC(5,'V')">V</button><button class="vf-btn f" onclick="vfC(5,'F')">F</button></div>
+      </div>
+      <div class="vf-row" id="vf6">
+        <div class="vf-q">6. Alla fine Mowgli sconfigge Shere Khan, ma capisce di non appartenere né alla giungla né al villaggio.</div>
+        <div class="vf-btns"><button class="vf-btn v" onclick="vfC(6,'V')">V</button><button class="vf-btn f" onclick="vfC(6,'F')">F</button></div>
+      </div>
+    </div>
+    <div class="ctrl-row">
+      <button class="btn-ok" onclick="checkVF()">✓ Controlla</button>
+      <button class="btn-rst" onclick="resetVF()">↺ Ricomincia</button>
+      <div class="res-msg" id="vfMsg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S14 ESERCIZIO QUIZ ======================== -->
+<div class="slide" id="s14">
+  <div class="topbar"></div>
+  <div class="sh">
+    <h2 class="slide-title">Quiz: <span class="r">chi è chi?</span></h2>
+    <span class="tag t-red">🎯 Riconosci i personaggi</span>
+  </div>
+  <div class="si" style="gap:var(--gap)">
+
+    <div style="background:var(--jungle-light);border:2px solid #A5D6A7;border-radius:var(--r);padding:clamp(8px,1.2vw,12px) clamp(12px,1.6vw,16px);font-size:var(--fs-sm);color:var(--jungle);font-weight:500;flex-shrink:0">
+      🎯 Leggi la descrizione e clicca il nome del personaggio giusto. Se sbagli, ti mostra la risposta corretta.
+    </div>
+
+    <div id="quiz14-container" style="flex:1;display:flex;flex-direction:column;gap:var(--gap);min-height:0;overflow:hidden"></div>
+
+  </div>
+</div>
+
+<!-- ======================== S14B ORDINA I MOMENTI ======================== -->
+<div class="slide" id="s14b">
+  <div class="topbar"></div>
+  <div class="sh">
+    <h2 class="slide-title">Esercizio: <span class="g">metti in ordine!</span></h2>
+    <span class="tag t-jungle">📐 I 5 momenti del racconto</span>
+  </div>
+  <div class="si" style="gap:var(--gap)">
+
+    <div style="background:var(--jungle-light);border:2px solid #A5D6A7;border-radius:var(--r);padding:clamp(8px,1.2vw,12px) clamp(12px,1.6vw,16px);font-size:var(--fs-sm);color:var(--jungle);font-weight:500;flex-shrink:0">
+      🎯 I 5 momenti del racconto <strong>del Libro della giungla</strong> sono mescolati. Clicca i numeri nell'ordine corretto (1 → 5).
+    </div>
+
+    <div id="ord-list" style="flex:1;display:flex;flex-direction:column;gap:var(--gap);min-height:0"></div>
+
+    <div style="display:flex;gap:var(--gap);align-items:center;flex-shrink:0">
+      <button onclick="checkOrd()" style="padding:6px clamp(12px,1.8vw,20px);border-radius:7px;font-size:var(--fs-sm);font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;border:none;background:var(--jungle);color:white;transition:all .18s">✓ Controlla</button>
+      <button onclick="resetOrd()" style="padding:6px clamp(12px,1.8vw,20px);border-radius:7px;font-size:var(--fs-sm);font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;background:var(--light);color:var(--muted);border:1.5px solid var(--border)">↺ Ricomincia</button>
+      <div id="ordMsg" style="font-size:var(--fs-sm);font-weight:600"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S14C SCELTA MULTIPLA ======================== -->
+<div class="slide" id="s14c">
+  <div class="topbar"></div>
+  <div class="sh">
+    <h2 class="slide-title">Esercizio: <span class="r">scelta multipla</span></h2>
+    <span class="tag t-red">🎯 Analisi e comprensione</span>
+  </div>
+  <div class="si" style="gap:var(--gap)">
+    <div class="mc-list">
+      <div class="mc-item">
+        <div class="mc-q">1. 🏆 Quale premio letterario ha vinto Rudyard Kipling nel 1907?</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="mcC(this,false)">A) Il Premio Pulitzer per la narrativa</button>
+          <button class="mc-opt" onclick="mcC(this,true)">B) Il Premio Nobel per la letteratura</button>
+          <button class="mc-opt" onclick="mcC(this,false)">C) Il premio Man Booker per il romanzo</button>
+        </div>
+      </div>
+      <div class="mc-item">
+        <div class="mc-q">2. 🔥 In che modo Mowgli sconfigge Shere Khan nel brano?</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="mcC(this,false)">A) Con una spada regalatagli da Akela</button>
+          <button class="mc-opt" onclick="mcC(this,true)">B) Usando il fuoco — il «fiore rosso» — che spaventa la tigre</button>
+          <button class="mc-opt" onclick="mcC(this,false)">C) Chiamando gli elefanti del villaggio</button>
+        </div>
+      </div>
+      <div class="mc-item">
+        <div class="mc-q">3. 🌍 Qual è il sottogenere dell'avventura del Libro della giungla?</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="mcC(this,false)">A) Avventura di frontiera (freddo, natura artica)</button>
+          <button class="mc-opt" onclick="mcC(this,false)">B) Avventura di mare (pirati, velieri)</button>
+          <button class="mc-opt" onclick="mcC(this,true)">C) Avventura esotica (luoghi tropicali lontani)</button>
+        </div>
+      </div>
+      <div class="mc-item">
+        <div class="mc-q">4. 🤔 Qual è il tema più profondo del Libro della giungla?</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="mcC(this,false)">A) La caccia alle tigri nell'India coloniale</button>
+          <button class="mc-opt" onclick="mcC(this,true)">B) La ricerca della propria identità: «Chi sono? Dove appartengo?»</button>
+          <button class="mc-opt" onclick="mcC(this,false)">C) La superiorità degli animali sugli esseri umani</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S15 COMPLETA LE FRASI ======================== -->
+<div class="slide" id="s15">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Esercizio: <span class="r">completa le frasi</span></h2><span class="tag t-gold">✏️ Scrivi la parola giusta</span></div>
+  <div class="si">
+    <div class="gbox" style="flex-shrink:0">💡 Scrivi la parola corretta in ogni spazio. Poi clicca "Controlla". Attenzione alle maiuscole!</div>
+    <div class="fill-list">
+      <div class="fill-item">1. Rudyard Kipling nasce a <input class="fill-inp" id="fi1" data-a="Bombay" placeholder="___________"> nel 1865 da genitori britannici.</div>
+      <div class="fill-item">2. Il protagonista della storia si chiama <input class="fill-inp" id="fi2" data-a="Mowgli" placeholder="___________"> ed è un bambino cresciuto dai lupi.</div>
+      <div class="fill-item">3. L'antagonista è <input class="fill-inp" id="fi3" data-a="Shere Khan" placeholder="___________">, una tigre reale del Bengala feroce e prepotente.</div>
+      <div class="fill-item">4. L'arma segreta di Mowgli contro la tigre è il <input class="fill-inp" id="fi4" data-a="fuoco" placeholder="___________">, che gli animali chiamano "il fiore rosso".</div>
+      <div class="fill-item">5. L'orso maestro si chiama <input class="fill-inp" id="fi5" data-a="Baloo" placeholder="___________"> e insegna a Mowgli la Legge della Giungla.</div>
+      <div class="fill-item">6. Il Libro della giungla appartiene al sottogenere dell'avventura <input class="fill-inp" id="fi6" data-a="esotica" placeholder="___________">, ambientata in luoghi tropicali lontani.</div>
+    </div>
+    <div class="ctrl-row">
+      <button class="btn-ok" onclick="checkFill()">✓ Controlla</button>
+      <button class="btn-rst" onclick="resetFill()">↺ Ricomincia</button>
+      <div class="res-msg" id="fillMsg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S16 SCHEDA QUADERNO ======================== -->
+<div class="slide" id="s16">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">La <span class="g">scheda</span> del brano</h2><span class="tag t-green">✏ Da copiare sul quaderno</span></div>
+  <div class="si">
+    <div class="gbox" style="flex-shrink:0">📌 Copiate questa scheda sul quaderno — stesse voci dell'Ora 2, così potrete confrontare Buck e Mowgli.</div>
+    <div class="scheda">
+      <div class="scheda-top">
+        <div>
+          <div class="scheda-top-title">📋 SCHEDA DEL BRANO — ORA 3</div>
+          <div class="scheda-top-sub">R. Kipling · "Il libro della giungla" (1894)</div>
+        </div>
+        <span style="font-size:clamp(20px,3vw,30px)">🌿</span>
+      </div>
+      <div class="scheda-body">
+        <div class="sr"><div class="sk">Autore</div><div class="sv"><strong>Rudyard Kipling</strong> — scrittore britannico (1865–1936) · Premio Nobel per la letteratura 1907</div></div>
+        <div class="sr"><div class="sk">Anno</div><div class="sv"><strong>1894</strong> — pubblicato in raccolta; basato sulle tradizioni orali e sulla fauna dell'India</div></div>
+        <div class="sr"><div class="sk">Sottogenere</div><div class="sv"><strong>Avventura esotica</strong> — luogo tropicale lontano, animali, leggi della natura</div></div>
+        <div class="sr"><div class="sk">Ambientazione</div><div class="sv">Giungla di <strong>Seoni</strong> (India centrale) — fine Ottocento — foresta tropicale, caldo, animali selvatici</div></div>
+        <div class="sr"><div class="sk">Protagonista</div><div class="sv"><strong>Mowgli</strong> — bambino umano cresciuto dai lupi — agile, intelligente, coraggioso — usa il fuoco</div></div>
+        <div class="sr"><div class="sk">Antagonista</div><div class="sv"><strong>Shere Khan</strong> — tigre reale del Bengala — feroce, prepotente — teme il fuoco</div></div>
+        <div class="sr"><div class="sk">Aiutanti</div><div class="sv"><strong>Baloo</strong> (orso-maestro) · <strong>Bagheera</strong> (pantera-protettrice) · <strong>Akela</strong> (lupo-capo)</div></div>
+        <div class="sr"><div class="sk">Pericolo</div><div class="sv">Shere Khan vuole uccidere Mowgli fin dall'infanzia; i lupi giovani lo tradiscono</div></div>
+        <div class="sr"><div class="sk">Colpo di scena</div><div class="sv">Mowgli usa il fuoco alla Rupe del Consiglio — gli animali non lo conoscono e ne hanno terrore</div></div>
+        <div class="sr"><div class="sk">Temi principali</div><div class="sv"><strong>Identità, appartenenza, crescita, legge e libertà, legame uomo-animale</strong></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S17 CONFRONTO ORA 2 E 3 ======================== -->
+<div class="slide" id="s17">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Buck e Mowgli: <span class="r">confronto</span></h2><span class="tag t-blue">🔗 Collegamento Ore 2–3</span></div>
+  <div class="si">
+    <div class="ibox" style="flex-shrink:0">💡 Abbiamo letto due brani d'avventura diversissimi. Vediamo cosa hanno in comune e cosa li distingue.</div>
+    <div class="cmp-grid" style="flex:1">
+      <div class="cmp-card ora2">
+        <div class="cmp-title">🐕 Buck di London — Ora 2</div>
+        <div class="cmp-item">Ambientazione: Klondike artico — freddo, neve, ghiaccio</div>
+        <div class="cmp-item">Protagonista: un cane — fedele al padrone</div>
+        <div class="cmp-item">Antagonista: la natura stessa (fiume, corrente)</div>
+        <div class="cmp-item">Pericolo: annegamento nelle rapide gelate</div>
+        <div class="cmp-item">Colpo di scena: Buck si butta in acqua senza ordini</div>
+        <div class="cmp-item">Tema: fedeltà e legame uomo-animale</div>
+        <div class="cmp-item">Sottogenere: avventura di frontiera</div>
+      </div>
+      <div class="cmp-card ora3">
+        <div class="cmp-title">🌿 Mowgli di Kipling — Ora 3</div>
+        <div class="cmp-item">Ambientazione: giungla indiana — caldo, piante, animali</div>
+        <div class="cmp-item">Protagonista: un bambino umano cresciuto tra gli animali</div>
+        <div class="cmp-item">Antagonista: Shere Khan (personaggio preciso)</div>
+        <div class="cmp-item">Pericolo: la tigre che lo perseguita fin dall'infanzia</div>
+        <div class="cmp-item">Colpo di scena: il fuoco come arma inaspettata</div>
+        <div class="cmp-item">Tema: identità e appartenenza</div>
+        <div class="cmp-item">Sottogenere: avventura esotica</div>
+      </div>
+    </div>
+    <div class="cbox">
+      <p><strong>Cosa hanno in comune:</strong> entrambi sono racconti d'avventura realistici, con un protagonista coraggioso, un pericolo concreto, un colpo di scena e un lieto fine (parzialmente). Entrambi parlano del legame tra esseri umani e animali. <strong>Cosa li distingue:</strong> il clima, il tipo di antagonista, il sottogenere e il tema principale.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== S18 ANTICIPAZIONE ORA 4 ======================== -->
+<div class="slide" id="s18">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">La prossima avventura: <span class="o">il mare e i pirati</span></h2><span class="tag t-tiger">🏴‍☠️ Anticipazione Ora 4</span></div>
+  <div class="si">
+    <div class="g2" style="flex:1">
+      <div style="display:flex;flex-direction:column;gap:var(--gap)">
+        <div class="card gl">
+          <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--jungle);margin-bottom:7px">🌿 Ora 3 — Mowgli (Kipling)</div>
+          <div class="ilist">
+            <div class="it"><div class="b g"></div><div>Ambientazione: <strong>giungla indiana</strong></div></div>
+            <div class="it"><div class="b g"></div><div>Protagonista: <strong>un bambino umano</strong> tra gli animali</div></div>
+            <div class="it"><div class="b g"></div><div>Pericolo: <strong>Shere Khan</strong> — la tigre feroce</div></div>
+            <div class="it"><div class="b g"></div><div>Sottogenere: <strong>avventura esotica</strong></div></div>
+          </div>
+        </div>
+        <div class="card" style="background:var(--tiger-light);border:2px solid #FFCC80">
+          <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tiger);margin-bottom:7px">🏴‍☠️ Ora 4 — L'isola del tesoro (Stevenson)</div>
+          <div class="ilist">
+            <div class="it"><div class="b r"></div><div>Ambientazione: <strong>mare aperto e isola dei pirati</strong></div></div>
+            <div class="it"><div class="b r"></div><div>Protagonista: <strong>Jim Hawkins</strong> — un ragazzo di 12 anni</div></div>
+            <div class="it"><div class="b r"></div><div>Pericolo: <strong>Long John Silver</strong> — il pirata a una gamba</div></div>
+            <div class="it"><div class="b r"></div><div>Sottogenere: <strong>avventura di mare</strong></div></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--gap)">
+        <div class="abox">
+          🏴‍☠️ <strong>Robert Louis Stevenson</strong> (1850–1894) è uno scrittore scozzese. <em>L'isola del tesoro</em> (1883) è il romanzo d'avventura di mare più famoso della storia. Il protagonista, Jim Hawkins, è un ragazzo di 12 anni — quasi come voi! Ha ispirato il film <em>Treasure Planet</em> di Disney (2002).
+        </div>
+        <div class="card" style="background:#EAF1FB;border:2px solid #B0CCF0">
+          <div style="font-size:var(--fs-xs);font-weight:700;color:var(--blue);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">📋 Stesso lavoro dell'Ora 3</div>
+          <div class="ilist">
+            <div class="it"><div class="b"></div><div>Guarderemo una scena da <strong>Treasure Planet</strong></div></div>
+            <div class="it"><div class="b"></div><div>Leggeremo il brano insieme</div></div>
+            <div class="it"><div class="b"></div><div>Compileremo la stessa <strong>scheda sul quaderno</strong></div></div>
+            <div class="it"><div class="b"></div><div>Esercizi di comprensione + quiz finale</div></div>
+          </div>
+        </div>
+        <div class="cbox">
+          <div class="clbl">Per la prossima volta</div>
+          <p>Nessun compito scritto. Se volete, cercate: <strong>chi è Jim Hawkins? Chi è Long John Silver? Cos'è l'isola del tesoro?</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end deck -->
+
+<div class="navb">
+  <button onclick="go(-1)" id="bP" disabled>◀ Indietro</button>
+  <div class="ndots" id="dots"></div>
+  <div class="nctr" id="ctr">1 / 20</div>
+  <button onclick="go(1)" id="bN">Avanti ▶</button>
+</div>
+
+<script>
+/* NAV */
+const slides=[...document.querySelectorAll('.slide')];
+const N=slides.length;let cur=0;
+const dotsEl=document.getElementById('dots');
+slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>gt(i);dotsEl.appendChild(d);});
+function gt(n){slides[cur].classList.remove('active');slides[cur].classList.add('prev');setTimeout(()=>slides[cur].classList.remove('prev'),380);cur=n;slides[cur].classList.add('active');dotsEl.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===cur));document.getElementById('ctr').textContent=(cur+1)+' / '+N;document.getElementById('bP').disabled=cur===0;document.getElementById('bN').disabled=cur===N-1;}
+function go(d){if(cur+d>=0&&cur+d<N)gt(cur+d);}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')go(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(-1);});
+
+/* VF */
+const vfAns={1:'F',2:'V',3:'F',4:'V',5:'F',6:'V'};
+const vfSel={};
+function vfC(n,ans){
+  vfSel[n]=ans;
+  const row=document.getElementById('vf'+n);
+  row.querySelectorAll('.vf-btn').forEach(b=>b.classList.remove('sel','correct','wrong'));
+  row.querySelectorAll('.vf-btn').forEach(b=>{if((ans==='V'&&b.classList.contains('v'))||(ans==='F'&&b.classList.contains('f')))b.classList.add('sel');});
+  document.getElementById('vfMsg').textContent='';
+}
+function checkVF(){
+  let ok=0,tot=0;
+  Object.keys(vfAns).forEach(n=>{
+    const row=document.getElementById('vf'+n);
+    row.querySelectorAll('.vf-btn').forEach(b=>b.classList.remove('correct','wrong','sel'));
+    if(!vfSel[n])return;
+    tot++;
+    const cv=vfSel[n]===vfAns[n];
+    if(cv)ok++;
+    row.querySelectorAll('.vf-btn').forEach(b=>{
+      const isV=b.classList.contains('v'),isF=b.classList.contains('f');
+      if((isV&&vfAns[n]==='V')||(isF&&vfAns[n]==='F'))b.classList.add('correct');
+      else if((isV&&vfSel[n]==='V'&&vfAns[n]!=='V')||(isF&&vfSel[n]==='F'&&vfAns[n]!=='F'))b.classList.add('wrong');
+    });
+  });
+  const m=document.getElementById('vfMsg');
+  if(!tot){m.textContent='Rispondi almeno a una domanda!';m.className='res-msg';return;}
+  const total=Object.keys(vfAns).length;
+  m.innerHTML=ok===total?'<span style="color:var(--green);font-weight:700">🎉 Perfetto! Tutte corrette!</span>':'<span style="color:var(--red);font-weight:700">'+ok+' su '+total+' corrette — riprova!</span>';
+  m.className='res-msg';
+}
+function resetVF(){
+  Object.keys(vfAns).forEach(n=>{delete vfSel[n];document.getElementById('vf'+n).querySelectorAll('.vf-btn').forEach(b=>b.classList.remove('sel','correct','wrong'));});
+  document.getElementById('vfMsg').textContent='';
+}
+
+/* MC */
+function mcC(btn,correct){
+  const parent=btn.closest('.mc-item');
+  parent.querySelectorAll('.mc-opt').forEach(b=>b.classList.add('disabled'));
+  if(correct){btn.classList.add('correct');}
+  else{
+    btn.classList.add('wrong');
+    parent.querySelectorAll('.mc-opt').forEach(b=>{if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes('true'))b.classList.add('correct');});
+  }
+}
+
+/* FILL */
+function checkFill(){
+  const inputs=document.querySelectorAll('.fill-inp');
+  let ok=0,tot=0;
+  inputs.forEach(inp=>{
+    if(!inp.value.trim())return;
+    tot++;
+    const correct=inp.value.trim().toLowerCase()===inp.dataset.a.toLowerCase();
+    inp.style.borderBottomColor=correct?'var(--green)':'var(--red)';
+    inp.style.color=correct?'var(--green)':'var(--red)';
+    if(correct)ok++;
+  });
+  const m=document.getElementById('fillMsg');
+  if(!tot){m.textContent='Scrivi almeno una risposta!';m.className='res-msg';return;}
+  m.innerHTML=ok===inputs.length?'<span style="color:var(--green);font-weight:700">🎉 Perfetto!</span>':'<span style="color:var(--red);font-weight:700">'+ok+' su '+inputs.length+' — riprova!</span>';
+  m.className='res-msg';
+}
+function resetFill(){
+  document.querySelectorAll('.fill-inp').forEach(inp=>{inp.value='';inp.style.borderBottomColor='';inp.style.color='';});
+  document.getElementById('fillMsg').textContent='';
+}
+/* ===== QUIZ 14 — Chi è chi? (event delegation, no inline onclick) ===== */
+const q14data = [
+  {desc:"È un bambino umano cresciuto dai lupi. Usa il fuoco come arma segreta.", emoji:"👦", ans:"Mowgli", opts:["Mowgli","Shere Khan","Baloo","Bagheera"]},
+  {desc:"Orso bruno e saggio. È il maestro di Mowgli e gli insegna la Legge della Giungla.", emoji:"🐻", ans:"Baloo", opts:["Akela","Baloo","Bagheera","Shere Khan"]},
+  {desc:"Tigre reale del Bengala. Feroce e prepotente. Teme solo il fuoco.", emoji:"🐯", ans:"Shere Khan", opts:["Akela","Mowgli","Shere Khan","Baloo"]},
+  {desc:"Pantera nera, silenziosa e potente. È la protettrice di Mowgli.", emoji:"🐆", ans:"Bagheera", opts:["Bagheera","Shere Khan","Akela","Baloo"]},
+  {desc:"Lupo grigio, vecchio e saggio. È il capo del Popolo Libero.", emoji:"🐺", ans:"Akela", opts:["Baloo","Mowgli","Shere Khan","Akela"]},
+];
+
+function buildQ14(){
+  var cont = document.getElementById('quiz14-container');
+  if(!cont) return;
+  cont.innerHTML = '';
+  q14data.forEach(function(q, idx){
+    var div = document.createElement('div');
+    div.id = 'q14-' + idx;
+    div.style.cssText = 'flex:1;background:var(--light);border:2px solid var(--border);border-radius:var(--r);padding:clamp(8px,1.2vh,12px) clamp(10px,1.4vw,14px);display:flex;align-items:center;gap:10px;min-height:0;transition:border-color .2s';
+
+    var emo = document.createElement('span');
+    emo.textContent = q.emoji;
+    emo.style.cssText = 'font-size:clamp(22px,3.5vw,38px);flex-shrink:0';
+
+    var desc = document.createElement('div');
+    desc.textContent = q.desc;
+    desc.style.cssText = 'flex:1;font-size:var(--fs-sm);line-height:1.4;color:var(--text)';
+
+    var btns = document.createElement('div');
+    btns.style.cssText = 'display:flex;flex-wrap:wrap;gap:5px;flex-shrink:0';
+
+    q.opts.forEach(function(opt){
+      var btn = document.createElement('button');
+      btn.textContent = opt;
+      btn.style.cssText = 'padding:5px 10px;border-radius:7px;border:1.5px solid var(--border);background:white;font-size:var(--fs-xs);font-weight:600;cursor:pointer;font-family:Inter,sans-serif;color:var(--text);transition:all .18s;white-space:nowrap';
+      btn.addEventListener('click', function(){ q14ans(idx, opt, btn); });
+      btns.appendChild(btn);
+    });
+
+    div.appendChild(emo);
+    div.appendChild(desc);
+    div.appendChild(btns);
+    cont.appendChild(div);
+  });
+}
+
+function q14ans(idx, choice, btn){
+  var row = document.getElementById('q14-'+idx);
+  row.querySelectorAll('button').forEach(function(b){ b.style.pointerEvents='none'; });
+  var correct = choice === q14data[idx].ans;
+  btn.style.background = correct ? 'var(--green)' : 'var(--red)';
+  btn.style.color = 'white';
+  btn.style.borderColor = correct ? 'var(--green)' : 'var(--red)';
+  if(!correct){
+    row.querySelectorAll('button').forEach(function(b){
+      if(b.textContent === q14data[idx].ans){
+        b.style.background='var(--green)'; b.style.color='white'; b.style.borderColor='var(--green)';
+      }
+    });
+  }
+  row.style.borderColor = correct ? 'var(--green)' : 'var(--red)';
+}
+
+/* ===== ORDINA I MOMENTI ===== */
+var ordItems = [
+  {id:0, text:"Mowgli viene adottato dai lupi dopo l'attacco di Shere Khan. Cresce nella giungla con Baloo e Bagheera.", correct:1},
+  {id:1, text:"I lupi più giovani, sobillati da Shere Khan, vogliono cacciare Mowgli. L'equilibrio si rompe.", correct:2},
+  {id:2, text:"Mowgli affronta prove su prove: il rapimento delle scimmie, tradimenti, minacce della tigre.", correct:3},
+  {id:3, text:"Scontro finale: Mowgli usa il fuoco. Shere Khan fugge. Ma gli uomini del villaggio cacciano Mowgli.", correct:4},
+  {id:4, text:"Shere Khan viene sconfitta. Mowgli capisce di non appartenere né alla giungla né al villaggio.", correct:5},
+];
+var ordState = [];
+
+function buildOrd(){
+  var list = document.getElementById('ord-list');
+  if(!list) return;
+  ordState = ordItems.map(function(it){ return Object.assign({}, it, {userN:null}); });
+  var shuffled = ordState.slice().sort(function(){ return Math.random()-.5; });
+  list.innerHTML = '';
+  shuffled.forEach(function(it){
+    var div = document.createElement('div');
+    div.id = 'ord-item-' + it.id;
+    div.style.cssText = 'flex:1;background:var(--light);border:2px solid var(--border);border-radius:var(--r);padding:clamp(7px,1vh,10px) clamp(10px,1.4vw,14px);display:flex;align-items:center;gap:10px;min-height:0;transition:border-color .2s';
+
+    var numsDiv = document.createElement('div');
+    numsDiv.style.cssText = 'display:flex;gap:5px;flex-shrink:0';
+
+    [1,2,3,4,5].forEach(function(n){
+      var btn = document.createElement('button');
+      btn.textContent = n;
+      btn.style.cssText = 'width:clamp(26px,3vw,34px);height:clamp(26px,3vw,34px);border-radius:50%;border:2px solid var(--border);background:white;font-size:var(--fs-xs);font-weight:700;cursor:pointer;transition:all .18s;font-family:Inter,sans-serif;flex-shrink:0';
+      btn.addEventListener('click', function(){ setOrd(it.id, n, btn, div); });
+      numsDiv.appendChild(btn);
+    });
+
+    var textDiv = document.createElement('div');
+    textDiv.textContent = it.text;
+    textDiv.style.cssText = 'flex:1;font-size:var(--fs-sm);color:var(--text);line-height:1.4';
+
+    div.appendChild(numsDiv);
+    div.appendChild(textDiv);
+    list.appendChild(div);
+  });
+  var m = document.getElementById('ordMsg');
+  if(m) m.textContent='';
+}
+
+function setOrd(id, num, btn, row){
+  // deselect same number from other rows
+  ordState.forEach(function(o){
+    if(o.userN === num && o.id !== id){
+      o.userN = null;
+      var r = document.getElementById('ord-item-'+o.id);
+      if(r) r.querySelectorAll('button').forEach(function(b){
+        b.style.background='white'; b.style.color='var(--text)'; b.style.borderColor='var(--border)';
+      });
+    }
+  });
+  var item = ordState.find(function(o){ return o.id===id; });
+  if(item) item.userN = num;
+  // reset all buttons in this row first
+  row.querySelectorAll('button').forEach(function(b){
+    b.style.background='white'; b.style.color='var(--text)'; b.style.borderColor='var(--border)';
+  });
+  btn.style.background='var(--jungle)'; btn.style.color='white'; btn.style.borderColor='var(--jungle)';
+  var m = document.getElementById('ordMsg');
+  if(m) m.textContent='';
+}
+
+function checkOrd(){
+  var ok=0, answered=0;
+  ordState.forEach(function(it){
+    var row = document.getElementById('ord-item-'+it.id);
+    if(!row || it.userN===null) return;
+    answered++;
+    var correct = it.userN===it.correct;
+    if(correct) ok++;
+    row.style.borderColor = correct ? 'var(--green)' : 'var(--red)';
+  });
+  var m = document.getElementById('ordMsg');
+  if(!m) return;
+  if(!answered){ m.textContent='Assegna un numero a ogni evento!'; m.style.color='var(--muted)'; return; }
+  if(ok===ordState.length){ m.innerHTML='<span style="color:var(--green);font-weight:700">Perfetto! Ordine corretto!</span>'; }
+  else { m.innerHTML='<span style="color:var(--red);font-weight:700">'+ok+' su '+ordState.length+' — riprova!</span>'; }
+}
+function resetOrd(){ buildOrd(); }
+
+// Inizializzazione unica
+setTimeout(function(){ buildQ14(); buildOrd(); }, 200);
+</script>
+</body>
+</html>
