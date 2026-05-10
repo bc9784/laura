@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Il Progetto — Ora 4</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1A2E4A; --red:#C0392B; --teal:#0E7C7B; --green:#27640A;
+  --amber:#C0530A; --purple:#44276A; --blue:#0D4B8C;
+  --gold:#8A6200; --text:#111; --muted:#555; --light:#F5F5F5; --border:#CCC;
+  /* palette creativa */
+  --crea:#3D1F8C; --crea-mid:#5E35B1; --crea-light:#EDE7F6;
+  --warm:#D97020; --warm-light:#FFF3E0;
+  --fs-xs:clamp(10px,1.2vw,13px); --fs-sm:clamp(12px,1.4vw,15px);
+  --fs-md:clamp(13px,1.6vw,17px); --fs-lg:clamp(15px,2vw,20px);
+  --fs-xl:clamp(18px,2.8vw,28px); --fs-2xl:clamp(22px,3.6vw,44px);
+  --fs-3xl:clamp(28px,5.5vw,66px);
+  --pad-x:clamp(16px,4vw,52px); --pad-y:clamp(10px,2vh,18px);
+  --gap:clamp(8px,1.4vw,13px); --r:clamp(8px,1vw,13px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#1A1A2E;height:100vh;min-height:100dvh;overflow:hidden;display:flex;flex-direction:column;color:var(--text);}
+.deck{flex:1;position:relative;overflow:hidden;min-height:0;}
+.slide{position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateX(30px);transition:opacity .32s ease,transform .32s ease;overflow:hidden;}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
+.slide.prev{opacity:0;transform:translateX(-30px);}
+.topbar{height:clamp(4px,.6vh,7px);background:linear-gradient(90deg,var(--crea) 30%,var(--crea-mid) 65%,var(--warm));flex-shrink:0;}
+.sh{padding:var(--pad-y) var(--pad-x) 0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-shrink:0;}
+.slide-title{font-family:'Playfair Display',serif;font-size:var(--fs-2xl);font-weight:900;color:var(--navy);line-height:1.1;flex:1;}
+.slide-title .w{color:var(--warm);}.slide-title .p{color:var(--crea-mid);}.slide-title .t{color:var(--teal);}.slide-title .g{color:var(--green);}.slide-title .r{color:var(--red);}
+.tag{font-size:var(--fs-xs);font-weight:700;letter-spacing:1.8px;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:4px;border:1.5px solid;}
+.t-warm{color:var(--warm);background:var(--warm-light);border-color:#FFCC80;}
+.t-crea{color:var(--crea);background:var(--crea-light);border-color:#B39DDB;}
+.t-green{color:var(--green);background:#EDFAE0;border-color:#A8D98A;}
+.t-red{color:var(--red);background:#FDECEA;border-color:#F5B8B2;}
+.t-teal{color:var(--teal);background:#E8F7F7;border-color:#A8DFDE;}
+.t-blue{color:var(--blue);background:#EAF1FB;border-color:#B0CCF0;}
+.t-gold{color:var(--gold);background:#FEF7E0;border-color:#EDCE77;}
+.pref{font-size:var(--fs-xs);font-weight:600;color:var(--muted);background:var(--light);border:1.5px solid var(--border);padding:3px 10px;border-radius:5px;font-family:monospace;margin-top:4px;flex-shrink:0;}
+.si{flex:1;padding:var(--pad-y) var(--pad-x) calc(var(--pad-y)*1.2);display:flex;flex-direction:column;gap:var(--gap);overflow:hidden;min-height:0;}
+.card{background:var(--light);border:1.5px solid var(--border);border-radius:var(--r);padding:clamp(10px,1.5vw,15px) clamp(12px,1.8vw,17px);}
+.card.wl{border-left:4px solid var(--warm);}.card.pl{border-left:4px solid var(--crea-mid);}.card.gl{border-left:4px solid var(--green);}.card.rl{border-left:4px solid var(--red);}.card.tl{border-left:4px solid var(--teal);}
+.abox{background:#FEF3F2;border:2px solid #F5B8B2;border-radius:var(--r);padding:clamp(8px,1.2vw,12px) clamp(12px,1.6vw,16px);font-size:var(--fs-sm);line-height:1.5;flex-shrink:0;} .abox strong{color:var(--red);}
+.cbox{background:var(--crea-light);border:2px solid #B39DDB;border-radius:var(--r);padding:clamp(8px,1.2vw,12px) clamp(12px,1.6vw,16px);font-size:var(--fs-sm);line-height:1.5;flex-shrink:0;} .cbox strong{color:var(--crea);}
+.wbox{background:var(--warm-light);border:2px solid #FFCC80;border-radius:var(--r);padding:clamp(8px,1.2vw,12px) clamp(12px,1.6vw,16px);font-size:var(--fs-sm);line-height:1.5;flex-shrink:0;} .wbox strong{color:var(--warm);}
+.gbox{background:#EDFAE0;border:2px solid #A8D98A;border-radius:var(--r);padding:clamp(8px,1.2vw,12px) clamp(12px,1.6vw,16px);font-size:var(--fs-sm);line-height:1.5;flex-shrink:0;} .gbox strong{color:var(--green);}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--gap);}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(170px,100%),1fr));gap:var(--gap);}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(140px,100%),1fr));gap:var(--gap);}
+.ilist{display:flex;flex-direction:column;gap:6px;}
+.it{display:flex;align-items:flex-start;gap:8px;font-size:var(--fs-sm);line-height:1.45;color:var(--text);}
+.it .b{width:6px;height:6px;border-radius:50%;background:var(--crea-mid);margin-top:5px;flex-shrink:0;}
+.it .b.w{background:var(--warm);}.it .b.g{background:var(--green);}.it .b.r{background:var(--red);}.it .b.t{background:var(--teal);}
+.it strong{color:var(--navy);}
+@keyframes fu{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.slide.active .sh,.slide.active .si>*{animation:fu .38s ease both;}
+.slide.active .sh{animation-delay:.03s;}
+.slide.active .si>*:nth-child(1){animation-delay:.08s;}
+.slide.active .si>*:nth-child(2){animation-delay:.14s;}
+.slide.active .si>*:nth-child(3){animation-delay:.20s;}
+.slide.active .si>*:nth-child(4){animation-delay:.26s;}
+.slide.active .si>*:nth-child(5){animation-delay:.32s;}
+.slide.active .si>*:nth-child(6){animation-delay:.38s;}
+/* NAV */
+.navb{width:100%;height:clamp(44px,6vh,54px);background:#fff;border-top:2px solid var(--border);display:flex;align-items:center;justify-content:center;gap:clamp(10px,2vw,20px);flex-shrink:0;padding:0 12px;}
+.navb button{background:none;border:1.5px solid var(--border);color:var(--navy);font-size:var(--fs-sm);font-weight:700;cursor:pointer;padding:5px clamp(10px,2vw,18px);border-radius:6px;font-family:'Inter',sans-serif;transition:background .18s,border-color .18s;white-space:nowrap;}
+.navb button:hover{background:var(--light);border-color:var(--crea-mid);}
+.navb button:disabled{color:var(--border);border-color:#EEE;cursor:not-allowed;}
+.nctr{font-size:var(--fs-sm);font-weight:600;color:var(--muted);min-width:52px;text-align:center;font-family:monospace;}
+.ndots{display:flex;gap:5px;align-items:center;flex-wrap:wrap;max-width:clamp(120px,35vw,320px);justify-content:center;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:background .2s,transform .2s;flex-shrink:0;}
+.dot.active{background:var(--crea-mid);transform:scale(1.4);}
+/* S1 TITOLO */
+.s1b{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 var(--pad-x);}
+.s1ey{font-size:var(--fs-xs);font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:clamp(8px,1.5vh,16px);display:flex;align-items:center;gap:10px;}
+.s1ey::before{content:'';display:block;width:28px;height:2px;background:var(--warm);border-radius:1px;}
+.s1big{font-family:'Playfair Display',serif;font-size:var(--fs-3xl);font-weight:900;color:var(--navy);line-height:1.05;margin-bottom:8px;}
+.s1big .p{color:var(--crea-mid);}.s1big .w{color:var(--warm);}
+.s1sub{font-size:var(--fs-md);color:var(--muted);font-style:italic;margin-bottom:clamp(10px,1.8vh,18px);}
+.s1mt{display:flex;flex-wrap:wrap;}
+.s1mi{font-size:var(--fs-sm);color:var(--muted);padding:0 clamp(8px,1.5vw,16px);border-right:1.5px solid var(--border);}
+.s1mi:first-child{padding-left:0;}.s1mi:last-child{border-right:none;}
+.s1mi strong{color:var(--navy);}
+.s1deco{position:absolute;right:var(--pad-x);top:50%;transform:translateY(-50%);font-size:clamp(60px,13vw,150px);opacity:.06;pointer-events:none;line-height:1;}
+/* METODOLOGIA */
+.meto-band{background:linear-gradient(135deg,var(--crea) 0%,var(--crea-mid) 60%,#7B1FA2 100%);border-radius:var(--r);padding:clamp(14px,2vh,22px) clamp(16px,2.5vw,26px);color:white;flex-shrink:0;}
+.meto-title{font-family:'Playfair Display',serif;font-size:var(--fs-xl);font-weight:900;color:#FFE066;margin-bottom:6px;}
+.meto-text{font-size:var(--fs-sm);color:rgba(255,255,255,.88);line-height:1.6;}
+.meto-text strong{color:#FFE066;}
+/* RUOLI */
+.ruolo-grid{flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(155px,100%),1fr));gap:var(--gap);min-height:0;overflow:hidden;}
+.ruolo-card{border-radius:var(--r);padding:clamp(11px,1.6vh,16px);display:flex;flex-direction:column;gap:7px;overflow:hidden;}
+.ruolo-card.f{background:#EDE7F6;border:2px solid #9575CD;}
+.ruolo-card.s{background:#E3F2FD;border:2px solid #64B5F6;}
+.ruolo-card.p{background:#E8F5E9;border:2px solid #81C784;}
+.ruolo-card.c{background:#FFF3E0;border:2px solid #FFB74D;}
+.ruolo-ico{font-size:clamp(24px,3.5vw,36px);}
+.ruolo-nome{font-family:'Playfair Display',serif;font-size:var(--fs-lg);font-weight:900;}
+.ruolo-card.f .ruolo-nome{color:#512DA8;}
+.ruolo-card.s .ruolo-nome{color:#1565C0;}
+.ruolo-card.p .ruolo-nome{color:#2E7D32;}
+.ruolo-card.c .ruolo-nome{color:#E65100;}
+.ruolo-compito{font-size:var(--fs-sm);color:var(--text);line-height:1.45;flex:1;}
+.ruolo-motto{font-size:var(--fs-xs);font-style:italic;color:var(--muted);padding-top:7px;border-top:1.5px solid var(--border);margin-top:auto;}
+/* GRUPPI */
+.gruppo-banner{background:linear-gradient(135deg,var(--warm),#E65100);border-radius:var(--r);padding:clamp(13px,1.8vh,20px) clamp(14px,2vw,22px);display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.gruppo-ico{font-size:clamp(34px,5vw,54px);flex-shrink:0;}
+.gruppo-title{font-family:'Playfair Display',serif;font-size:var(--fs-xl);font-weight:900;color:#FFE066;margin-bottom:4px;}
+.gruppo-text{font-size:var(--fs-sm);color:rgba(255,255,255,.88);line-height:1.5;}
+.gruppo-text strong{color:#FFE066;}
+/* AMBIENTAZIONE CARDS (riassunto) */
+.amb-recap-grid{flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(160px,100%),1fr));gap:var(--gap);min-height:0;overflow:hidden;}
+.amb-recap{border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;}
+.amb-recap-top{padding:clamp(10px,1.5vh,16px) clamp(10px,1.4vw,14px);display:flex;flex-direction:column;gap:5px;}
+.amb-recap-ico{font-size:clamp(26px,4vw,44px);}
+.amb-recap-num{font-size:var(--fs-xs);font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.7);}
+.amb-recap-nome{font-family:'Playfair Display',serif;font-size:var(--fs-lg);font-weight:900;color:#FFE066;}
+.amb-recap-body{padding:clamp(9px,1.3vh,13px) clamp(10px,1.4vw,14px);font-size:var(--fs-sm);line-height:1.5;flex:1;background:var(--light);}
+.amb-recap-body strong{color:var(--navy);}
+.amb-natura .amb-recap-top{background:linear-gradient(135deg,#1A3A0D,#2E7D32);}
+.amb-giungla .amb-recap-top{background:linear-gradient(135deg,#1B4D1B,#388E3C);}
+.amb-mare .amb-recap-top{background:linear-gradient(135deg,#0D3B4A,#1A6B80);}
+.amb-mister .amb-recap-top{background:linear-gradient(135deg,#3D1F8C,#5E35B1);}
+/* SCHEDA ANALISI */
+.scheda-analisi{border-radius:var(--r);overflow:hidden;border:2px solid var(--border);flex:1;display:flex;flex-direction:column;min-height:0;}
+.sa-header{padding:clamp(9px,1.3vh,14px) clamp(12px,1.7vw,18px);display:flex;align-items:center;gap:12px;}
+.sa-title{font-family:'Playfair Display',serif;font-size:var(--fs-lg);font-weight:900;color:#FFE066;}
+.sa-sub{font-size:var(--fs-xs);color:rgba(255,255,255,.7);margin-top:2px;}
+.sa-body{padding:clamp(10px,1.5vh,15px) clamp(12px,1.7vw,18px);display:flex;flex-direction:column;gap:6px;flex:1;overflow:hidden;}
+.sa-row{display:grid;grid-template-columns:clamp(100px,14vw,150px) 1fr;gap:10px;border-bottom:1px solid var(--border);padding-bottom:5px;align-items:start;}
+.sa-row:last-child{border-bottom:none;padding-bottom:0;}
+.sa-key{font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding-top:2px;}
+.sa-val{font-size:var(--fs-sm);line-height:1.5;color:var(--text);}
+.sa-val strong{color:var(--navy);}
+.sa-val .blank{display:inline-block;min-width:80px;border-bottom:2px dashed var(--border);padding:0 4px;}
+/* SCHEDA PERSONAGGIO */
+.pers-scheda{border-radius:var(--r);border:2px solid var(--border);padding:clamp(12px,1.8vh,18px) clamp(14px,2vw,20px);display:flex;flex-direction:column;gap:9px;flex:1;}
+.ps-section{display:flex;flex-direction:column;gap:5px;}
+.ps-label{font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.ps-field{background:var(--light);border:1.5px solid var(--border);border-radius:6px;padding:8px 12px;font-size:var(--fs-sm);color:var(--text);min-height:32px;}
+.ps-fields-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+/* STILE SCRITTURA */
+.stile-row{display:flex;align-items:flex-start;gap:12px;background:var(--light);border:1.5px solid var(--border);border-radius:var(--r);padding:clamp(10px,1.4vh,14px) clamp(12px,1.6vw,16px);flex:1;}
+.stile-num{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,42px);font-weight:900;color:rgba(0,0,0,.08);min-width:30px;flex-shrink:0;}
+.stile-body{flex:1;}
+.stile-nome{font-size:var(--fs-md);font-weight:700;color:var(--crea-mid);margin-bottom:2px;}
+.stile-desc{font-size:var(--fs-sm);color:var(--muted);line-height:1.4;}
+.stile-ex{font-size:var(--fs-sm);font-style:italic;color:var(--navy);margin-top:3px;}
+/* CRITERI VALUTAZIONE */
+.crit-grid{flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(160px,100%),1fr));gap:var(--gap);min-height:0;overflow:hidden;}
+.crit-card{border-radius:var(--r);padding:clamp(11px,1.6vh,16px);display:flex;flex-direction:column;gap:7px;border:2px solid;}
+.crit-card.c1{border-color:#9575CD;background:#EDE7F6;}
+.crit-card.c2{border-color:#64B5F6;background:#E3F2FD;}
+.crit-card.c3{border-color:#81C784;background:#E8F5E9;}
+.crit-card.c4{border-color:#FFB74D;background:#FFF3E0;}
+.crit-card.c5{border-color:#F06292;background:#FCE4EC;}
+.crit-ico{font-size:clamp(22px,3.2vw,32px);}
+.crit-nome{font-size:var(--fs-md);font-weight:700;}
+.crit-card.c1 .crit-nome{color:#512DA8;} .crit-card.c2 .crit-nome{color:#1565C0;} .crit-card.c3 .crit-nome{color:#2E7D32;} .crit-card.c4 .crit-nome{color:#E65100;} .crit-card.c5 .crit-nome{color:#C2185B;}
+.crit-desc{font-size:var(--fs-sm);color:var(--text);line-height:1.4;}
+.crit-pts{font-size:var(--fs-xs);font-weight:700;color:var(--muted);margin-top:auto;padding-top:6px;border-top:1px solid var(--border);}
+@media(max-width:600px){.s1deco{display:none;}.g2{grid-template-columns:1fr;}.ruolo-grid{grid-template-columns:1fr 1fr;}.amb-recap-grid{grid-template-columns:1fr 1fr;}.crit-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- ========== S1 TITOLO ========== -->
+<div class="slide active" id="s1">
+  <div class="topbar"></div>
+  <div class="s1b">
+    <div class="s1ey">Italiano &middot; Unit&agrave; 10 &middot; Anno scolastico 2025&ndash;2026</div>
+    <div class="s1big">Il <span class="p">progetto</span>:<br>scriviamo<br>la nostra <span class="w">avventura</span></div>
+    <div class="s1sub">Compito di realt&agrave; &middot; Lavoro cooperativo di gruppo</div>
+    <div class="s1mt">
+      <div class="s1mi">Classe <strong>1&ordf; media</strong></div>
+      <div class="s1mi">Ora <strong>4 di 6</strong></div>
+      <div class="s1mi">60 minuti</div>
+      <div class="s1mi">Gruppi da <strong>3&ndash;4</strong></div>
+    </div>
+  </div>
+  <div class="s1deco">&#x270D;&#xFE0F;</div>
+</div>
+
+<!-- ========== S2 METODOLOGIA ========== -->
+<div class="slide" id="s2">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Come lavoreremo: <span class="p">Cooperative Learning</span></h2><span class="tag t-crea">&#x1F4DA; Metodologia</span></div>
+  <div class="si">
+    <div class="meto-band">
+      <div class="meto-title">Apprendimento Cooperativo</div>
+      <div class="meto-text">Lavorerete in piccoli gruppi, ognuno con un ruolo preciso. Nessuno fa tutto da solo &mdash; nessuno non fa niente. <strong>Il gruppo vince insieme o perde insieme.</strong> Quello che producete &egrave; opera vostra: non di Salgari, non di London, non di Kipling. Vostra.</div>
+    </div>
+    <div class="g2">
+      <div class="card pl">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--crea-mid);margin-bottom:7px">&#x2705; Perch&eacute; funziona</div>
+        <div class="ilist">
+          <div class="it"><div class="b"></div><div>Ognuno ha un <strong>ruolo chiaro</strong>: si sa cosa fare, non ci si perde</div></div>
+          <div class="it"><div class="b"></div><div><strong>Interdipendenza positiva</strong>: tutti devono contribuire, altrimenti la storia non esiste</div></div>
+          <div class="it"><div class="b"></div><div>Si impara <strong>a discutere, mediare e scegliere</strong> &mdash; competenze per la vita</div></div>
+          <div class="it"><div class="b"></div><div>Il prodotto finale &egrave; pi&ugrave; ricco di quanto avrebbe fatto uno solo</div></div>
+        </div>
+      </div>
+      <div class="card wl">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--warm);margin-bottom:7px">&#x1F4CB; Come si lavora</div>
+        <div class="ilist">
+          <div class="it"><div class="b w"></div><div><strong>Fase 1 (oggi):</strong> analisi delle ambientazioni &rarr; scelta &rarr; scheda personaggi &rarr; scaletta</div></div>
+          <div class="it"><div class="b w"></div><div><strong>Fase 2 (Ora 5):</strong> stesura del racconto &rarr; revisione &rarr; presentazione alla classe</div></div>
+          <div class="it"><div class="b w"></div><div>Ogni gruppo usa la <strong>stessa scheda</strong> degli autori veri &mdash; quella che abbiamo studiato</div></div>
+          <div class="it"><div class="b w"></div><div>L&rsquo;insegnante gira tra i gruppi e <strong>supporta, non fa al posto vostro</strong></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="cbox">&#x1F4A1; <strong>Scaffolding:</strong> la scheda guida &egrave; il vostro ponteggio &mdash; vi sostiene mentre costruite. Pian piano, man mano che ci prendete la mano, il ponteggio si toglie. Ma adesso &egrave; l&igrave; per voi.</div>
+  </div>
+</div>
+
+<!-- ========== S3 I RUOLI NEL GRUPPO ========== -->
+<div class="slide" id="s3">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">I <span class="p">ruoli</span> nel gruppo</h2><span class="tag t-crea">&#x1F465; Cooperative Learning</span></div>
+  <div class="si">
+    <div class="cbox">&#x1F4CC; Ogni membro del gruppo sceglie (o riceve) un ruolo. I ruoli possono ruotare durante il lavoro. <strong>Tutti scrivono, tutti pensano</strong> &mdash; ma ciascuno ha anche una responsabilit&agrave; specifica.</div>
+    <div class="ruolo-grid">
+      <div class="ruolo-card f">
+        <div class="ruolo-ico">&#x1F3A4;</div>
+        <div class="ruolo-nome">Il Facilitatore</div>
+        <div class="ruolo-compito">Guida la discussione del gruppo. Si assicura che tutti parlino e vengano ascoltati. Evita che uno solo decida tutto. Pone domande: <em>&laquo;Che ne pensi tu?&raquo; &laquo;Abbiamo altre idee?&raquo;</em></div>
+        <div class="ruolo-motto">&#x1F4AC; &laquo;Ascoltiamo tutti prima di decidere.&raquo;</div>
+      </div>
+      <div class="ruolo-card s">
+        <div class="ruolo-ico">&#x270F;&#xFE0F;</div>
+        <div class="ruolo-nome">Il Segretario</div>
+        <div class="ruolo-compito">Compila la scheda di progetto, annota le idee del gruppo, scrive la prima bozza del racconto. Ha la calligrafia pi&ugrave; leggibile. Chiede conferma al gruppo prima di scrivere.</div>
+        <div class="ruolo-motto">&#x270F;&#xFE0F; &laquo;Lo scrivo io &mdash; ma &egrave; la vostra idea.&raquo;</div>
+      </div>
+      <div class="ruolo-card p">
+        <div class="ruolo-ico">&#x1F399;&#xFE0F;</div>
+        <div class="ruolo-nome">Il Presentatore</div>
+        <div class="ruolo-compito">Alla fine presenter&agrave; il racconto alla classe (o ne legger&agrave; un estratto). Si prepara leggendo bene il testo, capendo le scelte del gruppo. &Egrave; la &laquo;voce&raquo; del gruppo.</div>
+        <div class="ruolo-motto">&#x1F399; &laquo;Racconto la storia del nostro gruppo.&raquo;</div>
+      </div>
+      <div class="ruolo-card c">
+        <div class="ruolo-ico">&#x23F1;&#xFE0F;</div>
+        <div class="ruolo-nome">Il Controllore</div>
+        <div class="ruolo-compito">Tiene d&rsquo;occhio i tempi e la qualit&agrave;. Ricorda al gruppo le regole del racconto d&rsquo;avventura. Controlla: <em>&laquo;Abbiamo il colpo di scena? Le frasi sono brevi?&raquo;</em></div>
+        <div class="ruolo-motto">&#x23F1; &laquo;Siamo nei tempi? Rispettiamo le regole?&raquo;</div>
+      </div>
+    </div>
+    <div class="wbox">&#x26A0;&#xFE0F; <strong>Se il gruppo &egrave; di 3:</strong> il Facilitatore pu&ograve; fare anche da Controllore. <strong>Se &egrave; di 5:</strong> si aggiunge un secondo Segretario oppure un &laquo;Critico amichevole&raquo; (legge il testo e suggerisce miglioramenti).</div>
+  </div>
+</div>
+
+<!-- ========== S4 FORMAZIONE DEI GRUPPI ========== -->
+<div class="slide" id="s4">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Formiamo i <span class="w">gruppi</span></h2><span class="tag t-warm">&#x1F91D; 3&ndash;4 persone per gruppo</span></div>
+  <div class="si">
+    <div class="gruppo-banner">
+      <div class="gruppo-ico">&#x1F9D1;&#x200D;&#x1F91D;&#x200D;&#x1F9D1;</div>
+      <div>
+        <div class="gruppo-title">20 studenti &rarr; 5 gruppi da 4</div>
+        <div class="gruppo-text">L&rsquo;insegnante ha gi&agrave; pensato alla composizione dei gruppi. I gruppi sono <strong>eterogenei</strong>: diversi caratteri, diverse capacit&agrave;, diverse ambientazioni preferite. Questo &egrave; il segreto del buon lavoro cooperativo.</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card pl">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--crea-mid);margin-bottom:7px">&#x2705; Criteri di formazione</div>
+        <div class="ilist">
+          <div class="it"><div class="b"></div><div><strong>Misti per livello:</strong> non tutti i bravi insieme, non tutti in difficolt&agrave; insieme</div></div>
+          <div class="it"><div class="b"></div><div><strong>Misti per carattere:</strong> un leader, qualcuno pi&ugrave; riflessivo, qualcuno creativo</div></div>
+          <div class="it"><div class="b"></div><div><strong>Inclusivi:</strong> gli alunni con BES e DVA sono distribuiti nei gruppi, con i supporti necessari</div></div>
+          <div class="it"><div class="b"></div><div>Se avete gi&agrave; un&rsquo;idea di gruppo, proposte <strong>entro 2 minuti</strong> &mdash; poi decide l&rsquo;insegnante</div></div>
+        </div>
+      </div>
+      <div class="card wl">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--warm);margin-bottom:7px">&#x1F4CB; Regole del gruppo</div>
+        <div class="ilist">
+          <div class="it"><div class="b w"></div><div><strong>Una voce alla volta:</strong> si parla uno per volta, gli altri ascoltano</div></div>
+          <div class="it"><div class="b w"></div><div><strong>Si critica l&rsquo;idea, non la persona:</strong> &laquo;Questa idea non mi convince&raquo; non &laquo;Sei stupido&raquo;</div></div>
+          <div class="it"><div class="b w"></div><div>In caso di disaccordo: si vota a maggioranza, ma si spiega perch&eacute;</div></div>
+          <div class="it"><div class="b w"></div><div>Tono di voce basso: <strong>stiamo in classe</strong>, non in cortile</div></div>
+          <div class="it"><div class="b w"></div><div>Il cellulare resta spento o in tasca</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="abox">&#x23F0; <strong>Tempi dell&rsquo;ora 4:</strong> 5 min. formazione gruppi &rarr; 15 min. analisi ambientazioni &rarr; 10 min. scelta ambientazione e personaggi &rarr; 20 min. compilazione scheda di progetto &rarr; 10 min. lettura delle scalette in classe</div>
+  </div>
+</div>
+
+<!-- ========== S5 REVIVIAMO AMBIENTAZIONI ========== -->
+<div class="slide" id="s5">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Riviviamo le <span class="w">4 ambientazioni</span></h2><span class="tag t-warm">&#x1F5FA;&#xFE0F; Scegliete la vostra</span></div>
+  <div class="si">
+    <div class="cbox"><strong>&#x1F50D; Prima di scegliere</strong>, richiamiamo le caratteristiche di ciascuna ambientazione. La vostra storia dovr&agrave; essere <strong>realistica</strong> e ambientata in un luogo credibile.</div>
+    <div class="amb-recap-grid">
+      <div class="amb-recap amb-natura">
+        <div class="amb-recap-top">
+          <div class="amb-recap-ico">&#x1F3D4;&#xFE0F;</div>
+          <div class="amb-recap-num">Ambientazione 01</div>
+          <div class="amb-recap-nome">Natura selvaggia</div>
+        </div>
+        <div class="amb-recap-body">
+          <strong>Dove:</strong> tundra, montagna, foresta artica, steppa<br>
+          <strong>Clima:</strong> freddo estremo, neve, silenzio immenso<br>
+          <strong>Pericoli:</strong> fiumi in piena, valanghe, animali feroci<br>
+          <strong>Antagonista tipico:</strong> la natura stessa<br>
+          <strong>Vantaggio del protagonista:</strong> forza fisica e istinto di sopravvivenza
+        </div>
+      </div>
+      <div class="amb-recap amb-giungla">
+        <div class="amb-recap-top">
+          <div class="amb-recap-ico">&#x1F333;</div>
+          <div class="amb-recap-num">Ambientazione 02</div>
+          <div class="amb-recap-nome">Giungla esotica</div>
+        </div>
+        <div class="amb-recap-body">
+          <strong>Dove:</strong> foresta tropicale, India, Africa, Amazzonia<br>
+          <strong>Clima:</strong> caldo umido, odori forti, rumori continui<br>
+          <strong>Pericoli:</strong> animali feroci, paludi, nemici nascosti<br>
+          <strong>Antagonista tipico:</strong> animale feroce o tribù ostile<br>
+          <strong>Vantaggio del protagonista:</strong> conosce la giungla meglio dei nemici
+        </div>
+      </div>
+      <div class="amb-recap amb-mare">
+        <div class="amb-recap-top">
+          <div class="amb-recap-ico">&#x1F3F4;&#x200D;&#x2620;&#xFE0F;</div>
+          <div class="amb-recap-num">Ambientazione 03</div>
+          <div class="amb-recap-nome">Mare e pirati</div>
+        </div>
+        <div class="amb-recap-body">
+          <strong>Dove:</strong> oceano aperto, isole tropicali, porti coloniali<br>
+          <strong>Clima:</strong> vento salato, notti stellate, tempeste improvvise<br>
+          <strong>Pericoli:</strong> navi nemiche, scogli, ammutinamenti<br>
+          <strong>Antagonista tipico:</strong> potere coloniale o pirata rivale<br>
+          <strong>Vantaggio del protagonista:</strong> conosce il mare e le isole segrete
+        </div>
+      </div>
+      <div class="amb-recap amb-mister">
+        <div class="amb-recap-top">
+          <div class="amb-recap-ico">&#x2753;</div>
+          <div class="amb-recap-num">Ambientazione 04</div>
+          <div class="amb-recap-nome">Luogo misterioso</div>
+        </div>
+        <div class="amb-recap-body">
+          <strong>Dove:</strong> a scelta libera &mdash; deve essere <strong>realistico</strong>!<br>
+          Es: citt&agrave; abbandonata, grotte, deserto, castello, fogne<br>
+          <strong>Clima:</strong> a scelta del gruppo<br>
+          <strong>Pericoli:</strong> da inventare<br>
+          <strong>Consiglio:</strong> scegliete un luogo che conoscete o avete visitato
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== S6 SCHEDA DEL BRANO ========== -->
+<div class="slide" id="s6">
+  <div class="topbar"></div>
+  <div class="sh">
+    <h2 class="slide-title">La vostra <span class="p">scheda del brano</span></h2>
+    <span class="tag t-crea">&#x270F;&#xFE0F; Da compilare sul quaderno</span>
+  </div>
+  <div class="si" style="gap:var(--gap)">
+    <div class="cbox"><strong>&#x1F4CB; Questo &egrave; il vostro compito.</strong> Compilate la scheda del brano per la vostra storia inventata &mdash; esattamente come abbiamo fatto per Buck, Mowgli e Sandokan. Usate il quaderno o il foglio distribuito.</div>
+    <div style="border:2px solid var(--crea-mid);border-radius:var(--r);overflow:hidden;flex:1;display:flex;flex-direction:column;min-height:0">
+      <div style="background:var(--navy);padding:clamp(9px,1.3vh,14px) clamp(14px,2vw,20px);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:var(--fs-lg);font-weight:900;color:#FFE066">&#x1F4CB; SCHEDA DEL BRANO &mdash; LA NOSTRA STORIA</div>
+          <div style="font-size:var(--fs-xs);color:rgba(255,255,255,.65);margin-top:2px">Gruppo _______ &bull; Classe 1&ordf; media &bull; a.s. 2025&ndash;2026</div>
+        </div>
+        <span style="font-size:clamp(20px,3vw,30px)">&#x270D;&#xFE0F;</span>
+      </div>
+      <div style="padding:clamp(8px,1.2vh,13px) clamp(12px,1.6vw,18px);display:flex;flex-direction:column;gap:5px;flex:1;overflow:hidden">
+        <div style="display:grid;grid-template-columns:clamp(100px,13vw,145px) 1fr;gap:9px;border-bottom:1px solid var(--border);padding-bottom:5px;align-items:center"><div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">Autori</div><div style="background:var(--light);border:1.5px dashed var(--border);border-radius:5px;padding:5px 10px;font-size:var(--fs-sm);color:var(--muted);font-style:italic;min-height:24px">I nomi di tutti i componenti del gruppo</div></div>
+        <div style="display:grid;grid-template-columns:clamp(100px,13vw,145px) 1fr;gap:9px;border-bottom:1px solid var(--border);padding-bottom:5px;align-items:center"><div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">Titolo</div><div style="background:var(--light);border:1.5px dashed var(--border);border-radius:5px;padding:5px 10px;font-size:var(--fs-sm);color:var(--muted);font-style:italic;min-height:24px">Il titolo del vostro racconto</div></div>
+        <div style="display:grid;grid-template-columns:clamp(100px,13vw,145px) 1fr;gap:9px;border-bottom:1px solid var(--border);padding-bottom:5px;align-items:center"><div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">Sottogenere</div><div style="background:var(--light);border:1.5px dashed var(--border);border-radius:5px;padding:5px 10px;font-size:var(--fs-sm);color:var(--muted);font-style:italic;min-height:24px">Natura selvaggia / Giungla / Mare e pirati / Luogo misterioso</div></div>
+        <div style="display:grid;grid-template-columns:clamp(100px,13vw,145px) 1fr;gap:9px;border-bottom:1px solid var(--border);padding-bottom:5px;align-items:center"><div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">Ambientazione</div><div style="background:var(--light);border:1.5px dashed var(--border);border-radius:5px;padding:5px 10px;font-size:var(--fs-sm);color:var(--muted);font-style:italic;min-height:24px">Dove e quando si svolge la storia &mdash; epoca, luogo, clima</div></div>
+        <div style="display:grid;grid-template-columns:clamp(100px,13vw,145px) 1fr;gap:9px;border-bottom:1px solid var(--border);padding-bottom:5px;align-items:center"><div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">Protagonista</div><div style="background:var(--light);border:1.5px dashed var(--border);border-radius:5px;padding:5px 10px;font-size:var(--fs-sm);color:var(--muted);font-style:italic;min-height:24px">Nome, caratteristiche, obiettivo da raggiungere</div></div>
+        <div style="display:grid;grid-template-columns:clamp(100px,13vw,145px) 1fr;gap:9px;border-bottom:1px solid var(--border);padding-bottom:5px;align-items:center"><div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">Antagonista</div><div style="background:var(--light);border:1.5px dashed var(--border);border-radius:5px;padding:5px 10px;font-size:var(--fs-sm);color:var(--muted);font-style:italic;min-height:24px">Chi o cosa ostacola il protagonista &mdash; persona, animale o natura</div></div>
+        <div style="display:grid;grid-template-columns:clamp(100px,13vw,145px) 1fr;gap:9px;border-bottom:1px solid var(--border);padding-bottom:5px;align-items:center"><div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">Aiutante/i</div><div style="background:var(--light);border:1.5px dashed var(--border);border-radius:5px;padding:5px 10px;font-size:var(--fs-sm);color:var(--muted);font-style:italic;min-height:24px">Chi affianca e supporta il protagonista</div></div>
+        <div style="display:grid;grid-template-columns:clamp(100px,13vw,145px) 1fr;gap:9px;border-bottom:1px solid var(--border);padding-bottom:5px;align-items:center"><div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">Pericolo</div><div style="background:var(--light);border:1.5px dashed var(--border);border-radius:5px;padding:5px 10px;font-size:var(--fs-sm);color:var(--muted);font-style:italic;min-height:24px">Qual &egrave; il pericolo principale che affronta il protagonista?</div></div>
+        <div style="display:grid;grid-template-columns:clamp(100px,13vw,145px) 1fr;gap:9px;border-bottom:1px solid var(--border);padding-bottom:5px;align-items:center"><div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">Colpo di scena</div><div style="background:var(--light);border:1.5px dashed var(--border);border-radius:5px;padding:5px 10px;font-size:var(--fs-sm);color:var(--muted);font-style:italic;min-height:24px">L&rsquo;evento inaspettato che sorprende il lettore</div></div>
+        <div style="display:grid;grid-template-columns:clamp(100px,13vw,145px) 1fr;gap:9px;align-items:center"><div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">Temi</div><div style="background:var(--light);border:1.5px dashed var(--border);border-radius:5px;padding:5px 10px;font-size:var(--fs-sm);color:var(--muted);font-style:italic;min-height:24px">I temi principali della storia (es: coraggio, amicizia, libert&agrave;&hellip;)</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== S7 SCALETTA 5 MOMENTI ========== -->
+<div class="slide" id="s7">
+  <div class="topbar"></div>
+  <div class="sh">
+    <h2 class="slide-title">La <span class="p">scaletta</span>: sintesi della vostra storia</h2>
+    <span class="tag t-crea">&#x1F4D0; I 5 momenti</span>
+  </div>
+  <div class="si" style="gap:clamp(6px,1vh,10px)">
+    <div class="cbox"><strong>&#x270F;&#xFE0F; Dopo la scheda, compilate questa scaletta.</strong> Scrivete poche righe per ogni momento &mdash; non frasi perfette, solo l&rsquo;idea principale di cosa succede.</div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:clamp(5px,.9vh,8px);min-height:0;overflow:hidden">
+
+      <div style="display:flex;align-items:stretch;gap:0;background:var(--light);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;flex:1">
+        <div style="background:var(--teal);color:white;display:flex;align-items:center;justify-content:center;padding:0 clamp(10px,1.5vw,16px);flex-shrink:0;min-width:clamp(44px,6vw,64px)">
+          <span style="font-family:'Playfair Display',serif;font-size:clamp(20px,3vw,32px);font-weight:900">1</span>
+        </div>
+        <div style="padding:clamp(8px,1.2vh,12px) clamp(12px,1.6vw,16px);flex:1;display:flex;flex-direction:column;gap:3px">
+          <div style="font-size:var(--fs-md);font-weight:700;color:var(--navy)">Situazione iniziale</div>
+          <div style="font-size:var(--fs-sm);color:var(--muted)">Chi &egrave; il protagonista? Dove si trova? Com&rsquo;&egrave; la sua vita prima che tutto cambi?</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:stretch;gap:0;background:var(--light);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;flex:1">
+        <div style="background:#B8860B;color:white;display:flex;align-items:center;justify-content:center;padding:0 clamp(10px,1.5vw,16px);flex-shrink:0;min-width:clamp(44px,6vw,64px)">
+          <span style="font-family:'Playfair Display',serif;font-size:clamp(20px,3vw,32px);font-weight:900">2</span>
+        </div>
+        <div style="padding:clamp(8px,1.2vh,12px) clamp(12px,1.6vw,16px);flex:1;display:flex;flex-direction:column;gap:3px">
+          <div style="font-size:var(--fs-md);font-weight:700;color:var(--navy)">Rottura dell&rsquo;equilibrio</div>
+          <div style="font-size:var(--fs-sm);color:var(--muted)">Cosa va storto? Quale evento d&agrave; il via all&rsquo;avventura? Deve essere inaspettato.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:stretch;gap:0;background:var(--light);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;flex:1">
+        <div style="background:var(--crea-mid);color:white;display:flex;align-items:center;justify-content:center;padding:0 clamp(10px,1.5vw,16px);flex-shrink:0;min-width:clamp(44px,6vw,64px)">
+          <span style="font-family:'Playfair Display',serif;font-size:clamp(20px,3vw,32px);font-weight:900">3</span>
+        </div>
+        <div style="padding:clamp(8px,1.2vh,12px) clamp(12px,1.6vw,16px);flex:1;display:flex;flex-direction:column;gap:3px">
+          <div style="font-size:var(--fs-md);font-weight:700;color:var(--navy)">Peripezie</div>
+          <div style="font-size:var(--fs-sm);color:var(--muted)">Gli ostacoli uno dopo l&rsquo;altro. Almeno 2&ndash;3 prove che il protagonista deve affrontare.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:stretch;gap:0;background:var(--light);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;flex:1">
+        <div style="background:var(--red);color:white;display:flex;align-items:center;justify-content:center;padding:0 clamp(10px,1.5vw,16px);flex-shrink:0;min-width:clamp(44px,6vw,64px)">
+          <span style="font-family:'Playfair Display',serif;font-size:clamp(20px,3vw,32px);font-weight:900">4</span>
+        </div>
+        <div style="padding:clamp(8px,1.2vh,12px) clamp(12px,1.6vw,16px);flex:1;display:flex;flex-direction:column;gap:3px">
+          <div style="font-size:var(--fs-md);font-weight:700;color:var(--navy)">Momento pi&ugrave; intenso &mdash; il colpo di scena</div>
+          <div style="font-size:var(--fs-sm);color:var(--muted)">Il punto di massima tensione. Un evento inaspettato che cambia tutto. Il lettore non deve prevederlo.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:stretch;gap:0;background:var(--light);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;flex:1">
+        <div style="background:var(--green);color:white;display:flex;align-items:center;justify-content:center;padding:0 clamp(10px,1.5vw,16px);flex-shrink:0;min-width:clamp(44px,6vw,64px)">
+          <span style="font-family:'Playfair Display',serif;font-size:clamp(20px,3vw,32px);font-weight:900">5</span>
+        </div>
+        <div style="padding:clamp(8px,1.2vh,12px) clamp(12px,1.6vw,16px);flex:1;display:flex;flex-direction:column;gap:3px">
+          <div style="font-size:var(--fs-md);font-weight:700;color:var(--navy)">Soluzione &mdash; come finisce?</div>
+          <div style="font-size:var(--fs-sm);color:var(--muted)">Lieto fine? Fine aperto? Fine amaro? Scegliete voi &mdash; ma la soluzione deve nascere dalla storia.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</div><!-- end deck -->
+
+<div class="navb">
+  <button onclick="go(-1)" id="bP" disabled>&#9664; Indietro</button>
+  <div class="ndots" id="dots"></div>
+  <div class="nctr" id="ctr">1 / 16</div>
+  <button onclick="go(1)" id="bN">Avanti &#9654;</button>
+</div>
+
+<script>
+var slides=Array.from(document.querySelectorAll('.slide'));
+var N=slides.length;var cur=0;
+var dotsEl=document.getElementById('dots');
+slides.forEach(function(_,i){var d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.addEventListener('click',function(){gt(i);});dotsEl.appendChild(d);});
+function gt(n){slides[cur].classList.remove('active');slides[cur].classList.add('prev');setTimeout(function(){slides[cur].classList.remove('prev');},380);cur=n;slides[cur].classList.add('active');dotsEl.querySelectorAll('.dot').forEach(function(d,i){d.classList.toggle('active',i===cur);});document.getElementById('ctr').textContent=(cur+1)+' / '+N;document.getElementById('bP').disabled=cur===0;document.getElementById('bN').disabled=cur===N-1;}
+function go(d){if(cur+d>=0&&cur+d<N)gt(cur+d);}
+document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowDown')go(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(-1);});
+</script>
+</body>
+</html>
