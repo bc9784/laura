@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La caccia al pirata — Ora 3</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1A2E4A; --red:#C0392B; --teal:#0E7C7B; --green:#27640A;
+  --amber:#B8600A; --purple:#44276A; --blue:#0D4B8C; --coral:#7D1F3C;
+  --gold:#8A6200; --text:#111; --muted:#555; --light:#F4F4F4; --border:#CCC;
+  /* palette pirata/mare */
+  --ocean:#0D3B4A; --ocean-mid:#1A6B80; --ocean-light:#E8F6FA;
+  --sand:#C0530A; --sand-light:#FFF3E0; --sand-dark:#7A3000;
+  --fs-xs:clamp(10px,1.2vw,13px); --fs-sm:clamp(12px,1.4vw,15px);
+  --fs-md:clamp(13px,1.6vw,17px); --fs-lg:clamp(15px,2vw,20px);
+  --fs-xl:clamp(18px,2.8vw,28px); --fs-2xl:clamp(22px,3.6vw,44px);
+  --fs-3xl:clamp(28px,5.5vw,68px);
+  --pad-x:clamp(16px,4vw,52px); --pad-y:clamp(10px,2vh,18px);
+  --gap:clamp(8px,1.4vw,13px); --r:clamp(8px,1vw,13px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;font-size:var(--fs-md);background:#1A1A2E;height:100vh;min-height:100dvh;overflow:hidden;display:flex;flex-direction:column;color:var(--text);}
+.deck{flex:1;position:relative;overflow:hidden;min-height:0;}
+.slide{position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateX(30px);transition:opacity .32s ease,transform .32s ease;overflow:hidden;}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
+.slide.prev{opacity:0;transform:translateX(-30px);}
+.topbar{height:clamp(4px,.6vh,7px);background:linear-gradient(90deg,var(--ocean) 30%,var(--ocean-mid) 60%,var(--sand));flex-shrink:0;}
+.sh{padding:var(--pad-y) var(--pad-x) 0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-shrink:0;}
+.slide-title{font-family:'Playfair Display',serif;font-size:var(--fs-2xl);font-weight:900;color:var(--navy);line-height:1.1;flex:1;}
+.slide-title .r{color:var(--red);} .slide-title .o{color:var(--sand);} .slide-title .t{color:var(--teal);} .slide-title .g{color:var(--green);}
+.tag{font-size:var(--fs-xs);font-weight:700;letter-spacing:1.8px;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:4px;border:1.5px solid;}
+.t-red{color:var(--red);background:#FDECEA;border-color:#F5B8B2;}
+.t-ocean{color:var(--ocean);background:var(--ocean-light);border-color:#A8D8E8;}
+.t-sand{color:var(--sand);background:var(--sand-light);border-color:#FFCC80;}
+.t-gold{color:var(--gold);background:#FEF7E0;border-color:#EDCE77;}
+.t-blue{color:var(--blue);background:#EAF1FB;border-color:#B0CCF0;}
+.t-purple{color:var(--purple);background:#F3EEF9;border-color:#C9B3E8;}
+.t-teal{color:var(--teal);background:#E8F7F7;border-color:#A8DFDE;}
+.t-green{color:var(--green);background:#EDFAE0;border-color:#A8D98A;}
+.pref{font-size:var(--fs-xs);font-weight:600;color:var(--muted);background:var(--light);border:1.5px solid var(--border);padding:3px 10px;border-radius:5px;font-family:monospace;margin-top:4px;flex-shrink:0;}
+.si{flex:1;padding:var(--pad-y) var(--pad-x) calc(var(--pad-y)*1.2);display:flex;flex-direction:column;gap:var(--gap);overflow:hidden;min-height:0;}
+.card{background:var(--light);border:1.5px solid var(--border);border-radius:var(--r);padding:clamp(10px,1.5vw,16px) clamp(12px,1.8vw,18px);}
+.card.ol{border-left:4px solid var(--ocean-mid);} .card.rl{border-left:4px solid var(--red);} .card.sl{border-left:4px solid var(--sand);} .card.nl{border-left:4px solid var(--navy);}
+.cbox{border:2px dashed #AAA;border-radius:var(--r);padding:clamp(10px,1.5vw,14px) clamp(12px,1.8vw,17px);position:relative;background:#FAFAFA;}
+.clbl{position:absolute;top:-11px;left:14px;background:#FAFAFA;padding:0 6px;font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.cbox p{font-size:var(--fs-sm);line-height:1.7;color:var(--text);}
+.cbox strong{color:var(--navy);}
+.abox{background:#FEF3F2;border:2px solid #F5B8B2;border-radius:var(--r);padding:clamp(8px,1.2vw,12px) clamp(12px,1.6vw,16px);font-size:var(--fs-sm);color:var(--text);line-height:1.5;flex-shrink:0;}
+.abox strong{color:var(--red);}
+.obox{background:var(--ocean-light);border:2px solid #A8D8E8;border-radius:var(--r);padding:clamp(8px,1.2vw,12px) clamp(12px,1.6vw,16px);font-size:var(--fs-sm);color:var(--text);line-height:1.5;flex-shrink:0;}
+.obox strong{color:var(--ocean);}
+.sbox{background:var(--sand-light);border:2px solid #FFCC80;border-radius:var(--r);padding:clamp(8px,1.2vw,12px) clamp(12px,1.6vw,16px);font-size:var(--fs-sm);color:var(--text);line-height:1.5;flex-shrink:0;}
+.sbox strong{color:var(--sand);}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--gap);}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(170px,100%),1fr));gap:var(--gap);}
+.ilist{display:flex;flex-direction:column;gap:6px;}
+.it{display:flex;align-items:flex-start;gap:8px;font-size:var(--fs-sm);line-height:1.45;color:var(--text);}
+.it .b{width:6px;height:6px;border-radius:50%;background:var(--navy);margin-top:5px;flex-shrink:0;}
+.it .b.o{background:var(--ocean-mid);} .it .b.r{background:var(--red);} .it .b.s{background:var(--sand);}
+.it strong{color:var(--navy);}
+@keyframes fu{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.slide.active .sh,.slide.active .si>*{animation:fu .38s ease both;}
+.slide.active .sh{animation-delay:.03s;}
+.slide.active .si>*:nth-child(1){animation-delay:.08s;}
+.slide.active .si>*:nth-child(2){animation-delay:.14s;}
+.slide.active .si>*:nth-child(3){animation-delay:.20s;}
+.slide.active .si>*:nth-child(4){animation-delay:.26s;}
+.slide.active .si>*:nth-child(5){animation-delay:.32s;}
+.slide.active .si>*:nth-child(6){animation-delay:.38s;}
+/* NAV */
+.navb{width:100%;height:clamp(44px,6vh,54px);background:#fff;border-top:2px solid var(--border);display:flex;align-items:center;justify-content:center;gap:clamp(10px,2vw,20px);flex-shrink:0;padding:0 12px;}
+.navb button{background:none;border:1.5px solid var(--border);color:var(--navy);font-size:var(--fs-sm);font-weight:700;cursor:pointer;padding:5px clamp(10px,2vw,18px);border-radius:6px;font-family:'Inter',sans-serif;transition:background .18s,border-color .18s;white-space:nowrap;}
+.navb button:hover{background:var(--light);border-color:var(--navy);}
+.navb button:disabled{color:var(--border);border-color:#EEE;cursor:not-allowed;}
+.nctr{font-size:var(--fs-sm);font-weight:600;color:var(--muted);min-width:52px;text-align:center;font-family:monospace;}
+.ndots{display:flex;gap:5px;align-items:center;flex-wrap:wrap;max-width:clamp(120px,30vw,260px);justify-content:center;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:background .2s,transform .2s;flex-shrink:0;}
+.dot.active{background:var(--sand);transform:scale(1.4);}
+/* TITOLO S1 */
+.s1b{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 var(--pad-x);}
+.s1ey{font-size:var(--fs-xs);font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:clamp(8px,1.5vh,16px);display:flex;align-items:center;gap:10px;}
+.s1ey::before{content:'';display:block;width:28px;height:2px;background:var(--sand);border-radius:1px;}
+.s1big{font-family:'Playfair Display',serif;font-size:var(--fs-3xl);font-weight:900;color:var(--navy);line-height:1.05;margin-bottom:6px;}
+.s1big .o{color:var(--sand);}
+.s1sub{font-size:var(--fs-md);color:var(--muted);font-style:italic;margin-bottom:clamp(10px,1.8vh,18px);}
+.s1mt{display:flex;flex-wrap:wrap;}
+.s1mi{font-size:var(--fs-sm);color:var(--muted);padding:0 clamp(8px,1.5vw,16px);border-right:1.5px solid var(--border);}
+.s1mi:first-child{padding-left:0;}.s1mi:last-child{border-right:none;}
+.s1mi strong{color:var(--navy);}
+.s1themes{display:flex;gap:10px;flex-wrap:wrap;margin-top:clamp(10px,1.8vh,18px);}
+.s1theme{padding:6px 18px;border-radius:30px;font-size:var(--fs-sm);font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.s1theme.vendetta{background:#FEF3F2;color:var(--red);border:2px solid #F5B8B2;}
+.s1theme.amore{background:var(--sand-light);color:var(--sand);border:2px solid #FFCC80;}
+.s1theme.coraggio{background:var(--ocean-light);color:var(--ocean);border:2px solid #A8D8E8;}
+.s1deco{position:absolute;right:var(--pad-x);top:50%;transform:translateY(-50%);font-size:clamp(60px,14vw,150px);opacity:.06;pointer-events:none;line-height:1;}
+.s1bk{position:absolute;bottom:clamp(55px,7vh,72px);right:var(--pad-x);background:var(--sand-light);border:1.5px solid #FFCC80;border-radius:var(--r);padding:9px 14px;font-size:var(--fs-xs);color:var(--sand);text-align:center;}
+.s1bk strong{color:var(--sand);display:block;margin-bottom:2px;font-size:var(--fs-sm);}
+/* AUTORE */
+.author-band{background:linear-gradient(135deg,var(--ocean) 0%,var(--ocean-mid) 60%,#1A6B80 100%);border-radius:var(--r);padding:clamp(14px,2vh,20px) clamp(16px,2.5vw,24px);display:flex;gap:clamp(14px,2vw,22px);align-items:flex-start;flex-shrink:0;}
+.author-ico{font-size:clamp(36px,5.5vw,60px);flex-shrink:0;}
+.author-name{font-family:'Playfair Display',serif;font-size:var(--fs-xl);font-weight:900;color:#FFE066;margin-bottom:4px;}
+.author-dates{font-size:var(--fs-xs);color:rgba(255,255,255,.65);margin-bottom:8px;font-style:italic;}
+.author-text{font-size:var(--fs-sm);line-height:1.6;color:rgba(255,255,255,.9);}
+.author-text strong{color:#FFE066;}
+/* VIDEO */
+.vid-hero{background:linear-gradient(135deg,var(--ocean),#1A6B80);border-radius:var(--r);padding:clamp(12px,1.8vh,18px) clamp(14px,2vw,22px);display:flex;align-items:center;gap:clamp(12px,1.8vw,18px);flex-shrink:0;}
+.vid-play{width:clamp(44px,6vw,58px);height:clamp(44px,6vw,58px);border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:clamp(18px,2.5vw,24px);color:white;flex-shrink:0;}
+.vid-title{font-family:'Playfair Display',serif;font-size:var(--fs-lg);font-weight:900;color:#FFE066;margin-bottom:4px;}
+.vid-sub{font-size:var(--fs-xs);color:rgba(255,255,255,.75);}
+.vid-url{font-family:monospace;font-size:var(--fs-sm);font-weight:700;margin-top:5px;}
+.vid-note{font-size:var(--fs-xs);color:rgba(255,255,255,.55);margin-top:2px;}
+.qlist{display:flex;flex-direction:column;gap:var(--gap);flex:1;}
+.qcard{display:flex;align-items:center;gap:clamp(12px,1.8vw,18px);background:white;border:2px solid var(--border);border-radius:var(--r);padding:clamp(10px,1.4vh,14px) clamp(14px,2vw,20px);flex:1;transition:border-color .2s;}
+.qcard:hover{border-color:var(--ocean-mid);}
+.qnum{width:clamp(32px,4vw,42px);height:clamp(32px,4vw,42px);border-radius:50%;background:var(--ocean);color:white;font-family:'Playfair Display',serif;font-size:var(--fs-lg);font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.qtxt{font-family:'Playfair Display',serif;font-size:var(--fs-lg);font-weight:700;color:var(--navy);}
+.qsub{font-size:var(--fs-xs);color:var(--muted);margin-top:2px;}
+/* BRANO */
+.brano-h{background:linear-gradient(135deg,var(--ocean),var(--ocean-mid));border-radius:var(--r) var(--r) 0 0;padding:clamp(8px,1.2vh,14px) clamp(14px,2vw,20px);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.brano-titolo{font-family:'Playfair Display',serif;font-size:var(--fs-lg);font-weight:900;color:#FFE066;}
+.brano-fonte{font-size:var(--fs-xs);color:rgba(255,255,255,.7);font-style:italic;}
+.brano-body{flex:1;background:linear-gradient(to bottom,#F8FBFD,#EEF7FA);border:2px solid #A8D8E8;border-top:none;border-radius:0 0 var(--r) var(--r);padding:clamp(14px,2vh,20px) clamp(16px,2.5vw,26px);overflow:hidden;min-height:0;}
+.brano-text{font-size:clamp(14px,1.7vw,19px);line-height:1.85;color:#0D2535;font-family:'Playfair Display',serif;font-weight:400;}
+.brano-text strong{color:var(--ocean);font-weight:700;}
+.brano-text em{color:var(--sand);font-style:italic;}
+.brano-consegna{background:var(--ocean-light);border:1.5px solid #A8D8E8;border-radius:var(--r);padding:clamp(8px,1.2vw,12px) clamp(12px,1.6vw,16px);font-size:var(--fs-sm);color:var(--ocean);flex-shrink:0;}
+/* PERSONAGGIO HERO */
+.hero-banner{border-radius:var(--r);padding:clamp(14px,2vh,22px) clamp(16px,2.5vw,28px);display:flex;align-items:center;gap:clamp(14px,2vw,24px);flex-shrink:0;}
+.hero-banner.sandokan{background:linear-gradient(135deg,#5D2400 0%,var(--sand) 60%,#D97020 100%);}
+.hero-banner.avversari{background:linear-gradient(135deg,var(--ocean) 0%,#0D3B4A 60%,#1A2E4A 100%);}
+.hero-ico{font-size:clamp(44px,7.5vw,82px);filter:drop-shadow(0 4px 12px rgba(0,0,0,.4));flex-shrink:0;}
+.hero-role{font-size:var(--fs-xs);font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:4px;}
+.hero-name{font-family:'Playfair Display',serif;font-size:clamp(24px,4.5vw,52px);font-weight:900;color:#FFE066;line-height:1;}
+.hero-desc{font-size:var(--fs-md);color:rgba(255,255,255,.82);margin-top:5px;font-style:italic;}
+/* TRAIT CARDS */
+.trait-grid{flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:var(--gap);min-height:0;overflow:hidden;}
+.trait-card{border-radius:var(--r);padding:clamp(10px,1.4vh,14px) clamp(10px,1.4vw,14px);display:flex;flex-direction:column;gap:5px;overflow:hidden;}
+.trait-card.warm{background:var(--sand-light);border:2px solid #FFCC80;}
+.trait-card.ocean{background:var(--ocean-light);border:2px solid #A8D8E8;}
+.trait-card.danger{background:#FEF3F2;border:2px solid #F5B8B2;}
+.trait-card.dark{background:var(--light);border:1.5px solid var(--border);}
+.trait-ico{font-size:clamp(22px,3.5vw,34px);}
+.trait-title{font-size:var(--fs-md);font-weight:700;}
+.trait-card.warm .trait-title{color:var(--sand);}
+.trait-card.ocean .trait-title{color:var(--ocean);}
+.trait-card.danger .trait-title{color:var(--red);}
+.trait-card.dark .trait-title{color:var(--navy);}
+.trait-text{font-size:var(--fs-sm);line-height:1.4;}
+.trait-card.warm .trait-text{color:#5D2400;}
+.trait-card.ocean .trait-text{color:#0D2535;}
+.trait-card.danger .trait-text{color:#4A1208;}
+.trait-card.dark .trait-text{color:var(--text);}
+/* MOMENTI */
+.mom-list{flex:1;display:flex;flex-direction:column;gap:clamp(5px,1vh,8px);min-height:0;}
+.mom{display:flex;align-items:flex-start;gap:clamp(10px,1.5vw,14px);background:var(--light);border:1.5px solid var(--border);border-radius:var(--r);padding:clamp(8px,1.2vh,12px) clamp(12px,1.5vw,16px);flex:1;position:relative;overflow:hidden;}
+.mom::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;border-radius:4px 0 0 4px;}
+.mom:nth-child(1)::before{background:var(--teal);}
+.mom:nth-child(2)::before{background:#B8860B;}
+.mom:nth-child(3)::before{background:var(--ocean-mid);}
+.mom:nth-child(4)::before{background:var(--red);}
+.mom:nth-child(5)::before{background:var(--green);}
+.mom-num{font-family:'Playfair Display',serif;font-size:clamp(22px,3vw,32px);font-weight:900;color:rgba(0,0,0,.08);min-width:28px;flex-shrink:0;}
+.mom-body{flex:1;}
+.mom-label{font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.mom-name{font-size:var(--fs-md);font-weight:700;color:var(--navy);margin-bottom:2px;}
+.mom-desc{font-size:var(--fs-sm);color:var(--muted);line-height:1.4;}
+.mom-sand{font-size:var(--fs-sm);font-weight:600;color:var(--sand);font-style:italic;margin-top:2px;}
+.mom-ico{font-size:clamp(16px,2.2vw,22px);flex-shrink:0;margin-top:2px;}
+/* ESERCIZI */
+.vf-list{display:flex;flex-direction:column;gap:var(--gap);flex:1;}
+.vf-row{display:flex;align-items:center;gap:12px;background:var(--light);border:2px solid var(--border);border-radius:var(--r);padding:clamp(10px,1.4vh,14px) clamp(14px,2vw,18px);transition:border-color .2s;}
+.vf-q{flex:1;font-size:var(--fs-sm);line-height:1.45;color:var(--text);}
+.vf-btns{display:flex;gap:7px;flex-shrink:0;}
+.vf-btn{padding:5px 15px;border-radius:8px;border:2px solid var(--border);background:white;font-size:var(--fs-sm);font-weight:700;cursor:pointer;transition:all .18s;font-family:'Inter',sans-serif;}
+.vf-btn.v{color:var(--green);border-color:var(--green);}
+.vf-btn.f{color:var(--red);border-color:var(--red);}
+.vf-btn.v:hover,.vf-btn.v.sel{background:var(--green);color:white;}
+.vf-btn.f:hover,.vf-btn.f.sel{background:var(--red);color:white;}
+.vf-btn.correct{background:var(--green)!important;color:white!important;border-color:var(--green)!important;}
+.vf-btn.wrong{background:var(--red)!important;color:white!important;border-color:var(--red)!important;}
+.mc-list{display:flex;flex-direction:column;gap:clamp(10px,1.5vh,16px);flex:1;}
+.mc-item{background:var(--light);border:1.5px solid var(--border);border-radius:var(--r);padding:clamp(11px,1.5vh,16px) clamp(13px,1.8vw,18px);}
+.mc-q{font-size:var(--fs-md);font-weight:700;color:var(--navy);margin-bottom:9px;line-height:1.4;}
+.mc-opts{display:flex;flex-direction:column;gap:6px;}
+.mc-opt{padding:7px 14px;border-radius:7px;border:1.5px solid var(--border);background:white;font-size:var(--fs-sm);cursor:pointer;transition:all .18s;text-align:left;font-family:'Inter',sans-serif;color:var(--text);}
+.mc-opt:hover{border-color:var(--ocean-mid);background:var(--ocean-light);}
+.mc-opt.correct{background:#D4EDDA!important;border-color:var(--green)!important;color:var(--green)!important;font-weight:700;}
+.mc-opt.wrong{background:#FDECEA!important;border-color:var(--red)!important;color:var(--red)!important;}
+.mc-opt.disabled{pointer-events:none;}
+.fill-list{display:flex;flex-direction:column;gap:var(--gap);flex:1;}
+.fill-item{background:var(--light);border:1.5px solid var(--border);border-radius:var(--r);padding:clamp(10px,1.4vh,14px) clamp(12px,1.6vw,16px);font-size:var(--fs-sm);line-height:1.9;color:var(--text);}
+.fill-inp{border:none;border-bottom:2.5px solid var(--ocean);background:transparent;font-size:var(--fs-sm);font-weight:700;color:var(--ocean);font-family:'Inter',sans-serif;min-width:clamp(90px,10vw,130px);padding:1px 6px;outline:none;text-align:center;}
+.fill-inp:focus{border-bottom-color:var(--ocean-mid);}
+.scheda{border:2px solid var(--ocean);border-radius:var(--r);overflow:hidden;flex:1;display:flex;flex-direction:column;min-height:0;}
+.scheda-top{background:var(--ocean);padding:clamp(8px,1.2vh,13px) clamp(14px,2vw,20px);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.scheda-top-title{font-family:'Playfair Display',serif;font-size:var(--fs-lg);font-weight:900;color:#FFE066;}
+.scheda-top-sub{font-size:var(--fs-xs);color:rgba(255,255,255,.7);}
+.scheda-body{padding:clamp(10px,1.5vh,14px) clamp(14px,2vw,18px);display:flex;flex-direction:column;gap:6px;flex:1;overflow:hidden;}
+.sr{display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid var(--border);padding-bottom:5px;}
+.sr:last-child{border-bottom:none;padding-bottom:0;}
+.sk{font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);min-width:clamp(90px,10vw,130px);flex-shrink:0;padding-top:2px;}
+.sv{font-size:var(--fs-sm);line-height:1.5;color:var(--text);}
+.sv strong{color:var(--ocean);}
+.ctrl-row{display:flex;gap:9px;align-items:center;flex-shrink:0;}
+.btn-ok{padding:6px clamp(12px,1.8vw,20px);border-radius:7px;font-size:var(--fs-sm);font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;border:none;transition:all .18s;background:var(--ocean);color:white;}
+.btn-ok:hover{background:var(--ocean-mid);}
+.btn-rst{padding:6px clamp(12px,1.8vw,20px);border-radius:7px;font-size:var(--fs-sm);font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;background:var(--light);color:var(--muted);border:1.5px solid var(--border);}
+.btn-rst:hover{background:#E0E0E0;}
+.res-msg{font-size:var(--fs-sm);font-weight:600;}
+.res-msg.ok{color:var(--green);} .res-msg.err{color:var(--red);}
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);flex:1;}
+.cmp-card{border-radius:var(--r);padding:clamp(12px,1.6vh,18px);display:flex;flex-direction:column;gap:7px;}
+.cmp-card.ora2{background:#EAF1FB;border:2px solid #B0CCF0;}
+.cmp-card.ora3{background:var(--ocean-light);border:2px solid #A8D8E8;}
+.cmp-title{font-size:var(--fs-xs);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
+.cmp-card.ora2 .cmp-title{color:var(--blue);}
+.cmp-card.ora3 .cmp-title{color:var(--ocean);}
+.cmp-item{font-size:var(--fs-sm);line-height:1.4;color:var(--text);display:flex;gap:8px;align-items:flex-start;}
+.cmp-item::before{content:'✓';font-weight:700;flex-shrink:0;}
+.cmp-card.ora2 .cmp-item::before{color:var(--blue);}
+.cmp-card.ora3 .cmp-item::before{color:var(--ocean);}
+@media(max-width:600px){
+  .s1deco,.s1bk{display:none;}
+  .trait-grid{grid-template-columns:1fr 1fr;}
+  .cmp-grid{grid-template-columns:1fr;}
+  .g2{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- S1 TITOLO -->
+<div class="slide active" id="s1">
+  <div class="topbar"></div>
+  <div class="s1b">
+    <div class="s1ey">Italiano · Unità 10 · L'avventura · Anno scolastico 2025–2026</div>
+    <div class="s1big">La caccia<br><span class="o">al pirata</span></div>
+    <div class="s1sub">Emilio Salgari · da <em>Le Tigri di Mompracem</em>, 1900</div>
+    <div class="s1mt">
+      <div class="s1mi">Classe <strong>1ª media</strong></div>
+      <div class="s1mi">Ora <strong>3 di 6</strong></div>
+      <div class="s1mi">60 minuti</div>
+      <div class="s1mi">Avventura <strong>esotica</strong></div>
+    </div>
+    <div class="s1themes">
+      <span class="s1theme vendetta">⚔ Vendetta</span>
+      <span class="s1theme amore">❤ Amore</span>
+      <span class="s1theme coraggio">💪 Coraggio</span>
+    </div>
+  </div>
+  <div class="s1deco">🏴‍☠️</div>
+  <div class="s1bk"><strong>📖 p. 442</strong>E tu splendi<br>Mursia Scuola · Unità 10</div>
+</div>
+
+<!-- S2 CHI È SALGARI -->
+<div class="slide" id="s2">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Chi è <span class="o">Emilio Salgari?</span></h2><span class="tag t-ocean">✍️ L'autore</span></div>
+  <div class="si">
+    <div class="author-band">
+      <div class="author-ico">✍️</div>
+      <div>
+        <div class="author-name">Emilio Salgari</div>
+        <div class="author-dates">Verona, 1862 — Torino, 1911 · Scrittore italiano</div>
+        <div class="author-text">Salgari è il più grande scrittore d'avventura italiano. Ha scritto di pirati, giungle, oceani e terre esotiche — eppure <strong>non ha mai lasciato l'Italia</strong>, e non ha quasi mai visto il mare. Tutto ciò che racconta lo ha imparato da atlanti, enciclopedie e resoconti di viaggio. Creò mondi interi con la sola immaginazione. In 25 anni ha scritto <strong>80 romanzi e 150 racconti</strong>, lavorando senza sosta per guadagnare abbastanza da mantenere la famiglia. Morì povero, a 49 anni. Oggi è tradotto in oltre 150 lingue.</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card ol">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ocean);margin-bottom:7px">📚 Opere principali</div>
+        <div class="ilist">
+          <div class="it"><div class="b o"></div><div><strong>Le Tigri di Mompracem</strong> (1900) — il romanzo di oggi</div></div>
+          <div class="it"><div class="b o"></div><div><strong>I Pirati della Malesia</strong> (1896)</div></div>
+          <div class="it"><div class="b o"></div><div><strong>Il Corsaro Nero</strong> (1898)</div></div>
+          <div class="it"><div class="b o"></div><div><strong>Sandokan</strong> — il suo personaggio più famoso al mondo</div></div>
+        </div>
+      </div>
+      <div class="card rl">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:7px">🏆 Curiosità</div>
+        <div class="ilist">
+          <div class="it"><div class="b r"></div><div>Non ha mai visto la Malesia: l'ha immaginata dai libri di geografia</div></div>
+          <div class="it"><div class="b r"></div><div>Nel <strong>1976</strong> la RAI ha trasmesso la serie TV <em>Sandokan</em> con Kabir Bedi: <strong>30 milioni di telespettatori</strong> a puntata</div></div>
+          <div class="it"><div class="b r"></div><div>Nel 2025 è uscito il <strong>reboot con Can Yaman</strong>: 6 milioni di spettatori alla prima</div></div>
+          <div class="it"><div class="b r"></div><div>I suoi romanzi sono stati tradotti in oltre <strong>150 lingue</strong></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="obox">💡 <strong>Il paradosso di Salgari:</strong> descrive la Malesia come se ci fosse vissuto, eppure non ci ha mai messo piede. Questo ci dice qualcosa di importante: la grande letteratura nasce dall'immaginazione, non solo dall'esperienza diretta.</div>
+  </div>
+</div>
+
+<!-- S3 CONTESTO -->
+<div class="slide" id="s3">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Il contesto: <span class="o">la Malesia dell'Ottocento</span></h2><span class="tag t-teal">🗺️ Ambientazione storica</span></div>
+  <div class="si">
+    <div class="obox"><strong>Malesia, fine Ottocento.</strong> Il Borneo e le isole della Malesia sono sotto il controllo dell'Impero Britannico. I lord inglesi governano queste terre ricche di spezie e commerci, sfruttando le popolazioni locali. I pirati malesi resistono all'occupazione coloniale. <strong>Sandokan è uno di loro.</strong></div>
+    <div class="g2">
+      <div class="card ol">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ocean);margin-bottom:7px">🌍 Dove siamo</div>
+        <div class="ilist">
+          <div class="it"><div class="b o"></div><div>Isola di <strong>Labuan</strong>, Malesia — colonia britannica</div></div>
+          <div class="it"><div class="b o"></div><div>Clima <strong>tropicale</strong>: foreste fitte, notti calde e lunari</div></div>
+          <div class="it"><div class="b o"></div><div>Residenza di <strong>lord James</strong>, nobile inglese</div></div>
+          <div class="it"><div class="b o"></div><div>La «Perla di Labuan» è il soprannome dato dagli inglesi a <strong>Marianna</strong> per la sua bellezza</div></div>
+        </div>
+      </div>
+      <div class="card nl">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px">⏰ Quando e perché</div>
+        <div class="ilist">
+          <div class="it"><div class="b"></div><div>Fine <strong>Ottocento</strong> (1890 circa)</div></div>
+          <div class="it"><div class="b"></div><div>L'Inghilterra è la potenza coloniale più grande del mondo</div></div>
+          <div class="it"><div class="b"></div><div>Sandokan è il <strong>principe spodestato</strong> di Mompracem: gli inglesi hanno ucciso la sua famiglia e preso il suo regno</div></div>
+          <div class="it"><div class="b"></div><div>Per questo combatte: non è solo un pirata, è un <strong>uomo che vuole giustizia</strong></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="abox">⚠ <strong>Attenzione:</strong> Sandokan non è un criminale comune. Combatte contro il <strong>colonialismo britannico</strong> che ha distrutto il suo popolo e il suo regno. Salgari lo presenta come un <strong>eroe</strong>, non come un villain.</div>
+  </div>
+</div>
+
+<!-- S5 PRIMA DI LEGGERE -->
+<div class="slide" id="s5">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Prima di leggere: <span class="t">attiviamoci</span></h2><span class="tag t-teal">💬 Discussione</span></div>
+  <div class="si">
+    <div class="ilist" style="flex:1;justify-content:space-around;">
+      <div class="card ol" style="padding:clamp(12px,1.6vh,18px)">
+        <div style="font-size:clamp(18px,2.5vw,26px);margin-bottom:6px">🔍</div>
+        <div style="font-size:var(--fs-md);font-weight:700;color:var(--ocean);margin-bottom:5px">Dove e quando potrebbe essere ambientata la vicenda?</div>
+        <div style="font-size:var(--fs-sm);color:var(--muted)">Guardando l'immagine: che luogo è? In che periodo storico siamo? Ci sono indizi nei vestiti, nell'ambiente?</div>
+      </div>
+      <div class="card sl" style="padding:clamp(12px,1.6vh,18px)">
+        <div style="font-size:clamp(18px,2.5vw,26px);margin-bottom:6px">🤔</div>
+        <div style="font-size:var(--fs-md);font-weight:700;color:var(--sand);margin-bottom:5px">Secondo te, il personaggio raffigurato sarà positivo o negativo?</div>
+        <div style="font-size:var(--fs-sm);color:var(--muted)">Come mai corre? Cosa comunica il suo modo di muoversi? È un eroe che scappa o un criminale che fugge?</div>
+      </div>
+      <div class="card rl" style="padding:clamp(12px,1.6vh,18px)">
+        <div style="font-size:clamp(18px,2.5vw,26px);margin-bottom:6px">❤️</div>
+        <div style="font-size:var(--fs-md);font-weight:700;color:var(--red);margin-bottom:5px">I tre temi del brano sono Vendetta, Amore, Coraggio. Come potrebbero intrecciarsi?</div>
+        <div style="font-size:var(--fs-sm);color:var(--muted)">Un pirata può essere anche romantico? Come possono convivere vendetta e amore nella stessa storia?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S6 DURANTE LA LETTURA -->
+<div class="slide" id="s6">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Leggiamo: <span class="o">pp. 442–444</span></h2><span class="tag t-sand">📖 Lettura a turni</span></div>
+  <div class="si" style="gap:var(--gap)">
+    <div class="brano-consegna">🎯 <strong>Mentre leggete:</strong> individuate protagonista, antagonista, il pericolo e il colpo di scena. Sottolineate la frase più emozionante.</div>
+    <div class="brano-h">
+      <div class="brano-titolo">La caccia al pirata — sintesi del brano</div>
+      <div class="brano-fonte">Emilio Salgari, Le Tigri di Mompracem (1900)</div>
+    </div>
+    <div class="brano-body">
+      <div class="brano-text">
+        Sandokan sale nel salotto e trova <strong>lady Marianna</strong> inginocchiata, il viso inondato di lacrime. Mentre la consola, irrompe nella stanza <strong><em>lord James</em></strong>, suo zio, con la sciabola sguainata.<br><br>
+        — <em>A noi due dunque, o Tigre della Malesia!</em> — urla il lord.<br><br>
+        Sandokan afferra una pesante sedia e si scaglia sulla tavola. Con un salto di felino si impadronisce di lord James, lo rovescia e gli lega le braccia e le gambe senza ucciderlo: <em>«Vi risparmio»</em>, dice il pirata. Poi afferra la sciabola e corre verso <strong>Marianna</strong>. I due si giurano amore e lei promette di aspettarlo.<br><br>
+        — <em>Fra una settimana tornerò a prenderti, alla testa dei miei valorosi tigrotti!</em> — esclama Sandokan, e scavalca il davanzale nella fitta aiuola.<br><br>
+        Fuori, <strong>sessanta o settanta soldati</strong> circondano il parco. Sandokan si tiene immobile come una tigre, poi balza in mezzo al cerchio. Con un solo salto scavalca la cinta, scompare tra i cespugli, <strong>uccide il caporale</strong> che lo insegue, sale a cavallo e galoppa verso le foreste.<br><br>
+        Mentre si allontana, una voce gli sussurra senza tregua: <em>«fuggi che io t’amo»</em>. Le grida degli inseguitori si spengono. La notte era chiara, mercé la luna che brillava in un cielo senza nubi.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S7 PROTAGONISTA SANDOKAN -->
+<div class="slide" id="s7">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Il protagonista: <span class="o">Sandokan</span></h2><span class="tag t-sand">🏴‍☠️ La Tigre della Malesia</span></div>
+  <div class="si" style="gap:var(--gap)">
+    <div class="hero-banner sandokan">
+      <div class="hero-ico">🏴‍☠️</div>
+      <div style="flex:1">
+        <div class="hero-role">Protagonista · Eroe</div>
+        <div class="hero-name">Sandokan</div>
+        <div class="hero-desc">«La Tigre della Malesia» — principe spodestato, pirata leggendario, innamorato di Marianna</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:var(--r);padding:6px 14px;text-align:center">
+          <div style="font-size:var(--fs-xs);color:rgba(255,255,255,.65)">soprannome</div>
+          <div style="font-family:'Playfair Display',serif;font-size:var(--fs-lg);font-weight:900;color:#FFE066">La Tigre</div>
+          <div style="font-size:var(--fs-xs);color:rgba(255,255,255,.65)">della Malesia</div>
+        </div>
+      </div>
+    </div>
+    <div class="trait-grid">
+      <div class="trait-card warm">
+        <div class="trait-ico">⚡</div>
+        <div class="trait-title">Agilità felina</div>
+        <div class="trait-text">«Con un salto di felino s'impadronì di lord James». Si muove come una tigre: veloce, preciso, silenziosa. I soldati lo perdono di vista nel buio.</div>
+      </div>
+      <div class="trait-card warm">
+        <div class="trait-ico">💪</div>
+        <div class="trait-title">Forza straordinaria</div>
+        <div class="trait-text">Sfonda una difesa di 60-70 soldati armati da solo. Scavalca la cinta con un salto e galoppa via. Nessuno riesce a fermarlo.</div>
+      </div>
+      <div class="trait-card ocean">
+        <div class="trait-ico">⚖️</div>
+        <div class="trait-title">Lealtà e onore</div>
+        <div class="trait-text">«Vi risparmio» — pur potendo uccidere lord James, Sandokan lo risparmia. È un pirata, ma ha un codice d'onore. Non uccide i nemici inermi.</div>
+      </div>
+      <div class="trait-card ocean">
+        <div class="trait-ico">❤️</div>
+        <div class="trait-title">Amore profondo</div>
+        <div class="trait-text">Rischia la vita per vedere Marianna. Le giura di tornare. «La voce di Marianna: fuggi che io t’amo» lo accompagna nella fuga. L'amore è la sua forza.</div>
+      </div>
+    </div>
+    <div style="background:var(--navy);border-radius:var(--r);padding:clamp(10px,1.5vh,16px) clamp(14px,2vw,22px);display:flex;align-items:center;gap:14px;flex-shrink:0">
+      <span style="font-size:clamp(22px,3vw,32px);flex-shrink:0">💬</span>
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:var(--fs-md);font-style:italic;color:#FFE066">«Sta bene; io fuggo, ma fra una settimana o due al più, io tornerò qui a prenderti, alla testa dei miei valorosi tigrotti.»</div>
+        <div style="font-size:var(--fs-xs);color:rgba(255,255,255,.55);margin-top:4px">— Sandokan a Marianna, prima di fuggire</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S8 ALTRI PERSONAGGI -->
+<div class="slide" id="s8">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Gli altri <span class="r">personaggi</span></h2><span class="tag t-ocean">👥 Antagonista e aiutante</span></div>
+  <div class="si" style="gap:var(--gap)">
+    <div class="hero-banner avversari" style="flex-shrink:0">
+      <div style="display:flex;gap:20px;flex:1;align-items:center;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:clamp(30px,5vw,56px)">🎩</span>
+          <div>
+            <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6)">Antagonista</div>
+            <div style="font-family:'Playfair Display',serif;font-size:var(--fs-xl);font-weight:900;color:#FFE066">Lord James</div>
+            <div style="font-size:var(--fs-xs);color:rgba(255,255,255,.7);margin-top:2px">Zio di Marianna · Nobile inglese</div>
+          </div>
+        </div>
+        <div style="width:2px;height:50px;background:rgba(255,255,255,.2);flex-shrink:0"></div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:clamp(30px,5vw,56px)">👸</span>
+          <div>
+            <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6)">La «Perla di Labuan»</div>
+            <div style="font-family:'Playfair Display',serif;font-size:var(--fs-xl);font-weight:900;color:#FFE066">Marianna</div>
+            <div style="font-size:var(--fs-xs);color:rgba(255,255,255,.7);margin-top:2px">Amata da Sandokan · Nipote di lord James</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="g2" style="flex:1">
+      <div style="display:flex;flex-direction:column;gap:var(--gap)">
+        <div class="card rl">
+          <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:7px">🎩 Lord James — L'antagonista</div>
+          <div class="ilist">
+            <div class="it"><div class="b r"></div><div><strong>Nobile britannico</strong>: rappresenta il colonialismo inglese</div></div>
+            <div class="it"><div class="b r"></div><div>È lo <strong>zio e tutore</strong> di Marianna: vuole proteggerla da Sandokan</div></div>
+            <div class="it"><div class="b r"></div><div>Ha l'autorità dei <strong>soldati inglesi</strong>: 60-70 uomini armati ai suoi ordini</div></div>
+            <div class="it"><div class="b r"></div><div>È disposto a tutto pur di catturare Sandokan, che considera un <strong>criminale pericoloso</strong></div></div>
+          </div>
+        </div>
+        <div class="abox" style="font-size:var(--fs-xs)">⚠ Differenza con i brani precedenti: qui l'antagonista è <strong>un essere umano con potere politico</strong>, non la natura. Rappresenta un sistema, non solo un individuo.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--gap)">
+        <div class="card ol">
+          <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ocean);margin-bottom:7px">👸 Marianna — L'aiutante</div>
+          <div class="ilist">
+            <div class="it"><div class="b o"></div><div>È la «Perla di Labuan»: <strong>bella, coraggiosa, determinata</strong></div></div>
+            <div class="it"><div class="b o"></div><div>Non è una figura passiva: <strong>aiuta Sandokan a fuggire</strong> con la sua voce («fuggi che io t’amo»)</div></div>
+            <div class="it"><div class="b o"></div><div>Jura di <strong>aspettarlo</strong> sulla memoria della madre: una promessa sacra</div></div>
+            <div class="it"><div class="b o"></div><div>È divisa tra <strong>l'amore per Sandokan</strong> e la fedeltà alla famiglia inglese</div></div>
+          </div>
+        </div>
+        <div class="sbox" style="font-size:var(--fs-sm)">💡 <strong>Ruolo insolito:</strong> Marianna non è solo «la fidanzata». È lei che dà a Sandokan il coraggio di fuggire con le sue parole. Senza di lei, la fuga potrebbe fallire.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S9 AMBIENTAZIONE -->
+<div class="slide" id="s9">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">L'<span class="o">ambientazione</span> del brano</h2><span class="tag t-ocean">🌴 Avventura esotica</span></div>
+  <div class="si">
+    <div class="g2">
+      <div class="card ol">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ocean);margin-bottom:7px">🌙 La notte malese</div>
+        <div class="ilist">
+          <div class="it"><div class="b o"></div><div>Le azioni si svolgono di <strong>notte</strong>: «La notte era chiara, mercé la luna»</div></div>
+          <div class="it"><div class="b o"></div><div>Una <strong>palazzina coloniale</strong> (la residenza di lord James) e il parco circostante</div></div>
+          <div class="it"><div class="b o"></div><div>La <strong>foresta tropicale</strong>: fitta, scura, protettrice — la casa di Sandokan</div></div>
+          <div class="it"><div class="b o"></div><div>La luna illumina la fuga: elemento romantico, non solo pratico</div></div>
+        </div>
+      </div>
+      <div class="card sl">
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sand);margin-bottom:7px">🌍 Sottogenere: avventura esotica</div>
+        <div class="ilist">
+          <div class="it"><div class="b s"></div><div>Luoghi <strong>tropicali lontani</strong> dall'Europa: la Malesia coloniale</div></div>
+          <div class="it"><div class="b s"></div><div>Cultura esotica: <strong>pirati malesi, lord inglesi</strong>, scontro di civiltà</div></div>
+          <div class="it"><div class="b s"></div><div>La foresta è rifugio e alleata di Sandokan: lui la conosce, i soldati no</div></div>
+          <div class="it"><div class="b s"></div><div>Stessa categoria di Mowgli nella giungla — ma <strong>ambientazione coloniale e politica</strong></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="cbox">
+      <p><strong>Come Salgari descrive l'ambiente:</strong> usa aggettivi sensoriali («notte chiara», «luna argentea», «foresta fitta»), metafore animali («salto di felino», «si teneva imboscato come una tigre»), verbi di movimento rapidi. Il paesaggio non è solo sfondo: partecipa all'azione.</p>
+    </div>
+    <div class="obox">💡 <strong>Confronto tra i tre brani:</strong> Buck = natura artica nemica · Mowgli = giungla amica · Sandokan = foresta tropicale alleata. In tutti e tre la natura è protagonista, ma con ruoli diversi.</div>
+  </div>
+</div>
+
+<!-- S10 PERICOLO E FUGA -->
+<div class="slide" id="s10">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Il pericolo e la <span class="r">fuga</span></h2><span class="tag t-red">💥 La tensione narrativa</span></div>
+  <div class="si">
+    <div class="g2" style="flex:1">
+      <div style="display:flex;flex-direction:column;gap:var(--gap)">
+        <div class="card rl">
+          <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:7px">⚡ Qual è il pericolo?</div>
+          <div class="ilist">
+            <div class="it"><div class="b r"></div><div>Sandokan è <strong>circondato</strong> nella residenza di lord James</div></div>
+            <div class="it"><div class="b r"></div><div><strong>Sessanta-settanta soldati</strong> armati di fucili lo attendono fuori</div></div>
+            <div class="it"><div class="b r"></div><div>Lord James suona il corno e <strong>chiama i rinforzi</strong></div></div>
+            <div class="it"><div class="b r"></div><div>Se catturato: <strong>«fra ventiquattro ore sarai appiccato»</strong> (impiccato)</div></div>
+          </div>
+        </div>
+        <div class="card ol">
+          <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ocean);margin-bottom:7px">✅ Come si risolve?</div>
+          <div class="ilist">
+            <div class="it"><div class="b o"></div><div>Sandokan si <strong>immobilizza come una tigre</strong> nell'aiuola — aspetta il momento</div></div>
+            <div class="it"><div class="b o"></div><div>Con un balzo <strong>rompe il cerchio di soldati</strong> scavalcando la cinta</div></div>
+            <div class="it"><div class="b o"></div><div>I soldati, <strong>sorpresi dall'audacia</strong>, esitano a sparare — quell'attimo basta</div></div>
+            <div class="it"><div class="b o"></div><div>Sale a cavallo e <strong>fugge nelle foreste</strong> che conosce come le sue tasche</div></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--gap)">
+        <div class="card nl">
+          <div style="font-size:var(--fs-xs);font-weight:700;color:var(--muted);margin-bottom:7px;text-transform:uppercase;letter-spacing:1px">📐 Struttura del conflitto</div>
+          <div class="ilist">
+            <div class="it"><div class="b"></div><div><strong>PROBLEMA:</strong> Sandokan bloccato, circondato dai soldati</div></div>
+            <div class="it"><div class="b"></div><div><strong>TENTATIVO:</strong> neutralizza lord James e fugge dalla finestra</div></div>
+            <div class="it"><div class="b"></div><div><strong>OSTACOLO:</strong> 70 soldati armati nel parco che aspettano</div></div>
+            <div class="it"><div class="b"></div><div><strong>SOLUZIONE:</strong> balzo fulmineo che sfrutta l'esitazione dei soldati</div></div>
+            <div class="it"><div class="b"></div><div><strong>ESITO:</strong> fuga riuscita — ma Sandokan deve lasciare Marianna</div></div>
+          </div>
+        </div>
+        <div class="sbox">💡 <strong>Colpo di scena:</strong> la voce di Marianna «fuggi che io t’amo» non è un segnale premeditato — è un impulso d'amore spontaneo che orienta la fuga di Sandokan. È il momento emotivo più potente del brano.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S12 I 5 MOMENTI -->
+<div class="slide" id="s12">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">I <span class="r">5 momenti</span> del racconto</h2><span class="tag t-gold">📐 Applicati al brano</span></div>
+  <div class="si">
+    <div class="obox" style="flex-shrink:0">💡 Applichiamo lo schema dei <strong>5 momenti</strong> al brano «La caccia al pirata». Li riconoscete nel testo?</div>
+    <div class="mom-list">
+      <div class="mom">
+        <div class="mom-num">1</div>
+        <div class="mom-body">
+          <div class="mom-label">Momento 1</div>
+          <div class="mom-name">Situazione iniziale</div>
+          <div class="mom-desc">Il mondo della storia nel suo stato di partenza.</div>
+          <div class="mom-sand">Sandokan ama Marianna, nipote del lord inglese. Di notte entra di nascosto nella sua residenza per vederla. L'equilibrio è fragile: è circondato di nemici.</div>
+        </div>
+        <div class="mom-ico">🌙</div>
+      </div>
+      <div class="mom">
+        <div class="mom-num">2</div>
+        <div class="mom-body">
+          <div class="mom-label">Momento 2</div>
+          <div class="mom-name">Rottura dell'equilibrio</div>
+          <div class="mom-desc">L'evento che mette in moto la storia.</div>
+          <div class="mom-sand">Irrompe lord James sguainando la sciabola. I soldati circondano la palazzina. Sandokan è in trappola: combattere o fuggire?</div>
+        </div>
+        <div class="mom-ico">💥</div>
+      </div>
+      <div class="mom">
+        <div class="mom-num">3</div>
+        <div class="mom-body">
+          <div class="mom-label">Momento 3</div>
+          <div class="mom-name">Peripezie</div>
+          <div class="mom-desc">Il protagonista affronta ostacoli uno dopo l'altro.</div>
+          <div class="mom-sand">Sandokan neutralizza lord James, si congeda da Marianna, scavalca il davanzale, si immobilizza nell'aiuola aspettando il momento giusto, poi balza tra i soldati.</div>
+        </div>
+        <div class="mom-ico">🏃</div>
+      </div>
+      <div class="mom">
+        <div class="mom-num">4</div>
+        <div class="mom-body">
+          <div class="mom-label">Momento 4</div>
+          <div class="mom-name">Spannung — Momento più intenso</div>
+          <div class="mom-desc">Il punto di massima tensione: non sappiamo come andrà.</div>
+          <div class="mom-sand">Il cerchio di 70 soldati armati. Sandokan balza. I soldati sparano. Il caporale viene abbattuto. La fuga nell'oscurità, inseguito dalle fucilate.</div>
+        </div>
+        <div class="mom-ico">😰</div>
+      </div>
+      <div class="mom">
+        <div class="mom-num">5</div>
+        <div class="mom-body">
+          <div class="mom-label">Momento 5</div>
+          <div class="mom-name">Soluzione</div>
+          <div class="mom-desc">Il conflitto si chiude — il nuovo equilibrio.</div>
+          <div class="mom-sand">Sandokan galoppa libero nelle foreste. Le grida si spengono. La luna illumina la sua fuga. Libero per ora — ma Marianna resta indietro. Tornerà.</div>
+        </div>
+        <div class="mom-ico">🌙</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S13 VERO/FALSO -->
+<div class="slide" id="s13">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Esercizio: <span class="r">Vero o Falso?</span></h2><span class="tag t-green">✅ Comprensione del testo · p. 442–444</span></div>
+  <div class="si">
+    <div class="obox" style="flex-shrink:0">💡 Cliccate <strong>V</strong> se l'affermazione è vera, <strong>F</strong> se è falsa. Poi cliccate "Controlla".</div>
+    <div class="vf-list">
+      <div class="vf-row" id="vf1">
+        <div class="vf-q">1. Emilio Salgari ha viaggiato in Malesia per descrivere le ambientazioni dei suoi romanzi.</div>
+        <div class="vf-btns"><button class="vf-btn v" onclick="vfC(1,'V')">V</button><button class="vf-btn f" onclick="vfC(1,'F')">F</button></div>
+      </div>
+      <div class="vf-row" id="vf2">
+        <div class="vf-q">2. Lord James è lo zio di Marianna e si oppone alla relazione tra lei e Sandokan.</div>
+        <div class="vf-btns"><button class="vf-btn v" onclick="vfC(2,'V')">V</button><button class="vf-btn f" onclick="vfC(2,'F')">F</button></div>
+      </div>
+      <div class="vf-row" id="vf3">
+        <div class="vf-q">3. Sandokan uccide lord James per riuscire a fuggire dalla palazzina.</div>
+        <div class="vf-btns"><button class="vf-btn v" onclick="vfC(3,'V')">V</button><button class="vf-btn f" onclick="vfC(3,'F')">F</button></div>
+      </div>
+      <div class="vf-row" id="vf4">
+        <div class="vf-q">4. Le azioni del brano si svolgono di notte, sotto una luna chiara.</div>
+        <div class="vf-btns"><button class="vf-btn v" onclick="vfC(4,'V')">V</button><button class="vf-btn f" onclick="vfC(4,'F')">F</button></div>
+      </div>
+      <div class="vf-row" id="vf5">
+        <div class="vf-q">5. Sandokan è soprannominato «La Tigre della Malesia» per il suo comportamento felino nel combattimento.</div>
+        <div class="vf-btns"><button class="vf-btn v" onclick="vfC(5,'V')">V</button><button class="vf-btn f" onclick="vfC(5,'F')">F</button></div>
+      </div>
+      <div class="vf-row" id="vf6">
+        <div class="vf-q">6. Marianna promise di aspettare Sandokan — e lui promise di tornare «alla testa dei suoi tigrotti».</div>
+        <div class="vf-btns"><button class="vf-btn v" onclick="vfC(6,'V')">V</button><button class="vf-btn f" onclick="vfC(6,'F')">F</button></div>
+      </div>
+    </div>
+    <div class="ctrl-row">
+      <button class="btn-ok" onclick="checkVF()">✓ Controlla</button>
+      <button class="btn-rst" onclick="resetVF()">↺ Ricomincia</button>
+      <div class="res-msg" id="vfMsg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- S14 QUIZ CHI È CHI -->
+<div class="slide" id="s14">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Quiz: <span class="r">chi è chi?</span></h2><span class="tag t-red">🎯 Riconosci i personaggi</span></div>
+  <div class="si">
+    <div class="obox" style="flex-shrink:0">🎯 Leggi la descrizione e clicca il nome del personaggio giusto. Se sbagli, ti mostra la risposta corretta.</div>
+    <div id="quiz14-cont" style="flex:1;display:flex;flex-direction:column;gap:var(--gap);min-height:0;overflow:hidden"></div>
+  </div>
+</div>
+
+<!-- S_MC1 SCELTA MULTIPLA A -->
+<div class="slide" id="s_mc1">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Comprensione: <span class="r">scelta multipla</span></h2><span class="tag t-red">&#127919; Domande 1&#8211;2 &middot; p. 445</span></div>
+  <div class="si">
+    <div class="mc-list">
+      <div class="mc-item">
+        <div class="mc-q">1. &#x23F0; Quando si svolgono le azioni descritte nel brano?</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="mcC(this,false)">A) Di mattina, all&#8217;alba</button>
+          <button class="mc-opt" onclick="mcC(this,false)">B) Di pomeriggio</button>
+          <button class="mc-opt" onclick="mcC(this,false)">C) Di sera, al tramonto</button>
+          <button class="mc-opt" onclick="mcC(this,true)">D) Di notte, sotto la luna</button>
+        </div>
+      </div>
+      <div class="mc-item">
+        <div class="mc-q">2. &#x1F465; Chi &#232; lord James rispetto a Marianna?</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="mcC(this,false)">A) Il padre di Marianna</button>
+          <button class="mc-opt" onclick="mcC(this,true)">B) Lo zio di Marianna</button>
+          <button class="mc-opt" onclick="mcC(this,false)">C) Il fratello di Marianna</button>
+          <button class="mc-opt" onclick="mcC(this,false)">D) Il marito di Marianna</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S_MC2 SCELTA MULTIPLA B -->
+<div class="slide" id="s_mc2">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Comprensione: <span class="r">scelta multipla</span></h2><span class="tag t-red">&#127919; Domande 3&#8211;4 &middot; p. 445</span></div>
+  <div class="si">
+    <div class="mc-list">
+      <div class="mc-item">
+        <div class="mc-q">3. &#x1F4AC; A chi appartiene la voce che sussurra &#171;fuggi che io t&#8217;amo&#187;?</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="mcC(this,false)">A) A uno dei tigrotti di Sandokan nascosto nella foresta</button>
+          <button class="mc-opt" onclick="mcC(this,true)">B) A Marianna, che lo segue con la voce mentre lui fugge</button>
+          <button class="mc-opt" onclick="mcC(this,false)">C) A lord James, che finge di lasciarlo andare</button>
+        </div>
+      </div>
+      <div class="mc-item">
+        <div class="mc-q">4. &#x1F93A; Perch&#233; i soldati non sparano subito dopo aver visto Sandokan?</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="mcC(this,false)">A) Hanno esaurito le munizioni negli scontri precedenti</button>
+          <button class="mc-opt" onclick="mcC(this,false)">B) Lord James ha dato l&#8217;ordine di catturarlo vivo</button>
+          <button class="mc-opt" onclick="mcC(this,true)">C) Sono sorpresi dall&#8217;audacia del gesto &#8212; quella breve esitazione basta a Sandokan per fuggire</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S_MC3 SCELTA MULTIPLA C -->
+<div class="slide" id="s_mc3">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">Analisi: <span class="r">scelta multipla</span></h2><span class="tag t-blue">&#128208; Domande 5&#8211;6 &middot; p. 445</span></div>
+  <div class="si">
+    <div class="mc-list">
+      <div class="mc-item">
+        <div class="mc-q">5. &#x1F441; In questo brano, chi &#232; il narratore?</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="mcC(this,false)">A) Il protagonista (Sandokan) racconta in prima persona</button>
+          <button class="mc-opt" onclick="mcC(this,false)">B) Il narratore &#232; interno: &#232; uno dei personaggi del brano</button>
+          <button class="mc-opt" onclick="mcC(this,true)">C) Il narratore &#232; esterno: osserva dall&#8217;esterno e descrive le azioni</button>
+          <button class="mc-opt" onclick="mcC(this,false)">D) L&#8217;autore (Salgari) coincide con il narratore</button>
+        </div>
+      </div>
+      <div class="mc-item">
+        <div class="mc-q">6. &#x1F42F; Salgari usa metafore animali per Sandokan. Quale NON &#232; nel brano?</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="mcC(this,false)">A) &#171;Con un salto di felino&#187; &#8212; paragona Sandokan a un felino</button>
+          <button class="mc-opt" onclick="mcC(this,false)">B) &#171;Si teneva imboscato come una tigre&#187; &#8212; fermo prima di balzare</button>
+          <button class="mc-opt" onclick="mcC(this,true)">C) &#171;Nuotava come un delfino&#187; &#8212; riferimento al mare</button>
+          <button class="mc-opt" onclick="mcC(this,false)">D) &#171;La Tigre della Malesia&#187; &#8212; il soprannome di Sandokan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S17 SCHEDA QUADERNO -->
+<div class="slide" id="s17">
+  <div class="topbar"></div>
+  <div class="sh"><h2 class="slide-title">La <span class="o">scheda</span> del brano</h2><span class="tag t-ocean">✏ Da copiare sul quaderno</span></div>
+  <div class="si">
+    <div class="obox" style="flex-shrink:0">📌 Copiate questa scheda — stesse voci delle Ore 2 e 3, così potrete confrontare Buck, Mowgli e Sandokan.</div>
+    <div class="scheda">
+      <div class="scheda-top">
+        <div>
+          <div class="scheda-top-title">📋 SCHEDA DEL BRANO — ORA 3</div>
+          <div class="scheda-top-sub">E. Salgari · «La caccia al pirata» · p. 442</div>
+        </div>
+        <span style="font-size:clamp(20px,3vw,30px)">🏴‍☠️</span>
+      </div>
+      <div class="scheda-body">
+        <div class="sr"><div class="sk">Autore</div><div class="sv"><strong>Emilio Salgari</strong> — scrittore italiano (Verona, 1862–1911)</div></div>
+        <div class="sr"><div class="sk">Romanzo</div><div class="sv"><strong>Le Tigri di Mompracem</strong> (1900)</div></div>
+        <div class="sr"><div class="sk">Sottogenere</div><div class="sv"><strong>Avventura esotica / coloniale</strong> — luoghi tropicali esotici, scontro con il colonialismo</div></div>
+        <div class="sr"><div class="sk">Ambientazione</div><div class="sv">Isola di <strong>Labuan</strong>, Malesia coloniale — fine Ottocento — <strong>di notte</strong>, sotto la luna</div></div>
+        <div class="sr"><div class="sk">Protagonista</div><div class="sv"><strong>Sandokan</strong> — «La Tigre della Malesia» — pirata/principe — agile, coraggioso, leale — ama Marianna</div></div>
+        <div class="sr"><div class="sk">Antagonista</div><div class="sv"><strong>Lord James</strong> (zio di Marianna) + soldati inglesi — rappresentano il colonialismo britannico</div></div>
+        <div class="sr"><div class="sk">Aiutante</div><div class="sv"><strong>Marianna</strong> — la sua voce «fuggi che io t’amo» guida la fuga di Sandokan</div></div>
+        <div class="sr"><div class="sk">Pericolo</div><div class="sv">Sandokan circondato da 60–70 soldati armati — rischia l'impiccagione se catturato</div></div>
+        <div class="sr"><div class="sk">Colpo di scena</div><div class="sv">La voce di Marianna nella foresta — e il gesto di <strong>risparmiare lord James</strong></div></div>
+        <div class="sr"><div class="sk">Temi</div><div class="sv"><strong>Vendetta</strong> (contro il colonialismo) · <strong>Amore</strong> (Sandokan-Marianna) · <strong>Coraggio</strong> (fuga impossibile)</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S18 ANTICIPAZIONE ORA SUCCESSIVA -->
+<div class="slide" id="s18">
+  <div class="topbar"></div>
+  <div class="sh">
+    <h2 class="slide-title">La prossima volta: <span class="o">siete voi gli autori!</span></h2>
+    <span class="tag t-sand">&#x1F4DA; Anticipazione &middot; Ore 5&#8211;6</span>
+  </div>
+  <div class="si" style="gap:var(--gap)">
+
+    <!-- ANNUNCIO PRINCIPALE -->
+    <div style="background:linear-gradient(135deg,var(--ocean) 0%,var(--ocean-mid) 55%,var(--sand) 100%);border-radius:var(--r);padding:clamp(16px,2.5vh,28px) clamp(18px,3vw,32px);display:flex;align-items:center;gap:clamp(14px,2vw,24px);flex-shrink:0">
+      <span style="font-size:clamp(44px,7vw,80px);filter:drop-shadow(0 4px 12px rgba(0,0,0,.3));flex-shrink:0">&#x270D;&#xFE0F;</span>
+      <div>
+        <div style="font-size:var(--fs-xs);font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:6px">Compito di realt&#224; &middot; Lavoro di gruppo</div>
+        <div style="font-family:'Playfair Display',serif;font-size:clamp(20px,3.5vw,40px);font-weight:900;color:#FFE066;line-height:1.1;margin-bottom:8px">Inventate il vostro racconto d&#8217;avventura</div>
+        <div style="font-size:var(--fs-md);color:rgba(255,255,255,.88);line-height:1.55">Nelle prossime ore lavorerete in piccoli gruppi per <strong style="color:#FFE066">scrivere una storia d&#8217;avventura originale</strong>. Voi siete l&#8217;autore, il protagonista, il mondo lo scegliete voi.</div>
+      </div>
+    </div>
+
+    <!-- COSA VI ASPETTA -->
+    <div style="flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:var(--gap);min-height:0;overflow:hidden">
+
+      <div style="border-radius:var(--r);background:var(--light);border:2px solid var(--border);padding:clamp(12px,1.8vh,18px);display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px">
+        <div style="font-size:clamp(26px,4vw,44px)">&#x1F5FA;&#xFE0F;</div>
+        <div style="font-size:var(--fs-md);font-weight:700;color:var(--navy)">Scegliete un&#8217;ambientazione</div>
+        <div style="font-size:var(--fs-sm);color:var(--muted);line-height:1.45">Natura selvaggia &middot; Giungla esotica &middot; Mare e pirati &middot; Luogo misterioso</div>
+      </div>
+
+      <div style="border-radius:var(--r);background:var(--light);border:2px solid var(--border);padding:clamp(12px,1.8vh,18px);display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px">
+        <div style="font-size:clamp(26px,4vw,44px)">&#x1F9D1;&#x200D;&#x1F91D;&#x200D;&#x1F9D1;</div>
+        <div style="font-size:var(--fs-md);font-weight:700;color:var(--navy)">Costruite i personaggi</div>
+        <div style="font-size:var(--fs-sm);color:var(--muted);line-height:1.45">Il vostro eroe &middot; Il vostro nemico &middot; I vostri aiutanti</div>
+      </div>
+
+      <div style="border-radius:var(--r);background:var(--light);border:2px solid var(--border);padding:clamp(12px,1.8vh,18px);display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px">
+        <div style="font-size:clamp(26px,4vw,44px)">&#x1F4A5;</div>
+        <div style="font-size:var(--fs-md);font-weight:700;color:var(--navy)">Inventate la storia</div>
+        <div style="font-size:var(--fs-sm);color:var(--muted);line-height:1.45">Con i 5 momenti &middot; Colpi di scena &middot; Il lieto fine (o no?)</div>
+      </div>
+
+    </div>
+
+    <!-- MESSAGGIO FINALE -->
+    <div style="background:var(--navy);border-radius:var(--r);padding:clamp(12px,1.8vh,18px) clamp(14px,2vw,22px);display:flex;align-items:center;gap:14px;flex-shrink:0">
+      <span style="font-size:clamp(20px,3vw,30px);flex-shrink:0">&#x1F4A1;</span>
+      
+    </div>
+
+  </div>
+</div>
+
+</div><!-- end deck -->
+
+<div class="navb">
+  <button onclick="go(-1)" id="bP" disabled>◀ Indietro</button>
+  <div class="ndots" id="dots"></div>
+  <div class="nctr" id="ctr">1 / 18</div>
+  <button onclick="go(1)" id="bN">Avanti ▶</button>
+</div>
+
+<script>
+/* ===== NAVIGAZIONE ===== */
+var slides = Array.from(document.querySelectorAll('.slide'));
+var N = slides.length;
+var cur = 0;
+var dotsEl = document.getElementById('dots');
+slides.forEach(function(_,i){
+  var d = document.createElement('div');
+  d.className = 'dot' + (i===0 ? ' active' : '');
+  d.addEventListener('click', function(){ gt(i); });
+  dotsEl.appendChild(d);
+});
+function gt(n){
+  slides[cur].classList.remove('active');
+  slides[cur].classList.add('prev');
+  setTimeout(function(){ slides[cur].classList.remove('prev'); }, 380);
+  cur = n;
+  slides[cur].classList.add('active');
+  dotsEl.querySelectorAll('.dot').forEach(function(d,i){ d.classList.toggle('active', i===cur); });
+  document.getElementById('ctr').textContent = (cur+1) + ' / ' + N;
+  document.getElementById('bP').disabled = cur === 0;
+  document.getElementById('bN').disabled = cur === N-1;
+}
+function go(d){ if(cur+d >= 0 && cur+d < N) gt(cur+d); }
+document.addEventListener('keydown', function(e){
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') go(1);
+  if(e.key==='ArrowLeft' ||e.key==='ArrowUp')   go(-1);
+});
+
+/* ===== VERO/FALSO ===== */
+var vfAns = {1:'F', 2:'V', 3:'F', 4:'V', 5:'V', 6:'V'};
+var vfSel = {};
+function vfC(n, ans){
+  vfSel[n] = ans;
+  var row = document.getElementById('vf'+n);
+  row.querySelectorAll('.vf-btn').forEach(function(b){ b.classList.remove('sel','correct','wrong'); });
+  row.querySelectorAll('.vf-btn').forEach(function(b){
+    if((ans==='V' && b.classList.contains('v')) || (ans==='F' && b.classList.contains('f'))) b.classList.add('sel');
+  });
+  document.getElementById('vfMsg').textContent = '';
+}
+function checkVF(){
+  var ok=0, tot=0;
+  Object.keys(vfAns).forEach(function(n){
+    var row = document.getElementById('vf'+n);
+    row.querySelectorAll('.vf-btn').forEach(function(b){ b.classList.remove('correct','wrong','sel'); });
+    if(!vfSel[n]) return;
+    tot++;
+    var cv = vfSel[n] === vfAns[n];
+    if(cv) ok++;
+    row.querySelectorAll('.vf-btn').forEach(function(b){
+      var isV = b.classList.contains('v'), isF = b.classList.contains('f');
+      if((isV && vfAns[n]==='V') || (isF && vfAns[n]==='F')) b.classList.add('correct');
+      else if((isV && vfSel[n]==='V' && vfAns[n]!=='V') || (isF && vfSel[n]==='F' && vfAns[n]!=='F')) b.classList.add('wrong');
+    });
+  });
+  var m = document.getElementById('vfMsg');
+  if(!tot){ m.textContent='Rispondi almeno a una domanda!'; m.className='res-msg'; return; }
+  var total = Object.keys(vfAns).length;
+  m.className = 'res-msg ' + (ok===total ? 'ok' : 'err');
+  m.textContent = ok===total ? '🎉 Perfetto! Tutte corrette!' : ok + ' su ' + total + ' — riprova!';
+}
+function resetVF(){
+  Object.keys(vfAns).forEach(function(n){
+    delete vfSel[n];
+    document.getElementById('vf'+n).querySelectorAll('.vf-btn').forEach(function(b){ b.classList.remove('sel','correct','wrong'); });
+  });
+  document.getElementById('vfMsg').textContent='';
+}
+
+/* ===== SCELTA MULTIPLA ===== */
+function mcC(btn, correct){
+  var parent = btn.closest('.mc-item');
+  parent.querySelectorAll('.mc-opt').forEach(function(b){ b.classList.add('disabled'); });
+  if(correct){
+    btn.classList.add('correct');
+  } else {
+    btn.classList.add('wrong');
+    parent.querySelectorAll('.mc-opt').forEach(function(b){
+      if(b.getAttribute('onclick') && b.getAttribute('onclick').indexOf('true') !== -1) b.classList.add('correct');
+    });
+  }
+}
+
+/* ===== QUIZ CHI È CHI? ===== */
+var q14 = [
+  {emoji:'🏴‍☠️', desc:'Pirata malese, principe spodestato. Soprannominato «La Tigre della Malesia». Ama Marianna.', ans:'Sandokan', opts:['Sandokan','Lord James','Marianna','Il caporale']},
+  {emoji:'🎩', desc:'Nobile inglese, zio di Marianna. Vuole catturare Sandokan e lo minaccia di impiccagione.', ans:'Lord James', opts:['Sandokan','Lord James','Il caporale','Marianna']},
+  {emoji:'👸', desc:'La «Perla di Labuan». Ama Sandokan e lo aiuta con la sua voce: «fuggi che io t’amo».', ans:'Marianna', opts:['Marianna','Lord James','Sandokan','Lady inglese']},
+  {emoji:'⚔️', desc:'Soldato che insegue Sandokan nella fuga. Viene neutralizzato dal pirata per aprirsi la strada.', ans:'Il caporale', opts:['Il caporale','Lord James','Sandokan','Marianna']},
+];
+function buildQ14(){
+  var cont = document.getElementById('quiz14-cont');
+  if(!cont) return;
+  cont.innerHTML = '';
+  q14.forEach(function(q, idx){
+    var div = document.createElement('div');
+    div.id = 'q14-' + idx;
+    div.style.cssText = 'flex:1;background:var(--light);border:2px solid var(--border);border-radius:var(--r);padding:clamp(8px,1.2vh,12px) clamp(10px,1.4vw,14px);display:flex;align-items:center;gap:10px;min-height:0;transition:border-color .2s';
+    var emo = document.createElement('span');
+    emo.textContent = q.emoji;
+    emo.style.cssText = 'font-size:clamp(22px,3.5vw,38px);flex-shrink:0';
+    var desc = document.createElement('div');
+    desc.textContent = q.desc;
+    desc.style.cssText = 'flex:1;font-size:var(--fs-sm);line-height:1.4;color:var(--text)';
+    var btns = document.createElement('div');
+    btns.style.cssText = 'display:flex;flex-wrap:wrap;gap:5px;flex-shrink:0';
+    q.opts.forEach(function(opt){
+      var btn = document.createElement('button');
+      btn.textContent = opt;
+      btn.style.cssText = 'padding:5px 10px;border-radius:7px;border:1.5px solid var(--border);background:white;font-size:var(--fs-xs);font-weight:600;cursor:pointer;font-family:Inter,sans-serif;color:var(--text);transition:all .18s;white-space:nowrap';
+      btn.addEventListener('click', function(){ q14ans(idx, opt, btn); });
+      btns.appendChild(btn);
+    });
+    div.appendChild(emo);
+    div.appendChild(desc);
+    div.appendChild(btns);
+    cont.appendChild(div);
+  });
+}
+function q14ans(idx, choice, btn){
+  var row = document.getElementById('q14-'+idx);
+  row.querySelectorAll('button').forEach(function(b){ b.style.pointerEvents='none'; });
+  var correct = choice === q14[idx].ans;
+  btn.style.background = correct ? 'var(--green)' : 'var(--red)';
+  btn.style.color = 'white';
+  btn.style.borderColor = correct ? 'var(--green)' : 'var(--red)';
+  if(!correct){
+    row.querySelectorAll('button').forEach(function(b){
+      if(b.textContent === q14[idx].ans){ b.style.background='var(--green)'; b.style.color='white'; b.style.borderColor='var(--green)'; }
+    });
+  }
+  row.style.borderColor = correct ? 'var(--green)' : 'var(--red)';
+}
+setTimeout(function(){ buildQ14(); }, 200);
+</script>
+</body>
+</html>
