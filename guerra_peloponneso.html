@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La guerra del Peloponneso · Lezione 9 · Storia · Classe I</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,400;1,700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --red:#CC0000;
+  --red-dark:#990000;
+  --red-pale:#FFF5F5;
+  --red-soft:#FBE8E8;
+  --black:#0F0F0F;
+  --text:#1A1A1A;
+  --gray-1:#FAFAFA;
+  --gray-2:#F0F0F0;
+  --gray-3:#E0E0E0;
+  --gray-4:#999999;
+  --gray-5:#555555;
+  --white:#FFFFFF;
+  --blue:#0F4C81;
+  --blue-pale:#EDF2F7;
+}
+
+html,body{width:100%;height:100%;background:#1a1a1a;overflow:hidden;font-family:'Source Sans 3','Segoe UI',Arial,sans-serif;color:var(--text);text-align:left}
+
+/* LAYOUT */
+#pres{width:100vw;height:100vh;display:flex;flex-direction:column;position:relative}
+#prog{height:3px;background:var(--gray-3);flex-shrink:0;z-index:100}
+#prog-fill{height:100%;background:var(--red);transition:width .45s cubic-bezier(.4,0,.2,1)}
+#wrapper{flex:1;position:relative;overflow:hidden}
+
+.slide{position:absolute;inset:0;background:var(--white);display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .3s ease,transform .3s ease;transform:translateX(40px);overflow-y:auto;text-align:left}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0)}
+.slide.exit{opacity:0;transform:translateX(-40px)}
+
+/* HEADER */
+.sh{flex-shrink:0;padding:22px 56px 16px;border-bottom:2px solid var(--gray-3);display:flex;align-items:flex-start;gap:18px;position:relative;text-align:left}
+.sh::after{content:'';position:absolute;bottom:-2px;left:56px;width:72px;height:2px;background:var(--red)}
+.sec-badge{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;background:var(--red);color:var(--white);padding:5px 11px;border-radius:2px;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-top:6px}
+.sh-text{flex:1;text-align:left}
+.slide-kicker{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:6px;text-align:left}
+.slide-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(22px,2.9vw,38px);font-weight:900;color:var(--black);line-height:1.12;text-align:left}
+.slide-title .acc{color:var(--red)}
+.slide-title .sub{display:block;font-family:'Playfair Display',serif;font-size:.62em;font-weight:400;font-style:italic;color:var(--gray-5);margin-top:6px}
+.slide-num{flex-shrink:0;font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--gray-5);margin-top:10px;font-variant-numeric:tabular-nums}
+
+/* BODY */
+.sb{flex:1;padding:22px 56px 32px;display:flex;flex-direction:column;gap:14px;text-align:left}
+
+.lead{font-size:clamp(15px,1.7vw,20px);font-weight:500;color:var(--black);line-height:1.6;border-left:4px solid var(--red);padding:2px 0 2px 18px;text-align:left}
+.lead b,.lead strong{color:var(--red);font-weight:700}
+
+.para{font-size:clamp(14px,1.55vw,18px);color:var(--text);line-height:1.65;text-align:left}
+.para b,.para strong{color:var(--red);font-weight:700}
+.para em{font-style:italic;color:var(--gray-5)}
+
+.slabel{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--red);text-align:left;margin-bottom:-2px;display:flex;align-items:center;gap:10px}
+.slabel::after{content:'';flex:1;height:1px;background:var(--gray-3)}
+
+.def{border:1.5px solid var(--red);border-radius:3px;padding:14px 18px;background:var(--white);text-align:left;position:relative}
+.def-t{font-family:'Playfair Display',serif;font-size:clamp(12px,1.3vw,15px);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:8px;text-align:left}
+.def-b{font-size:clamp(13px,1.5vw,17px);color:var(--text);line-height:1.6;text-align:left}
+.def-b strong,.def-b b{color:var(--red);font-weight:700}
+.def-b em{font-style:italic}
+
+.quote{background:var(--gray-1);border-left:4px solid var(--red);padding:13px 18px 13px 22px;font-family:Georgia,serif;font-style:italic;font-size:clamp(13px,1.5vw,17px);color:var(--text);line-height:1.55;text-align:left;position:relative}
+.quote::before{content:'"';position:absolute;left:6px;top:-2px;font-family:Georgia,serif;font-style:normal;font-size:32px;color:var(--red);font-weight:700}
+.quote-source{display:block;margin-top:8px;font-style:normal;font-size:.78em;color:var(--gray-5);font-weight:600}
+
+.hl{background:var(--gray-1);border-left:5px solid var(--red);padding:12px 16px;font-size:clamp(13px,1.5vw,17px);color:var(--text);line-height:1.55;text-align:left}
+.hl strong,.hl b{color:var(--red);font-weight:700}
+
+.blist{display:flex;flex-direction:column;gap:8px;list-style:none;text-align:left}
+.blist li{display:flex;gap:11px;align-items:flex-start;font-size:clamp(13px,1.5vw,18px);color:var(--text);line-height:1.55;text-align:left}
+.blist li::before{content:'';display:block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-top:7px;flex-shrink:0}
+.blist li strong,.blist li b{color:var(--red);font-weight:700}
+
+.cols-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
+.cols-2-12{display:grid;grid-template-columns:1fr 2fr;gap:18px;align-items:stretch}
+.cols-2-21{display:grid;grid-template-columns:2fr 1fr;gap:18px;align-items:stretch}
+
+.card{background:var(--gray-1);border-top:3px solid var(--red);padding:13px 16px;display:flex;flex-direction:column;gap:10px;text-align:left}
+.card-t{font-family:'Playfair Display',serif;font-size:clamp(13px,1.5vw,18px);font-weight:700;color:var(--red);text-align:left;line-height:1.25}
+.card .blist li{font-size:clamp(12px,1.35vw,16px)}
+
+.tline{border-left:2.5px solid var(--red);padding-left:24px;margin-left:6px;display:flex;flex-direction:column;gap:0;text-align:left}
+.tl-item{position:relative;padding-bottom:13px;text-align:left}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{content:'';position:absolute;left:-30px;top:6px;width:11px;height:11px;border-radius:50%;background:var(--red);border:2.5px solid var(--white);box-shadow:0 0 0 2px var(--red)}
+.tl-date{font-size:clamp(11px,1.25vw,14px);font-weight:700;color:var(--red);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;text-align:left}
+.tl-desc{font-size:clamp(13px,1.45vw,17px);color:var(--text);line-height:1.5;text-align:left}
+.tl-desc strong,.tl-desc b{color:var(--red);font-weight:700}
+
+.dtable{width:100%;border-collapse:collapse;font-size:clamp(12px,1.35vw,16px);text-align:left}
+.dtable th{background:var(--red);color:var(--white);padding:8px 13px;text-align:left;font-weight:700;letter-spacing:.5px;font-size:.92em}
+.dtable td{padding:8px 13px;border-bottom:1px solid var(--gray-3);color:var(--text);line-height:1.45;vertical-align:top;text-align:left}
+.dtable tr:nth-child(even) td{background:var(--gray-1)}
+.dtable td strong{color:var(--red)}
+
+.fig{display:flex;flex-direction:column;gap:5px;text-align:left}
+.fig img{max-width:100%;max-height:100%;display:block;object-fit:contain;background:var(--gray-1)}
+.fig-caption{font-size:11px;color:var(--gray-5);font-style:italic;text-align:left;line-height:1.35}
+
+/* COVER */
+.slide.cover{justify-content:center;align-items:flex-start;background:var(--white);padding:0}
+.cover-wrap{width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;padding:32px 72px;text-align:left;position:relative}
+.cover-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:8px;background:linear-gradient(90deg,var(--red) 0%,var(--red) 33%,var(--gray-3) 33%,var(--gray-3) 100%)}
+.cover-wrap::after{content:'';position:absolute;bottom:0;left:0;right:0;height:8px;background:linear-gradient(90deg,var(--gray-3) 0%,var(--gray-3) 67%,var(--red) 67%,var(--red) 100%)}
+.cover-eyebrow{font-size:12px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--red);margin-bottom:24px;text-align:left;display:flex;align-items:center;gap:14px}
+.cover-eyebrow::after{content:'';flex:1;max-width:120px;height:1px;background:var(--red)}
+.cover-title{font-family:'Playfair Display',serif;font-size:clamp(40px,6vw,84px);font-weight:900;color:var(--black);line-height:1.02;text-align:left;margin-bottom:16px;letter-spacing:-1px}
+.cover-title em{color:var(--red);font-style:italic;font-weight:800}
+.cover-subtitle{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:clamp(18px,2.1vw,26px);color:var(--gray-5);line-height:1.4;margin-bottom:36px;max-width:760px;text-align:left}
+.cover-stats{display:grid;grid-template-columns:repeat(5,auto);gap:38px;padding-top:28px;border-top:1px solid var(--gray-3);align-items:flex-end;text-align:left}
+.cv-item{text-align:left}
+.cv-l{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray-4);margin-bottom:4px;text-align:left}
+.cv-v{font-size:clamp(15px,1.7vw,19px);font-weight:700;color:var(--black);text-align:left;line-height:1.2}
+.cv-v .r{color:var(--red)}
+
+/* INDEX */
+.idx-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:left}
+.idx-item{display:flex;align-items:flex-start;gap:14px;padding:12px 14px;border:1px solid var(--gray-3);border-left:3px solid var(--gray-3);cursor:pointer;transition:all .2s;text-align:left}
+.idx-item:hover{border-color:var(--red);border-left:3px solid var(--red);background:var(--red-pale)}
+.idx-n{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--red);min-width:28px;line-height:1;text-align:left}
+.idx-text{font-size:clamp(12px,1.3vw,15px);font-weight:600;color:var(--text);line-height:1.35;text-align:left}
+.idx-text .sub{display:block;font-weight:400;color:var(--gray-5);font-size:.85em;margin-top:2px}
+
+.svg-wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;text-align:center}
+.svg-wrap svg{max-width:100%;max-height:100%;height:auto}
+
+.footer-attr{font-size:9.5px;color:var(--gray-4);font-style:italic;margin-top:6px;text-align:left;line-height:1.4}
+
+/* NAV */
+#nav{position:fixed;bottom:22px;right:28px;display:flex;align-items:center;gap:10px;z-index:300}
+.nbtn{width:46px;height:46px;border-radius:50%;border:2px solid var(--red);background:var(--white);color:var(--red);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 2px 10px rgba(0,0,0,.12);user-select:none}
+.nbtn:hover{background:var(--red);color:var(--white);transform:scale(1.08)}
+.nbtn:disabled{border-color:var(--gray-3);color:var(--gray-3);pointer-events:none;box-shadow:none}
+#sctr{font-size:13px;font-weight:700;color:var(--black);background:var(--white);padding:7px 13px;border-radius:18px;box-shadow:0 2px 10px rgba(0,0,0,.1);letter-spacing:1px;font-variant-numeric:tabular-nums}
+#hbtn{position:fixed;bottom:22px;left:28px;z-index:300;width:46px;height:46px;border-radius:50%;border:2px solid var(--gray-3);background:var(--white);color:var(--gray-5);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 2px 10px rgba(0,0,0,.1)}
+#hbtn:hover{border-color:var(--red);color:var(--red)}
+
+@media(max-width:900px){
+  .sh{padding:16px 28px 12px}.sh::after{left:28px}
+  .sb{padding:18px 28px 28px}
+  .cover-wrap{padding:28px 36px}
+  .idx-grid{grid-template-columns:1fr 1fr}
+  .cols-2,.cols-2-12,.cols-2-21{grid-template-columns:1fr}
+  .cover-stats{grid-template-columns:repeat(2,1fr);gap:18px}
+}
+</style>
+</head>
+<body>
+<div id="pres">
+  <div id="prog"><div id="prog-fill"></div></div>
+  <div id="wrapper">
+
+<!-- 1 · COPERTINA -->
+<div class="slide cover active" id="s1">
+  <div class="cover-wrap">
+    <div class="cover-eyebrow">Storia &nbsp;·&nbsp; Unità 5 &nbsp;·&nbsp; Lezione 9 &nbsp;·&nbsp; Classe I</div>
+    <h1 class="cover-title"><em>La guerra</em><br>del Peloponneso</h1>
+    <p class="cover-subtitle">Atene contro Sparta &mdash; il conflitto trentennale che segnò<br>l&rsquo;inizio del declino del mondo greco</p>
+    <div class="cover-stats">
+      <div class="cv-item"><div class="cv-l">Periodo</div><div class="cv-v"><span class="r">431</span>&ndash;<span class="r">404</span> a.C.</div></div>
+      <div class="cv-item"><div class="cv-l">Durata</div><div class="cv-v"><span class="r">27</span> anni</div></div>
+      <div class="cv-item"><div class="cv-l">Schieramenti</div><div class="cv-v">Lega di Delo <span class="r">vs</span> Lega del Peloponneso</div></div>
+      <div class="cv-item"><div class="cv-l">Esito</div><div class="cv-v">Vittoria di <span class="r">Sparta</span></div></div>
+      <div class="cv-item"><div class="cv-l">Fonte principale</div><div class="cv-v"><span class="r">Tucidide</span></div></div>
+    </div>
+  </div>
+</div>
+<!-- 2 · INDICE -->
+<div class="slide" id="s2">
+  <div class="sh">
+    <div class="sh-text">
+      <div class="slide-kicker">Sommario</div>
+      <h2 class="slide-title">Indice degli argomenti</h2>
+    </div>
+    <div class="slide-num">02&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <div class="idx-grid">
+      <div class="idx-item" onclick="goTo(3)"><div class="idx-n">1</div><div class="idx-text">Il mondo greco al 431 a.C.<span class="sub">Mappa delle alleanze</span></div></div>
+      <div class="idx-item" onclick="goTo(4)"><div class="idx-n">2</div><div class="idx-text">Schema generale<span class="sub">«A colpo d&rsquo;occhio»</span></div></div>
+      <div class="idx-item" onclick="goTo(5)"><div class="idx-n">3</div><div class="idx-text">L&rsquo;evento e la trasformazione<span class="sub">Presentazione della Lezione</span></div></div>
+      <div class="idx-item" onclick="goTo(6)"><div class="idx-n">4</div><div class="idx-text">Atene alla guida del mondo greco<span class="sub">Sezione 1 · parte I</span></div></div>
+      <div class="idx-item" onclick="goTo(7)"><div class="idx-n">5</div><div class="idx-text">La Lega di Delo e il concetto di egemonia<span class="sub">Sezione 1 · parte II</span></div></div>
+      <div class="idx-item" onclick="goTo(8)"><div class="idx-n">6</div><div class="idx-text">Sparta e la Lega del Peloponneso<span class="sub">Sezione 1 · parte III</span></div></div>
+      <div class="idx-item" onclick="goTo(9)"><div class="idx-n">7</div><div class="idx-text">Atene vieta a Megara di commerciare<span class="sub">Sezione 2 · parte I</span></div></div>
+      <div class="idx-item" onclick="goTo(10)"><div class="idx-n">8</div><div class="idx-text">Le cause secondo Tucidide<span class="sub">Sezione 2 · parte II</span></div></div>
+      <div class="idx-item" onclick="goTo(11)"><div class="idx-n">9</div><div class="idx-text">Sparta reagisce all&rsquo;imperialismo<span class="sub">Sezione 2 · parte III</span></div></div>
+      <div class="idx-item" onclick="goTo(12)"><div class="idx-n">10</div><div class="idx-text">Atene sui mari, Sparta sulla terra<span class="sub">Sezione 3 · parte I</span></div></div>
+      <div class="idx-item" onclick="goTo(13)"><div class="idx-n">11</div><div class="idx-text">La peste e la morte di Pericle<span class="sub">Sezione 3 · parte II</span></div></div>
+      <div class="idx-item" onclick="goTo(14)"><div class="idx-n">12</div><div class="idx-text">La guerra continua: Cleone e Brasida<span class="sub">Sezione 3 · parte III</span></div></div>
+      <div class="idx-item" onclick="goTo(15)"><div class="idx-n">13</div><div class="idx-text">Una pace destinata a non durare<span class="sub">Sezione 3 · parte IV</span></div></div>
+      <div class="idx-item" onclick="goTo(16)"><div class="idx-n">14</div><div class="idx-text">Cronologia delle tre fasi<span class="sub">Schema visivo</span></div></div>
+      <div class="idx-item" onclick="goTo(17)"><div class="idx-n">15</div><div class="idx-text">Una pace armata e l&rsquo;eccidio di Melo<span class="sub">Sezione 4 · parte I</span></div></div>
+      <div class="idx-item" onclick="goTo(18)"><div class="idx-n">16</div><div class="idx-text">Alcibiade, nuovo leader democratico<span class="sub">Sezione 4 · parte II</span></div></div>
+      <div class="idx-item" onclick="goTo(19)"><div class="idx-n">17</div><div class="idx-text">La spedizione in Sicilia (415&ndash;413 a.C.)<span class="sub">Sezione 4 · parte III</span></div></div>
+      <div class="idx-item" onclick="goTo(20)"><div class="idx-n">18</div><div class="idx-text">La ripresa della guerra in Grecia<span class="sub">Sezione 4 · parte IV</span></div></div>
+      <div class="idx-item" onclick="goTo(21)"><div class="idx-n">19</div><div class="idx-text">Il Consiglio dei Quattrocento<span class="sub">Sezione 4 · parte V</span></div></div>
+      <div class="idx-item" onclick="goTo(22)"><div class="idx-n">20</div><div class="idx-text">La disfatta di Atene a Egospotami<span class="sub">Sezione 4 · parte VI</span></div></div>
+      <div class="idx-item" onclick="goTo(23)"><div class="idx-n">21</div><div class="idx-text">Il governo dei Trenta tiranni<span class="sub">Sezione 5 · parte I</span></div></div>
+      <div class="idx-item" onclick="goTo(24)"><div class="idx-n">22</div><div class="idx-text">La morte di Socrate<span class="sub">Sezione 5 · parte II</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 3 · MAPPA (Wikimedia) -->
+<div class="slide" id="s3">
+  <div class="sh">
+    <div class="sh-text">
+      <div class="slide-kicker">Cartografia</div>
+      <h2 class="slide-title">Il mondo greco <span class="acc">al 431 a.C.</span><span class="sub">Le due grandi alleanze alla vigilia della guerra</span></h2>
+    </div>
+    <div class="slide-num">03&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb" style="gap:8px">
+    <div class="fig" style="flex:1;min-height:0;display:flex;flex-direction:column;align-items:center">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Map_Peloponnesian_War_431_BC-it.svg" 
+           alt="Mappa del mondo greco durante la guerra del Peloponneso, 431 a.C." 
+           style="max-width:100%;max-height:100%;display:block;object-fit:contain;margin:0 auto">
+    </div>
+    <div class="hl" style="flex-shrink:0">
+      <strong>Lega di Delo</strong> (in giallo, capeggiata da Atene) contro <strong>Lega del Peloponneso</strong> (in rosso, capeggiata da Sparta). Si noti l&rsquo;estensione della rete ateniese: dalla <strong>Tracia</strong> all&rsquo;<strong>Asia Minore</strong>, fino al <strong>Mar Nero</strong>. La Sicilia &mdash; teatro della spedizione del 415 a.C. &mdash; resta inizialmente fuori dal conflitto.
+    </div>
+    <div class="footer-attr">Mappa: <em>Map_Peloponnesian_War_431_BC-it.svg</em> &mdash; Marsyas / Wikimedia Commons &mdash; CC&nbsp;BY-SA&nbsp;2.5</div>
+  </div>
+</div>
+
+<!-- 4 · SCHEMA «A COLPO D'OCCHIO» -->
+<div class="slide" id="s4">
+  <div class="sh">
+    <div class="sh-text">
+      <div class="slide-kicker">Schema generale</div>
+      <h2 class="slide-title">«A colpo d&rsquo;occhio»<span class="sub">Cause, fasi e conseguenze del conflitto</span></h2>
+    </div>
+    <div class="slide-num">04&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb" style="padding-top:14px">
+    <div class="svg-wrap" style="flex:1">
+<svg viewBox="0 0 760 410" xmlns="http://www.w3.org/2000/svg" style="font-family:'Source Sans 3',sans-serif;max-height:380px">
+  <defs>
+    <marker id="ar" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#555"/>
+    </marker>
+  </defs>
+  <rect x="240" y="10" width="280" height="58" rx="3" fill="#CC0000"/>
+  <text x="380" y="30" font-size="13" text-anchor="middle" fill="white" font-weight="700" letter-spacing="1">GUERRA DEL PELOPONNESO</text>
+  <text x="380" y="46" font-size="10.5" text-anchor="middle" fill="#FFD0D0">Atene e Lega di Delo</text>
+  <text x="380" y="58" font-size="10.5" text-anchor="middle" fill="#FFD0D0">vs Sparta e Lega del Peloponneso · 431–404 a.C.</text>
+  <line x1="240" y1="40" x2="180" y2="40" stroke="#555" stroke-width="1.5" marker-end="url(#ar)"/>
+  <line x1="380" y1="68" x2="380" y2="96" stroke="#555" stroke-width="1.5" marker-end="url(#ar)"/>
+  <line x1="520" y1="40" x2="580" y2="40" stroke="#555" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="22" y="18" width="158" height="60" rx="3" fill="#FFF8E0" stroke="#CC8800" stroke-width="1.5"/>
+  <text x="101" y="34" font-size="10.5" text-anchor="middle" fill="#774400" font-weight="700">CAUSE REMOTE</text>
+  <text x="101" y="50" font-size="9.5" text-anchor="middle" fill="#554">Imperialismo di Atene</text>
+  <text x="101" y="63" font-size="9.5" text-anchor="middle" fill="#554">Modelli politici opposti:</text>
+  <text x="101" y="75" font-size="9" text-anchor="middle" fill="#554" font-style="italic">Atene democratica / Sparta aristocratica</text>
+  <line x1="101" y1="78" x2="101" y2="106" stroke="#555" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="22" y="106" width="158" height="56" rx="3" fill="#FFEDD0" stroke="#CC6600" stroke-width="1.5"/>
+  <text x="101" y="124" font-size="10.5" text-anchor="middle" fill="#663300" font-weight="700">CAUSA SCATENANTE</text>
+  <text x="101" y="140" font-size="9.5" text-anchor="middle" fill="#554">Atene vieta i commerci con</text>
+  <text x="101" y="152" font-size="9.5" text-anchor="middle" fill="#554" font-weight="600">Megara (431 a.C.)</text>
+  <rect x="288" y="96" width="184" height="86" rx="3" fill="#EDF2F7" stroke="#0F4C81" stroke-width="1.5"/>
+  <text x="380" y="114" font-size="10.5" text-anchor="middle" fill="#0F4C81" font-weight="700">I FASE (431–421 a.C.)</text>
+  <text x="380" y="128" font-size="9" text-anchor="middle" fill="#334">· 431: Sparta invade l'Attica</text>
+  <text x="380" y="140" font-size="9" text-anchor="middle" fill="#334">· 430–429: peste, muore Pericle</text>
+  <text x="380" y="152" font-size="9" text-anchor="middle" fill="#334">· Cleone (Atene) vs Brasida (Sparta)</text>
+  <text x="380" y="164" font-size="9" text-anchor="middle" fill="#334">· 422: morti entrambi ad Anfipoli</text>
+  <text x="380" y="176" font-size="9" text-anchor="middle" fill="#334" font-weight="600">· 421: Pace di Nicia</text>
+  <line x1="380" y1="182" x2="380" y2="208" stroke="#555" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="288" y="208" width="184" height="78" rx="3" fill="#EDF2F7" stroke="#0F4C81" stroke-width="1.5"/>
+  <text x="380" y="226" font-size="10.5" text-anchor="middle" fill="#0F4C81" font-weight="700">II FASE (418–413 a.C.)</text>
+  <text x="380" y="241" font-size="9" text-anchor="middle" fill="#334">· 416: distruzione di Melo</text>
+  <text x="380" y="253" font-size="9" text-anchor="middle" fill="#334">· 415–413: spedizione in Sicilia</text>
+  <text x="380" y="265" font-size="9" text-anchor="middle" fill="#334">· Fuga di Alcibiade</text>
+  <text x="380" y="277" font-size="9" text-anchor="middle" fill="#334">· Sconfitta e morte di Nicia</text>
+  <line x1="380" y1="286" x2="380" y2="312" stroke="#555" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="288" y="312" width="184" height="84" rx="3" fill="#FFE8E8" stroke="#CC0000" stroke-width="2"/>
+  <text x="380" y="330" font-size="10.5" text-anchor="middle" fill="#CC0000" font-weight="700">III FASE (413–404 a.C.)</text>
+  <text x="380" y="345" font-size="9" text-anchor="middle" fill="#334">· Sparta + Persia contro Atene</text>
+  <text x="380" y="357" font-size="9" text-anchor="middle" fill="#334">· 411: Consiglio dei Quattrocento</text>
+  <text x="380" y="369" font-size="9" text-anchor="middle" fill="#334">· Ritorno di Alcibiade</text>
+  <text x="380" y="381" font-size="9" text-anchor="middle" fill="#334">· 405: sconfitta a Egospotami</text>
+  <text x="380" y="393" font-size="9" text-anchor="middle" fill="#CC0000" font-weight="700">· 404: resa di Atene</text>
+  <rect x="580" y="18" width="170" height="156" rx="3" fill="#FFE8E8" stroke="#CC0000" stroke-width="1.5"/>
+  <text x="665" y="38" font-size="10.5" text-anchor="middle" fill="#CC0000" font-weight="700">CONSEGUENZE PER ATENE</text>
+  <text x="589" y="58" font-size="9.5" fill="#444">· Scioglimento della Lega di Delo</text>
+  <text x="589" y="72" font-size="9.5" fill="#444">· Distruzione delle mura e della flotta</text>
+  <text x="589" y="86" font-size="9.5" fill="#444">· Adesione alla Lega del Peloponneso</text>
+  <text x="589" y="100" font-size="9.5" fill="#444">· Flotta ridotta a 12 triremi</text>
+  <text x="589" y="114" font-size="9.5" fill="#444">· Governo dei Trenta tiranni</text>
+  <text x="589" y="128" font-size="9.5" fill="#444">· 403: ritorno della democrazia</text>
+  <text x="589" y="142" font-size="9.5" fill="#444">· Fine dell'egemonia politica</text>
+  <text x="589" y="156" font-size="9.5" fill="#444">· Permane l'egemonia culturale</text>
+  <text x="589" y="170" font-size="9.5" fill="#AA0000" font-weight="600">· 399: morte di Socrate</text>
+  <text x="380" y="406" font-size="9" text-anchor="middle" fill="#AAA" font-style="italic">Rielaborazione dello schema «A colpo d'occhio» — Lezione 9, Unità 5</text>
+</svg>
+    </div>
+  </div>
+</div>
+
+<!-- 5 · L'EVENTO E LA TRASFORMAZIONE -->
+<div class="slide" id="s5">
+  <div class="sh">
+    <div class="sh-text">
+      <div class="slide-kicker">Presentazione della Lezione</div>
+      <h2 class="slide-title">L&rsquo;evento <span class="acc">&middot;</span> la trasformazione<span class="sub">Cosa accade e cosa cambia, in due frasi</span></h2>
+    </div>
+    <div class="slide-num">05&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <div class="cols-2">
+      <div class="card">
+        <div class="card-t">L&rsquo;evento &mdash; Atene contro Sparta</div>
+        <p class="para">Il tentativo di Atene di estendere all&rsquo;intera Grecia la propria egemonia scatena la reazione di Sparta e porta allo scoppio della <strong>guerra del Peloponneso</strong>, un conflitto trentennale tra le due principali città del mondo greco.</p>
+      </div>
+      <div class="card">
+        <div class="card-t">La trasformazione &mdash; Una vittoria effimera</div>
+        <p class="para">Dopo trent&rsquo;anni di scontri e di devastazioni, la guerra del Peloponneso si conclude con la <strong>vittoria di Sparta</strong> e la sconfitta di Atene. A perdere è però l&rsquo;intera <strong>Grecia</strong>, che esce dal lungo conflitto <strong>devastata e indebolita</strong>.</p>
+      </div>
+    </div>
+    <div class="slabel">In sintesi: cinque domande, cinque risposte</div>
+    <table class="dtable">
+      <tr><th style="width:30%">Domanda</th><th>Risposta</th></tr>
+      <tr><td><strong>Quando?</strong></td><td>Dal <strong>431 a.C.</strong> al <strong>404 a.C.</strong> &mdash; 27 anni</td></tr>
+      <tr><td><strong>Chi?</strong></td><td><strong>Atene</strong> e la <strong>Lega di Delo</strong> contro <strong>Sparta</strong> e la <strong>Lega del Peloponneso</strong></td></tr>
+      <tr><td><strong>Perché?</strong></td><td>Vera causa: l&rsquo;<strong>imperialismo ateniese</strong>. Causa scatenante: il divieto di commerciare con Megara</td></tr>
+      <tr><td><strong>Come?</strong></td><td>Tre fasi: I (431&ndash;421), II (418&ndash;413, spedizione in Sicilia), III (413&ndash;404, sconfitta finale)</td></tr>
+      <tr><td><strong>Risultato?</strong></td><td>Vittoria di Sparta, declino di Atene, <strong>declino di tutta la Grecia</strong></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 6 · SEZ.1.1 - ATENE ALLA GUIDA DEL MONDO GRECO -->
+<div class="slide" id="s6">
+  <div class="sh">
+    <div class="sec-badge">Sezione 1</div>
+    <div class="sh-text">
+      <div class="slide-kicker">L&rsquo;egemonia di Atene &middot; parte I</div>
+      <h2 class="slide-title">Atene alla guida del <span class="acc">mondo greco</span><span class="sub">Una potenza commerciale, militare e culturale nel V secolo a.C.</span></h2>
+    </div>
+    <div class="slide-num">06&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <p class="lead">Nel <strong>V secolo a.C.</strong> Atene era diventata una delle più importanti città del Mediterraneo. Le navi che facevano scalo nel porto del <strong>Pireo</strong> scaricavano merci provenienti dall&rsquo;Egitto, dalla Siria e dall&rsquo;Italia, e ripartivano con le stive piene di manufatti preziosi.</p>
+    <div class="cols-2">
+      <div class="card">
+        <div class="card-t">Le tre forme del primato ateniese</div>
+        <ul class="blist">
+          <li><strong>Primato militare e commerciale.</strong> La flotta di <strong>triremi</strong>, voluta da Temistocle e ampliata nei decenni successivi, assicurava ad Atene il controllo delle rotte commerciali nell&rsquo;Egeo</li>
+          <li><strong>Primato culturale.</strong> Sotto la guida di <strong>Pericle</strong>, la città si era abbellita di splendidi monumenti (il <strong>Partenone</strong>, i <strong>Propilei</strong>) ed era diventata il centro culturale del mondo greco</li>
+          <li><strong>Primato politico.</strong> A partire dalle guerre persiane, Atene aveva esteso la propria autorità su molte città della Grecia, trasformando un&rsquo;alleanza difensiva in uno strumento di dominio</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-t">Il porto del Pireo &mdash; cuore commerciale</div>
+        <p class="para">Il porto del Pireo, collegato ad Atene dalle <strong>Lunghe Mura</strong>, era il principale scalo commerciale del Mediterraneo orientale. Vi arrivavano:</p>
+        <ul class="blist">
+          <li><strong>Dall&rsquo;Egitto:</strong> grano, papiro, lino</li>
+          <li><strong>Dalla Siria:</strong> tessuti, spezie, oggetti di lusso</li>
+          <li><strong>Dall&rsquo;Italia:</strong> grano, vino, manufatti</li>
+          <li><strong>Dal Mar Nero:</strong> grano dalle steppe russe, pesce, schiavi</li>
+        </ul>
+        <p class="para">Ne ripartivano <strong>manufatti ateniesi</strong> di altissima qualità: ceramiche, oggetti in argento, opere d&rsquo;arte.</p>
+      </div>
+    </div>
+    <div class="def">
+      <div class="def-t">Glossario &mdash; Trireme</div>
+      <div class="def-b">Nave da guerra greca a <strong>tre file sovrapposte di remi</strong>, veloce e manovrabile. Era l&rsquo;unità di base delle flotte mediterranee. Una trireme ateniese aveva circa <strong>170 rematori</strong> (i <em>teti</em>, cittadini più poveri) e poteva raggiungere i 10 nodi di velocità. La flotta ateniese comprendeva centinaia di queste navi, costruite e mantenute grazie ai <strong>tributi della Lega di Delo</strong>.</div>
+    </div>
+  </div>
+</div>
+<!-- 7 · SEZ.1.2 -->
+<div class="slide" id="s7">
+  <div class="sh">
+    <div class="sec-badge">Sezione 1</div>
+    <div class="sh-text">
+      <div class="slide-kicker">L&rsquo;egemonia di Atene &middot; parte II</div>
+      <h2 class="slide-title">La Lega di Delo e il concetto di <span class="acc">egemonia</span><span class="sub">Come Atene controllava 250 città senza conquistarle</span></h2>
+    </div>
+    <div class="slide-num">07&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <p class="lead">Per affermare il primato politico di Atene, Pericle aveva utilizzato la <strong>Lega di Delo</strong>: l&rsquo;alleanza nata per contrastare la minaccia persiana era divenuta lo strumento con cui Atene controllava le città alleate.</p>
+    <div class="def">
+      <div class="def-t">Definizione &mdash; Egemonia</div>
+      <div class="def-b">Il termine greco <em>hegemonia</em> indica una <strong>forma di controllo</strong> esercitata da uno Stato su altri Stati che sono politicamente, economicamente e militarmente più deboli. Lo Stato egemone &mdash; in questo caso Atene &mdash; <strong>non assume il controllo diretto</strong> degli altri Stati, che restano quindi indipendenti, ma <strong>li obbliga a obbedire alle sue richieste e ai suoi ordini</strong>. Atene controllava direttamente solo l&rsquo;Attica, ma le città della Lega di Delo erano di fatto dipendenti da lei.</div>
+    </div>
+    <div class="cols-2">
+      <div class="card">
+        <div class="card-t">Come Atene esercitava l&rsquo;egemonia</div>
+        <ul class="blist">
+          <li>Le città alleate erano costrette a <strong>obbedire alla volontà di Atene</strong></li>
+          <li>Dovevano versare ad Atene un <strong>tributo annuale</strong></li>
+          <li>Atene <strong>interveniva nelle questioni interne</strong> alle altre <em>poleis</em></li>
+          <li>Imponeva l&rsquo;adozione di un <strong>regime democratico</strong> nelle città alleate</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-t">L&rsquo;espansione negli anni Trenta del V sec. a.C.</div>
+        <p class="para">Negli <strong>anni Trenta del V secolo a.C.</strong> Atene proseguì la propria politica imperialistica ed estese la propria egemonia alle <em>poleis</em> greche di:</p>
+        <ul class="blist">
+          <li><strong>Tracia</strong> (nord della Grecia)</li>
+          <li><strong>Asia Minore</strong> (attuale Turchia)</li>
+          <li><strong>Mar Nero</strong> (le colonie greche del Ponto)</li>
+        </ul>
+        <p class="para">In questo modo la Lega di Delo arrivò a contare circa <strong>250 città</strong>. Di fatto gran parte della Grecia era sotto l&rsquo;egemonia di Atene.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 8 · SEZ.1.3 -->
+<div class="slide" id="s8">
+  <div class="sh">
+    <div class="sec-badge">Sezione 1</div>
+    <div class="sh-text">
+      <div class="slide-kicker">L&rsquo;egemonia di Atene &middot; parte III</div>
+      <h2 class="slide-title">Sparta e la <span class="acc">Lega del Peloponneso</span><span class="sub">Due modelli politici opposti, uno scontro inevitabile</span></h2>
+    </div>
+    <div class="slide-num">08&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <p class="lead">La crescente potenza di Atene destò l&rsquo;opposizione di Sparta e delle sue alleate, federate nella <strong>Lega del Peloponneso</strong>. La tensione tra i due blocchi crebbe fino a sfociare nella cosiddetta <strong>guerra del Peloponneso</strong>.</p>
+    <div class="slabel">Atene e Sparta a confronto</div>
+    <table class="dtable">
+      <tr><th>Aspetto</th><th>Atene</th><th>Sparta</th></tr>
+      <tr><td><strong>Sistema politico</strong></td><td>Democrazia (potere al popolo)</td><td>Aristocrazia (potere ai nobili)</td></tr>
+      <tr><td><strong>Forza militare</strong></td><td>Flotta &mdash; dominio del mare</td><td>Esercito &mdash; dominio della terra</td></tr>
+      <tr><td><strong>Economia</strong></td><td>Commercio, artigianato, manifattura</td><td>Agricoltura, autosufficienza</td></tr>
+      <tr><td><strong>Società</strong></td><td>Aperta, cosmopolita</td><td>Chiusa, militarizzata</td></tr>
+      <tr><td><strong>Alleanza</strong></td><td>Lega di Delo (~250 città)</td><td>Lega del Peloponneso</td></tr>
+      <tr><td><strong>Cultura</strong></td><td>Filosofia, teatro, arte</td><td>Disciplina militare, ginnastica</td></tr>
+    </table>
+    <div class="hl">La guerra del Peloponneso, durata <strong>27 anni</strong> (dal <strong>431 al 404 a.C.</strong>), vide quindi contrapposti due modelli politici opposti: <strong>quello democratico di Atene</strong> e <strong>quello aristocratico di Sparta</strong>. Ma non fu solo uno scontro frontale fra le due maggiori potenze: il conflitto si estese, con effetti disastrosi, a <strong>tutto il mondo ellenico</strong> e segnò <strong>l&rsquo;inizio del declino della Grecia</strong>.</div>
+  </div>
+</div>
+
+<!-- 9 · SEZ.2.1 -->
+<div class="slide" id="s9">
+  <div class="sh">
+    <div class="sec-badge">Sezione 2</div>
+    <div class="sh-text">
+      <div class="slide-kicker">Le cause del conflitto &middot; parte I</div>
+      <h2 class="slide-title">Atene vieta a <span class="acc">Megara</span> di commerciare<span class="sub">Il divieto del 431 a.C. che fece scoppiare la guerra</span></h2>
+    </div>
+    <div class="slide-num">09&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <p class="lead">La guerra del Peloponneso scoppiò quando Atene proibì alle <em>poleis</em> che facevano parte della <strong>Lega di Delo</strong> di commerciare con <strong>Megara</strong>, una città alleata di Sparta.</p>
+    <div class="cols-2">
+      <div class="card">
+        <div class="card-t">La catena diplomatica del 431 a.C.</div>
+        <div class="tline">
+          <div class="tl-item">
+            <div class="tl-date">Il divieto ateniese</div>
+            <div class="tl-desc">Atene proibisce alle città della Lega di Delo di commerciare con Megara. Il divieto avrebbe comportato la <strong>rovina economica</strong> della <em>polis</em>.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">L&rsquo;ultimatum spartano</div>
+            <div class="tl-desc">Gli Spartani intimano ad Atene di <strong>ritirare il provvedimento</strong>.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">L&rsquo;assemblea (ecclesia) ateniese</div>
+            <div class="tl-desc">Ad Atene viene convocata l&rsquo;<em>ecclesia</em>: molti Ateniesi sostengono che bisogna fare la guerra; altri che bisogna abrogare il decreto.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">L&rsquo;intervento decisivo di Pericle</div>
+            <div class="tl-desc">Alla fine fu decisivo l&rsquo;intervento di <strong>Pericle</strong>: su suo consiglio gli Ateniesi rifiutarono di rimuovere il divieto, pur sapendo che questo rifiuto equivaleva a una <strong>dichiarazione di guerra</strong>.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">431 a.C. &mdash; Sparta dichiara guerra</div>
+            <div class="tl-desc">Quando gli Ateniesi confermano il divieto, <strong>Sparta dichiara guerra</strong> e dà il via al conflitto.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-t">Perché Megara era così importante?</div>
+        <p class="para">Megara era una <em>polis</em> strategicamente fondamentale, posta nell&rsquo;<strong>istmo di Corinto</strong> &mdash; il punto di passaggio obbligato tra il Peloponneso e la Grecia centrale.</p>
+        <ul class="blist">
+          <li>Controllava un nodo commerciale chiave tra <strong>Mar Egeo</strong> e <strong>Mar Ionio</strong></li>
+          <li>Era alleata della potente <strong>Corinto</strong>, prima alleata di Sparta</li>
+          <li>Colpire i commerci di Megara significava colpire l&rsquo;intera <strong>rete economica spartana</strong></li>
+        </ul>
+        <div class="hl" style="margin-top:6px">Malgrado le apparenze, <strong>non fu Sparta a volere la guerra</strong>. La proibizione di commerciare con Megara non è da sola sufficiente a spiegare perché Atene e Sparta &mdash; che solo sessanta anni prima avevano affrontato fianco a fianco i Persiani &mdash; si trovarono a combattersi.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 10 · SEZ.2.2 -->
+<div class="slide" id="s10">
+  <div class="sh">
+    <div class="sec-badge">Sezione 2</div>
+    <div class="sh-text">
+      <div class="slide-kicker">Le cause del conflitto &middot; parte II</div>
+      <h2 class="slide-title">Le cause secondo <span class="acc">Tucidide</span><span class="sub">Cause vicine e cause remote &mdash; il primo grande metodo storico</span></h2>
+    </div>
+    <div class="slide-num">10&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <div class="def">
+      <div class="def-t">Chi era Tucidide (440&ndash;406 a.C. circa)</div>
+      <div class="def-b">Storico ateniese, prese personalmente parte alla guerra del Peloponneso come <strong>generale</strong>. La sua opera <em>La guerra del Peloponneso</em> è la nostra <strong>principale fonte di informazioni</strong> sul conflitto. All&rsquo;inizio dell&rsquo;opera Tucidide pone una <strong>distinzione di fondamentale importanza per uno storico</strong>: ogni evento ha <strong>cause vicine</strong> e <strong>cause remote</strong> nel tempo, e di solito sono le cause più remote a permettere di comprendere perché un evento è accaduto.</div>
+    </div>
+    <div class="cols-2">
+      <div class="card">
+        <div class="card-t">Causa remota &mdash; la vera causa profonda</div>
+        <ul class="blist">
+          <li>Maturata nel <strong>tempo</strong>, lontana dagli eventi scatenanti</li>
+          <li>Permette di comprendere <strong>perché</strong> un evento è accaduto</li>
+          <li>Per Tucidide la vera causa fu la <strong>politica imperialistica ateniese</strong></li>
+          <li>Sparta e i suoi alleati si videro <strong>costretti a reagire attaccando</strong></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-t">Fattore scatenante &mdash; la causa vicina</div>
+        <ul class="blist">
+          <li>L&rsquo;<strong>ultimo evento</strong> prima dello scoppio del conflitto</li>
+          <li>«Come la <strong>goccia che fa traboccare il vaso</strong>»: fa precipitare una situazione già compromessa</li>
+          <li>Il caso Megara (divieto di commercio, 431 a.C.) = <strong>causa prossima</strong></li>
+          <li>Non è da sola sufficiente a spiegare la guerra</li>
+        </ul>
+      </div>
+    </div>
+    <div class="quote">
+      La causa della guerra del Peloponneso fu la crescente potenza degli Ateniesi e il timore che essa incuteva agli Spartani: ciò li spinse allo scontro.
+      <span class="quote-source">&mdash; Tucidide, <em>La guerra del Peloponneso</em>, I</span>
+    </div>
+  </div>
+</div>
+
+<!-- 11 · SEZ.2.3 -->
+<div class="slide" id="s11">
+  <div class="sh">
+    <div class="sec-badge">Sezione 2</div>
+    <div class="sh-text">
+      <div class="slide-kicker">Le cause del conflitto &middot; parte III</div>
+      <h2 class="slide-title">Sparta reagisce <span class="acc">all&rsquo;imperialismo ateniese</span><span class="sub">Le tensioni prima della guerra: Egina, Potidea, Corinto</span></h2>
+    </div>
+    <div class="slide-num">11&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <p class="lead">L&rsquo;analisi di Tucidide è corretta. Negli anni precedenti alla guerra Atene aveva cercato di estendere la propria egemonia anche al <strong>Peloponneso</strong>, minacciando direttamente le città alleate di Sparta, a iniziare da <strong>Corinto</strong>.</p>
+    <div class="cols-2-21">
+      <div class="card">
+        <div class="card-t">Gli episodi che fanno precipitare la situazione</div>
+        <div class="tline">
+          <div class="tl-item">
+            <div class="tl-date">433&ndash;431 a.C. &mdash; Egina e Potidea</div>
+            <div class="tl-desc"><strong>Egina</strong> e <strong>Potidea</strong>, due ricche colonie di <strong>Corinto</strong>, si ribellano contro la madrepatria. Atene interviene al loro fianco nella speranza di accrescere la propria <strong>influenza politica e commerciale</strong>.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">431 a.C. &mdash; Il divieto di Megara</div>
+            <div class="tl-desc">Gli Ateniesi vietano alla città di Megara di commerciare con le <em>poleis</em> della Lega di Delo.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">La reazione delle città alleate di Sparta</div>
+            <div class="tl-desc">Le città della Lega del Peloponneso hanno la chiara sensazione di essere <strong>direttamente minacciate</strong> dall&rsquo;espansionismo di Atene e la consapevolezza che un cedimento non avrebbe fatto altro che <strong>incitare ulteriormente</strong> la politica aggressiva di Atene.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">L&rsquo;ultimatum spartano</div>
+            <div class="tl-desc">Sparta intima ad Atene di ritirare il provvedimento perché <em>«temevano che la potenza ateniese crescesse: vedevano infatti che gran parte della Grecia era sotto il suo dominio»</em> (Tucidide).</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-t">Cosa ci insegna Tucidide</div>
+        <p class="para">Distinguere tra <strong>causa prossima</strong> e <strong>vera causa</strong> è una delle più grandi conquiste del pensiero storico antico.</p>
+        <ul class="blist">
+          <li><strong>Causa prossima</strong> del conflitto: il divieto di Megara e la reazione spartana</li>
+          <li><strong>Vera causa</strong>: la <strong>politica imperialistica</strong> di Atene e il suo tentativo di estendere la propria influenza su tutta la Grecia</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 12 · SEZ.3.1 -->
+<div class="slide" id="s12">
+  <div class="sh">
+    <div class="sec-badge">Sezione 3</div>
+    <div class="sh-text">
+      <div class="slide-kicker">La prima fase &middot; parte I</div>
+      <h2 class="slide-title">Atene domina sui mari, <span class="acc">Sparta sulla terra</span><span class="sub">Il piano strategico di Pericle (431 a.C.)</span></h2>
+    </div>
+    <div class="slide-num">12&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <div class="def">
+      <div class="def-t">Il piano strategico di Pericle</div>
+      <div class="def-b">Pericle aveva concepito un preciso <strong>piano strategico</strong>, basato sulla consapevolezza che <strong>l&rsquo;esercito spartano era largamente superiore sulla terraferma</strong>, ma che <strong>Atene primeggiava sul mare</strong> e disponeva di risorse economiche e finanziarie superiori a quelle di Sparta. Era necessario, pertanto, <strong>evitare gli scontri in campo aperto</strong> e compiere, al contrario, delle <strong>incursioni navali</strong> contro le coste del Peloponneso, così da <strong>logorare gli alleati di Sparta</strong> e costringere i nemici alla resa.</div>
+    </div>
+    <div class="cols-2">
+      <div class="card">
+        <div class="card-t">431 a.C. &mdash; Sparta invade l&rsquo;Attica</div>
+        <p class="para">Le truppe di Sparta invasero l&rsquo;<strong>Attica</strong>, saccheggiarono le campagne e posero sotto assedio Atene.</p>
+        <ul class="blist">
+          <li>Gli Ateniesi resistettero senza eccessive difficoltà</li>
+          <li>Le <strong>Lunghe Mura</strong>, fatte costruire da Temistocle, collegavano la città al porto del Pireo</li>
+          <li>Le mura permettevano l&rsquo;arrivo di <strong>viveri e rifornimenti</strong> via mare</li>
+          <li>All&rsquo;inizio dell&rsquo;autunno, privi di rifornimenti, gli Spartani <strong>tolsero l&rsquo;assedio</strong> e fecero ritorno nel Peloponneso</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-t">Le Lunghe Mura &mdash; struttura difensiva</div>
+        <p class="para">Sistema di mura lungo <strong>circa 6 km</strong> che collegava Atene al porto del Pireo. Costruite su iniziativa di <strong>Temistocle</strong> dopo le guerre persiane.</p>
+        <ul class="blist">
+          <li>Rendevano Atene e il suo porto un&rsquo;<strong>unica piazzaforte</strong></li>
+          <li>Imprendibili via terra, finché la flotta controllava il mare</li>
+          <li>Permettevano l&rsquo;arrivo continuo di grano dal Mar Nero</li>
+          <li>Furono il principale <strong>punto di forza</strong> di Atene nella prima fase della guerra</li>
+          <li>Saranno la prima cosa che Sparta vorrà <strong>abbattere</strong> alla fine del conflitto (404 a.C.)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="hl">La strategia di Pericle avrebbe potuto funzionare <strong>se non fosse intervenuto un evento imprevedibile</strong>: una terribile epidemia che si abbatté sulla città sovraffollata di profughi. Una minaccia ben più grave stava per abbattersi su Atene.</div>
+  </div>
+</div>
+
+<!-- 13 · SEZ.3.2 -->
+<div class="slide" id="s13">
+  <div class="sh">
+    <div class="sec-badge">Sezione 3</div>
+    <div class="sh-text">
+      <div class="slide-kicker">La prima fase &middot; parte II</div>
+      <h2 class="slide-title">La <span class="acc">peste di Atene</span> e la morte di Pericle<span class="sub">L&rsquo;epidemia che cambiò il corso della guerra (430&ndash;429 a.C.)</span></h2>
+    </div>
+    <div class="slide-num">13&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <p class="lead">Atene aveva accolto entro le sue mura migliaia di <strong>profughi</strong> provenienti da tutta l&rsquo;Attica e in fuga dagli Spartani. Questa situazione di <strong>sovraffollamento</strong> portò ben presto a un peggioramento delle condizioni igieniche della città e facilitò la diffusione di una terribile pestilenza.</p>
+    <div class="cols-2">
+      <div class="card">
+        <div class="card-t">Origine e diffusione dell&rsquo;epidemia</div>
+        <div class="tline">
+          <div class="tl-item">
+            <div class="tl-date">Origine: Etiopia</div>
+            <div class="tl-desc">L&rsquo;epidemia si era originata in <strong>Etiopia</strong>.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">Propagazione</div>
+            <div class="tl-desc">Da lì si era propagata in <strong>Egitto</strong> e in <strong>Asia Minore</strong>.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">Arrivo ad Atene</div>
+            <div class="tl-desc">Giunse ad Atene con le stesse navi che assicuravano alla città i rifornimenti. Le prime vittime si registrarono presso il <strong>porto del Pireo</strong> e solo successivamente i contagi raggiunsero il centro di Atene.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">Quale malattia era?</div>
+            <div class="tl-desc">Dai sintomi descritti da <strong>Tucidide</strong> &mdash; che la contrasse e sopravvisse &mdash; si può probabilmente affermare che non si trattò realmente di peste, ma di un&rsquo;epidemia di <strong>tifo</strong>.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-t">Le conseguenze tragiche</div>
+        <ul class="blist">
+          <li>Fra il <strong>430 e il 429 a.C.</strong> migliaia di Ateniesi morirono a causa dell&rsquo;epidemia</li>
+          <li>Tra le vittime ci fu lo stesso <strong>Pericle</strong></li>
+          <li>Nel momento del massimo pericolo, Atene si trovò così <strong>privata del suo leader</strong></li>
+        </ul>
+        <div class="hl" style="margin-top:8px">
+          <strong>L&rsquo;importanza simbolica.</strong> Pericle era l&rsquo;artefice della politica imperiale, della grandezza culturale e del piano militare ateniese. La sua morte segna un <strong>punto di svolta</strong>: senza la sua guida moderata, il partito democratico sceglierà la via della <strong>guerra a oltranza</strong> con Cleone.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 14 · SEZ.3.3 -->
+<div class="slide" id="s14">
+  <div class="sh">
+    <div class="sec-badge">Sezione 3</div>
+    <div class="sh-text">
+      <div class="slide-kicker">La prima fase &middot; parte III</div>
+      <h2 class="slide-title">La guerra continua: <span class="acc">Cleone e Brasida</span><span class="sub">Dopo Pericle, due fautori della guerra a oltranza</span></h2>
+    </div>
+    <div class="slide-num">14&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <p class="lead">Dopo la morte di Pericle, la guida di Atene venne assunta da <strong>Cleone</strong>, anch&rsquo;egli appartenente al partito democratico. Cleone era <strong>fautore della guerra a oltranza</strong> e di un imperialismo ben più oppressivo e violento di quello di Pericle.</p>
+    <div class="cols-2">
+      <div class="card">
+        <div class="card-t">Cleone &mdash; leader ateniese</div>
+        <ul class="blist">
+          <li>Appartiene al <strong>partito democratico</strong></li>
+          <li>Fautore della <strong>guerra a oltranza</strong></li>
+          <li><strong>Mitilene si ribella:</strong> Cleone propone di punirla con <strong>l&rsquo;uccisione di tutti gli uomini</strong> e la vendita come schiavi di donne e bambini. La proposta fu rigettata, ma il solo fatto che venne avanzata è significativo di come <strong>la guerra si stesse inasprendo</strong></li>
+          <li><strong>425 a.C.</strong> &mdash; Conquista l&rsquo;<strong>isola di Sfacteria</strong>, di fronte alle coste del Peloponneso, e cattura i <strong>120 spartiati</strong> inviati a difenderla</li>
+          <li>Importanza <strong>strategica</strong>: l&rsquo;isola permetteva di controllare le rotte marittime intorno al Peloponneso</li>
+          <li>Importanza <strong>propagandistica</strong>: mostrò al mondo greco che <strong>gli invincibili spartiati si erano arresi</strong> agli Ateniesi</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-t">Brasida &mdash; generale spartano</div>
+        <ul class="blist">
+          <li>Sparta risponde alle vittorie di Cleone con una <strong>controffensiva</strong></li>
+          <li>Brasida porta la guerra in <strong>Tracia</strong>, contro le città della Lega di Delo</li>
+          <li>Strategia: aprire un fronte <strong>lontano dalla Grecia</strong> per impegnare Atene su due fronti</li>
+          <li>Minacciare le rotte commerciali tra Atene e il <strong>Mar Nero</strong></li>
+          <li>Conseguenza: il conflitto, con il suo carico di <strong>lutti e di distruzioni</strong>, si estende ulteriormente</li>
+        </ul>
+      </div>
+    </div>
+    <div class="def">
+      <div class="def-t">Glossario &mdash; Spartiati</div>
+      <div class="def-b">Gli <strong>spartiati</strong> erano i <strong>cittadini di pieno diritto di Sparta</strong>: una élite militare addestrata fin dall&rsquo;infanzia all&rsquo;agoghé (l&rsquo;educazione militare spartana). Erano considerati <strong>invincibili in battaglia</strong>: la cattura di 120 di loro a Sfacteria fu un evento sconvolgente per tutto il mondo greco, perché dimostrò che il mito dell&rsquo;invincibilità spartana <strong>poteva essere infranto</strong>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 15 · SEZ.3.4 -->
+<div class="slide" id="s15">
+  <div class="sh">
+    <div class="sec-badge">Sezione 3</div>
+    <div class="sh-text">
+      <div class="slide-kicker">La prima fase &middot; parte IV</div>
+      <h2 class="slide-title">Una pace destinata <span class="acc">a non durare</span><span class="sub">Anfipoli (422 a.C.) e la Pace di Nicia (421 a.C.)</span></h2>
+    </div>
+    <div class="slide-num">15&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <p class="lead">La guerra proseguì per <strong>dieci anni</strong>: ogni primavera gli Spartani invadevano e saccheggiavano l&rsquo;Attica per poi far ritorno nel Peloponneso all&rsquo;inizio dell&rsquo;autunno; gli Ateniesi rispondevano attaccando con la flotta le coste del Peloponneso. <strong>Nessuno dei due contendenti era in grado di ottenere una vittoria decisiva</strong>.</p>
+    <div class="cols-2">
+      <div class="card">
+        <div class="card-t">422 a.C. &mdash; La battaglia di Anfipoli</div>
+        <ul class="blist">
+          <li>Ateniesi e Spartani si affrontano ad <strong>Anfipoli</strong>, in Tracia</li>
+          <li>Nel corso della battaglia furono uccisi <strong>sia Cleone che Brasida</strong></li>
+          <li>I due maggiori fautori del conflitto sono <strong>eliminati nello stesso giorno</strong></li>
+          <li>La loro morte <strong>favorì la stipulazione della pace</strong></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-t">Chi era Nicia?</div>
+        <p class="para">Nicia era un <strong>aristocratico ateniese</strong>, esponente moderato e prudente, contrario alla guerra a oltranza. Seguì le trattative diplomatiche per conto di Atene; il trattato di pace prende il suo nome.</p>
+        <p class="para">Sarà lui &mdash; ironicamente &mdash; a comandare la disastrosa <strong>spedizione in Sicilia</strong> del 415&ndash;413 a.C., dopo essersi opposto a essa.</p>
+      </div>
+    </div>
+    <div class="def">
+      <div class="def-t">La Pace di Nicia (421 a.C.)</div>
+      <div class="def-b">Con questo trattato Atene e Sparta si impegnavano a:
+        <ul class="blist" style="margin-top:8px">
+          <li><strong>Non combattersi per cinquant&rsquo;anni</strong></li>
+          <li><strong>Restituire i prigionieri</strong></li>
+          <li><strong>Abbandonare le città strappate</strong> agli avversari</li>
+        </ul>
+        <p style="margin-top:10px">Era però chiaro che la pace <strong>non era destinata a durare</strong>: le cause profonde del conflitto &mdash; l&rsquo;imperialismo di Atene e il timore di Sparta &mdash; non erano state risolte. Il confronto era solo <strong>rimandato nel tempo</strong>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 16 · CRONOLOGIA SVG -->
+<div class="slide" id="s16">
+  <div class="sh">
+    <div class="sh-text">
+      <div class="slide-kicker">Schema visivo</div>
+      <h2 class="slide-title">Cronologia delle <span class="acc">tre fasi</span> della guerra<span class="sub">Dal 431 a.C. al 404 a.C. &mdash; le date che devi ricordare</span></h2>
+    </div>
+    <div class="slide-num">16&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb" style="padding-top:14px">
+    <div class="svg-wrap" style="flex:1">
+<svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg" style="font-family:'Source Sans 3',sans-serif;max-height:310px">
+  <rect x="60" y="60" width="215" height="28" fill="#EDF2F7" rx="3"/>
+  <text x="167" y="79" font-size="11" text-anchor="middle" fill="#0F4C81" font-weight="700">I FASE &#160;&#183;&#160; 431-421 a.C.</text>
+  <rect x="275" y="60" width="172" height="28" fill="#E8F5E8" rx="3"/>
+  <text x="361" y="79" font-size="11" text-anchor="middle" fill="#1a5e1a" font-weight="700">II FASE &#160;&#183;&#160; 421-413 a.C.</text>
+  <rect x="447" y="60" width="193" height="28" fill="#FBE8E8" rx="3"/>
+  <text x="543" y="79" font-size="11" text-anchor="middle" fill="#CC0000" font-weight="700">III FASE &#160;&#183;&#160; 413-404 a.C.</text>
+  <line x1="50" y1="105" x2="660" y2="105" stroke="#222" stroke-width="2.5"/>
+  <polygon points="660,101 670,105 660,109" fill="#222"/>
+  <line x1="60" y1="100" x2="60" y2="110" stroke="#222" stroke-width="2"/>
+  <text x="60" y="124" font-size="10.5" text-anchor="middle" fill="#222" font-weight="700">431</text>
+  <line x1="103" y1="100" x2="103" y2="110" stroke="#CC0000" stroke-width="2"/>
+  <text x="103" y="124" font-size="10" text-anchor="middle" fill="#CC0000" font-weight="700">429</text>
+  <line x1="189" y1="100" x2="189" y2="110" stroke="#555" stroke-width="1.5"/>
+  <text x="189" y="124" font-size="10" text-anchor="middle" fill="#555">425</text>
+  <line x1="253" y1="100" x2="253" y2="110" stroke="#555" stroke-width="1.5"/>
+  <text x="253" y="124" font-size="10" text-anchor="middle" fill="#555">422</text>
+  <line x1="275" y1="100" x2="275" y2="110" stroke="#1a5e1a" stroke-width="2"/>
+  <text x="275" y="124" font-size="10" text-anchor="middle" fill="#1a5e1a" font-weight="700">421</text>
+  <line x1="382" y1="100" x2="382" y2="110" stroke="#555" stroke-width="1.5"/>
+  <text x="382" y="124" font-size="10" text-anchor="middle" fill="#555">416</text>
+  <line x1="403" y1="100" x2="403" y2="110" stroke="#CC0000" stroke-width="2"/>
+  <text x="403" y="124" font-size="10" text-anchor="middle" fill="#CC0000" font-weight="700">415</text>
+  <line x1="447" y1="100" x2="447" y2="110" stroke="#CC0000" stroke-width="2"/>
+  <text x="447" y="124" font-size="10" text-anchor="middle" fill="#CC0000" font-weight="700">413</text>
+  <line x1="490" y1="100" x2="490" y2="110" stroke="#555" stroke-width="1.5"/>
+  <text x="490" y="124" font-size="10" text-anchor="middle" fill="#555">411</text>
+  <line x1="619" y1="100" x2="619" y2="110" stroke="#CC0000" stroke-width="2"/>
+  <text x="619" y="124" font-size="10" text-anchor="middle" fill="#CC0000" font-weight="700">405</text>
+  <line x1="640" y1="100" x2="640" y2="110" stroke="#CC0000" stroke-width="2.5"/>
+  <text x="640" y="124" font-size="11" text-anchor="middle" fill="#CC0000" font-weight="700">404</text>
+  <line x1="103" y1="110" x2="103" y2="148" stroke="#CC0000" stroke-width="1" stroke-dasharray="3,2"/>
+  <rect x="48" y="148" width="116" height="34" rx="2" fill="#FFF0F0" stroke="#CC0000" stroke-width="1.3"/>
+  <text x="106" y="162" font-size="9" text-anchor="middle" fill="#AA0000" font-weight="700">Morte di Pericle</text>
+  <text x="106" y="173" font-size="8.5" text-anchor="middle" fill="#AA0000">Peste / tifo</text>
+  <line x1="189" y1="110" x2="189" y2="190" stroke="#555" stroke-width="1" stroke-dasharray="3,2"/>
+  <rect x="138" y="190" width="106" height="34" rx="2" fill="#F0F0F0" stroke="#888" stroke-width="1.3"/>
+  <text x="191" y="204" font-size="9" text-anchor="middle" fill="#333" font-weight="700">Isola di Sfacteria</text>
+  <text x="191" y="215" font-size="8.5" text-anchor="middle" fill="#555">120 spartiati catturati</text>
+  <line x1="253" y1="110" x2="253" y2="148" stroke="#555" stroke-width="1" stroke-dasharray="3,2"/>
+  <rect x="196" y="148" width="116" height="34" rx="2" fill="#F0F0F0" stroke="#888" stroke-width="1.3"/>
+  <text x="254" y="162" font-size="9" text-anchor="middle" fill="#333" font-weight="700">Battaglia di Anfipoli</text>
+  <text x="254" y="173" font-size="8.5" text-anchor="middle" fill="#555">&#8224; Cleone, &#8224; Brasida</text>
+  <line x1="275" y1="110" x2="275" y2="232" stroke="#1a5e1a" stroke-width="1.3" stroke-dasharray="3,2"/>
+  <rect x="220" y="232" width="110" height="34" rx="2" fill="#E8FFE8" stroke="#1a5e1a" stroke-width="1.5"/>
+  <text x="275" y="246" font-size="9" text-anchor="middle" fill="#1a5e1a" font-weight="700">Pace di Nicia</text>
+  <text x="275" y="258" font-size="8.5" text-anchor="middle" fill="#1a5e1a">50 anni di tregua</text>
+  <line x1="382" y1="110" x2="382" y2="148" stroke="#555" stroke-width="1" stroke-dasharray="3,2"/>
+  <rect x="340" y="148" width="84" height="34" rx="2" fill="#F0F0F0" stroke="#888" stroke-width="1.3"/>
+  <text x="382" y="162" font-size="9" text-anchor="middle" fill="#333" font-weight="700">Eccidio di Melo</text>
+  <text x="382" y="173" font-size="8.5" text-anchor="middle" fill="#555">isola attaccata</text>
+  <rect x="390" y="22" width="70" height="30" rx="2" fill="#FFE8E8" stroke="#CC0000" stroke-width="1.5"/>
+  <text x="425" y="34" font-size="9" text-anchor="middle" fill="#AA0000" font-weight="700">Spedizione</text>
+  <text x="425" y="46" font-size="9" text-anchor="middle" fill="#AA0000" font-weight="700">in Sicilia</text>
+  <line x1="403" y1="52" x2="403" y2="100" stroke="#CC0000" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="447" y1="52" x2="447" y2="100" stroke="#CC0000" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="490" y1="110" x2="490" y2="190" stroke="#555" stroke-width="1" stroke-dasharray="3,2"/>
+  <rect x="442" y="190" width="100" height="34" rx="2" fill="#F0F0F0" stroke="#888" stroke-width="1.3"/>
+  <text x="492" y="204" font-size="9" text-anchor="middle" fill="#333" font-weight="700">Consiglio dei</text>
+  <text x="492" y="215" font-size="8.5" text-anchor="middle" fill="#555">Quattrocento</text>
+  <line x1="619" y1="110" x2="619" y2="190" stroke="#CC0000" stroke-width="1.3" stroke-dasharray="3,2"/>
+  <rect x="566" y="190" width="106" height="34" rx="2" fill="#FFF0F0" stroke="#CC0000" stroke-width="1.5"/>
+  <text x="619" y="204" font-size="9" text-anchor="middle" fill="#AA0000" font-weight="700">Egospotami</text>
+  <text x="619" y="215" font-size="8.5" text-anchor="middle" fill="#AA0000">Flotta ateniese distrutta</text>
+  <line x1="640" y1="110" x2="640" y2="232" stroke="#CC0000" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <rect x="582" y="232" width="98" height="42" rx="2" fill="#FFE0E0" stroke="#CC0000" stroke-width="2"/>
+  <text x="630" y="246" font-size="9.5" text-anchor="middle" fill="#CC0000" font-weight="700">RESA DI ATENE</text>
+  <text x="630" y="259" font-size="8.5" text-anchor="middle" fill="#AA0000">Fine della guerra</text>
+  <text x="630" y="270" font-size="8.5" text-anchor="middle" fill="#AA0000">del Peloponneso</text>
+  <line x1="670" y1="105" x2="700" y2="105" stroke="#222" stroke-width="1.3" stroke-dasharray="3,2"/>
+  <text x="705" y="100" font-size="9" fill="#555" font-weight="700">399</text>
+  <text x="705" y="112" font-size="8" fill="#555">&#8224; Socrate</text>
+  <text x="360" y="320" font-size="9" text-anchor="middle" fill="#AAA" font-style="italic">Rielaborazione cronologica &mdash; Lezione 9, Unit&#224; 5</text>
+</svg>
+    </div>
+  </div>
+</div>
+<!-- 17 · SEZ.4.1 -->
+<div class="slide" id="s17">
+  <div class="sh">
+    <div class="sec-badge">Sezione 4</div>
+    <div class="sh-text">
+      <div class="slide-kicker">La spedizione in Sicilia &middot; parte I</div>
+      <h2 class="slide-title">Una <span class="acc">pace armata</span> e l&rsquo;eccidio di Melo<span class="sub">Come la tregua del 421 a.C. divenne carta straccia</span></h2>
+    </div>
+    <div class="slide-num">17&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <p class="lead">La <strong>Pace di Nicia</strong> fu subito disattesa: né Atene né Sparta restituirono le città occupate e, anzi, cercarono entrambe di approfittare della tregua per <strong>rafforzare i propri domini</strong>.</p>
+    <div class="cols-2">
+      <div class="card">
+        <div class="card-t">418 a.C. &mdash; Sparta ricomincia</div>
+        <p class="para">Sparta sconfigge in battaglia alcune città del Peloponneso che intendevano <strong>passare con Atene</strong>. La pace è già di fatto violata, ma il conflitto aperto non è ancora ripreso.</p>
+      </div>
+      <div class="card">
+        <div class="card-t">416 a.C. &mdash; L&rsquo;eccidio di Melo</div>
+        <p class="para">Gli Ateniesi impongono all&rsquo;<strong>isola di Melo</strong> di entrare nella Lega di Delo. Di fronte al diniego dei Melii &mdash; che intendevano restare neutrali &mdash; gli Ateniesi:</p>
+        <ul class="blist">
+          <li>Attaccano l&rsquo;isola</li>
+          <li><strong>Uccidono tutti gli uomini</strong></li>
+          <li><strong>Vendono come schiavi</strong> donne e bambini</li>
+        </ul>
+      </div>
+    </div>
+    <div class="hl"><strong>Un episodio simbolo.</strong> Il massacro di Melo rivela il volto più <strong>brutale e cinico</strong> dell&rsquo;imperialismo ateniese. Tucidide vi dedica il celebre &laquo;Dialogo dei Melii&raquo;, in cui gli ambasciatori ateniesi affermano apertamente: <em>«Il giusto si decide tra forze uguali; tra forze diseguali, il forte fa ciò che può, il debole subisce ciò che deve»</em>. È la prima formulazione storica della legge del più forte.</div>
+  </div>
+</div>
+
+<!-- 18 · SEZ.4.2 -->
+<div class="slide" id="s18">
+  <div class="sh">
+    <div class="sec-badge">Sezione 4</div>
+    <div class="sh-text">
+      <div class="slide-kicker">La spedizione in Sicilia &middot; parte II</div>
+      <h2 class="slide-title"><span class="acc">Alcibiade</span>, nuovo leader democratico<span class="sub">L&rsquo;inizio della seconda fase della guerra</span></h2>
+    </div>
+    <div class="slide-num">18&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <p class="lead">Nel frattempo, sulla scena politica ateniese era emerso un <strong>giovane politico brillante e ambizioso</strong>: <strong>Alcibiade</strong>. Così come Pericle, con cui era imparentato alla lontana, anche Alcibiade era di nobili origini, ma era schierato con la <strong>fazione democratica</strong>.</p>
+    <div class="cols-2-21">
+      <div class="card">
+        <div class="card-t">Il progetto siciliano di Alcibiade</div>
+        <ul class="blist">
+          <li>Alcibiade propendeva per una <strong>ripresa dell&rsquo;imperialismo</strong> ateniese, ma si rendeva conto che Atene non era pronta a sfidare apertamente Sparta</li>
+          <li><strong>416 a.C.</strong> &mdash; La <em>polis</em> siciliana di <strong>Segesta</strong> chiede l&rsquo;aiuto di Atene in una guerra contro la filo-spartana <strong>Siracusa</strong></li>
+          <li>Alcibiade pensa che sia l&rsquo;occasione giusta per estendere l&rsquo;influenza di Atene <strong>all&rsquo;Italia e alla Magna Grecia</strong></li>
+          <li>Convince i suoi concittadini a inviare in Sicilia <strong>135 navi</strong> e <strong>migliaia di soldati</strong></li>
+          <li>Invano l&rsquo;aristocratico <strong>Nicia</strong>, che giudica eccessivamente pericolosa una spedizione così lontana, tenta di opporsi</li>
+          <li>Inizia così la <strong>seconda fase della guerra del Peloponneso</strong></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-t">Ritratto di Alcibiade</div>
+        <ul class="blist">
+          <li><strong>Nato:</strong> ~450 a.C.</li>
+          <li><strong>Famiglia:</strong> nobile, imparentato con Pericle (che fu suo tutore alla morte del padre)</li>
+          <li><strong>Maestro:</strong> Socrate</li>
+          <li><strong>Schieramento:</strong> partito democratico</li>
+          <li><strong>Carattere:</strong> brillante, ambizioso, spregiudicato, affascinante, instabile</li>
+          <li><strong>Politicamente:</strong> imperialista e bellicoso</li>
+        </ul>
+      </div>
+    </div>
+    <div class="hl"><strong>Perché la Sicilia?</strong> Per capire la scelta di Alcibiade bisogna considerare che, a quel punto, la guerra contro Sparta era giunta a uno <strong>stallo</strong>: le forze dei due schieramenti erano alla pari. Se Atene fosse riuscita a sconfiggere Siracusa, avrebbe esteso il proprio <strong>controllo su tutte le città greche della Sicilia</strong> e avrebbe così cambiato gli equilibri della guerra a proprio favore.</div>
+  </div>
+</div>
+
+<!-- 19 · SEZ.4.3 -->
+<div class="slide" id="s19">
+  <div class="sh">
+    <div class="sec-badge">Sezione 4</div>
+    <div class="sh-text">
+      <div class="slide-kicker">La spedizione in Sicilia &middot; parte III</div>
+      <h2 class="slide-title">La spedizione in <span class="acc">Sicilia</span> (415&ndash;413 a.C.)<span class="sub">Profanazione delle erme, fuga di Alcibiade, catastrofe</span></h2>
+    </div>
+    <div class="slide-num">19&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <div class="tline">
+      <div class="tl-item">
+        <div class="tl-date">415 a.C. &mdash; La flotta salpa</div>
+        <div class="tl-desc">La flotta ateniese salpa al comando di <strong>tre generali</strong>: <strong>Nicia, Alcibiade</strong> e <strong>Lamaco</strong>. Pochi giorni prima della partenza, qualcuno aveva <strong>profanato le immagini sacre, o erme</strong>, dedicate al dio Ermes.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">L&rsquo;accusa di empietà ad Alcibiade</div>
+        <div class="tl-desc">Gli avversari di Alcibiade sfruttarono questa occasione per colpirlo e lo accusarono del <strong>sacrilegio</strong>. Quando le navi erano ormai per mare, Alcibiade fu <strong>richiamato in patria</strong> per difendersi dall&rsquo;<strong>accusa di empietà</strong>.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">La fuga a Sparta</div>
+        <div class="tl-desc">Il processo si sarebbe sicuramente chiuso con una <strong>condanna, probabilmente a morte</strong>: per questo, invece di tornare ad Atene, <strong>Alcibiade fuggì a Sparta</strong>. Il comando supremo della spedizione passò a <strong>Nicia</strong> &mdash; colui che si era opposto a essa.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">414&ndash;413 a.C. &mdash; L&rsquo;assedio di Siracusa</div>
+        <div class="tl-desc">Giunto in Sicilia, Nicia pose sotto <strong>assedio Siracusa</strong>. Ma, grazie ai rinforzi giunti da <strong>Sparta</strong> e da <strong>Corinto</strong>, i Siracusani <strong>forzarono il blocco</strong>, circondarono la flotta ateniese e <strong>la distrussero</strong>.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">La fine tragica dei prigionieri</div>
+        <div class="tl-desc">I soldati ateniesi che cercarono scampo a terra furono facilmente catturati: <strong>Nicia e gli altri ufficiali furono giustiziati</strong>; i sopravvissuti furono rinchiusi nelle <strong>cave di pietra di Siracusa &mdash; le latomìe &mdash; e lasciati morire</strong>.</div>
+      </div>
+    </div>
+    <div class="def">
+      <div class="def-t">Le erme &mdash; cosa erano?</div>
+      <div class="def-b">Le <strong>erme</strong> erano pilastri di pietra quadrangolari sormontati dalla testa del dio <strong>Ermes</strong> (messaggero degli dèi, protettore dei viaggiatori). Erano collocate agli incroci, davanti alle case e ai templi di Atene. La loro <strong>profanazione</strong> era considerata un grave <strong>sacrilegio</strong> e un cattivo presagio per chi partiva in viaggio &mdash; come la flotta diretta in Sicilia.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 20 · SEZ.4.4 -->
+<div class="slide" id="s20">
+  <div class="sh">
+    <div class="sec-badge">Sezione 4</div>
+    <div class="sh-text">
+      <div class="slide-kicker">La spedizione in Sicilia &middot; parte IV</div>
+      <h2 class="slide-title">La ripresa della guerra <span class="acc">in Grecia</span><span class="sub">La terza fase del conflitto (413&ndash;404 a.C.) e l&rsquo;intervento dei Persiani</span></h2>
+    </div>
+    <div class="slide-num">20&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <p class="lead">La notizia della disfatta in Sicilia gettò nello <strong>sconforto gli Ateniesi</strong> e, soprattutto, spinse Sparta a riprendere le ostilità: iniziò così la <strong>terza e ultima fase</strong> della guerra del Peloponneso (413&ndash;404 a.C.).</p>
+    <div class="cols-2">
+      <div class="card">
+        <div class="card-t">413 a.C. &mdash; L&rsquo;Attica permanentemente occupata</div>
+        <ul class="blist">
+          <li>Gli Spartani invadono nuovamente l&rsquo;Attica</li>
+          <li>Questa volta <strong>non si ritirano</strong> al sopraggiungere dell&rsquo;autunno</li>
+          <li>Su suggerimento di Alcibiade, occupano una <strong>fortezza dall&rsquo;alto valore strategico</strong> (la fortezza di Decelea)</li>
+          <li>Questa fortezza consentiva di <strong>interrompere i collegamenti</strong> tra Atene e le <strong>miniere del Laurio</strong></li>
+          <li>Conseguenza: gli Ateniesi sono <strong>privati dell&rsquo;argento</strong> necessario al proseguimento della guerra</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-t">L&rsquo;intervento dei Persiani</div>
+        <ul class="blist">
+          <li>Anche i <strong>Persiani</strong> approfittarono delle difficoltà di Atene</li>
+          <li>Ripresero la guerra allo scopo di <strong>riconquistare le città greche dell&rsquo;Asia Minore</strong></li>
+          <li>Inoltre, nel tentativo di indebolire Atene, <strong>finanziarono gli Spartani</strong></li>
+          <li>Atene si trovò così a fronteggiare <strong>non uno, ma due potenti avversari</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="def">
+      <div class="def-t">Le miniere del Laurio &mdash; il tesoro di Atene</div>
+      <div class="def-b">Le <strong>miniere d&rsquo;argento del Laurio</strong>, situate nell&rsquo;Attica meridionale, erano la principale fonte di <strong>ricchezza pubblica</strong> di Atene. L&rsquo;argento estratto serviva a coniare i celebri <strong>tetradrammi attici</strong> (monete d&rsquo;argento), accettati come moneta di scambio in tutto il Mediterraneo. Senza l&rsquo;argento del Laurio, Atene non poteva più pagare la flotta, i mercenari, le forniture: la perdita di Decelea fu un colpo durissimo.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 21 · SEZ.4.5 -->
+<div class="slide" id="s21">
+  <div class="sh">
+    <div class="sec-badge">Sezione 4</div>
+    <div class="sh-text">
+      <div class="slide-kicker">La spedizione in Sicilia &middot; parte V</div>
+      <h2 class="slide-title">Il <span class="acc">Consiglio dei Quattrocento</span><span class="sub">La svolta aristocratica del 411 a.C. e la rivolta dei marinai</span></h2>
+    </div>
+    <div class="slide-num">21&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <p class="lead">Intanto, ad Atene, la fallimentare spedizione in Sicilia aveva portato alla <strong>caduta del governo democratico</strong>.</p>
+    <div class="cols-2">
+      <div class="card">
+        <div class="card-t">411 a.C. &mdash; Il colpo aristocratico</div>
+        <ul class="blist">
+          <li>Il <strong>partito aristocratico</strong> torna al comando</li>
+          <li>Riduce i poteri delle <strong>assemblee pubbliche</strong></li>
+          <li>Affida la guida della città a un consiglio di <strong>quattrocento persone</strong></li>
+          <li>Non sono elette ma <strong>scelte dai leader del partito aristocratico</strong></li>
+          <li>Il cosiddetto <strong>Consiglio dei Quattrocento</strong> cerca di intavolare trattative di pace con Sparta</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-t">La caduta del Consiglio</div>
+        <ul class="blist">
+          <li>Dopo <strong>pochi mesi</strong> dalla sua instaurazione</li>
+          <li>Il Consiglio viene rovesciato da una <strong>rivolta partita dai marinai della flotta</strong></li>
+          <li>Ad Atene si instaura nuovamente un <strong>governo democratico</strong></li>
+          <li>Questo governo, <strong>malgrado la difficile situazione militare</strong>, è favorevole al proseguimento della guerra</li>
+        </ul>
+      </div>
+    </div>
+    <div class="hl"><strong>Perché i marinai?</strong> I marinai della flotta ateniese erano in gran parte <strong>teti</strong>, cioè cittadini delle classi più povere. La democrazia ateniese aveva dato loro <strong>diritti politici pieni</strong>: erano quindi i <strong>più convinti sostenitori del regime democratico</strong>. Quando il Consiglio aristocratico tentò di cancellare le loro conquiste, si ribellarono.</div>
+  </div>
+</div>
+
+<!-- 22 · SEZ.4.6 -->
+<div class="slide" id="s22">
+  <div class="sh">
+    <div class="sec-badge">Sezione 4</div>
+    <div class="sh-text">
+      <div class="slide-kicker">La spedizione in Sicilia &middot; parte VI</div>
+      <h2 class="slide-title">La disfatta di Atene a <span class="acc">Egospotami</span><span class="sub">Il ritorno di Alcibiade e la fine della guerra (405&ndash;404 a.C.)</span></h2>
+    </div>
+    <div class="slide-num">22&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <p class="lead">Per alcuni anni gli Ateniesi riuscirono a resistere agli attacchi congiunti di Spartani e Persiani, anche grazie al <strong>ritorno in patria di Alcibiade</strong> che riprese il comando delle operazioni militari e vinse diverse battaglie. Ma <strong>l&rsquo;impegno su due fronti era impossibile da sostenere a lungo</strong>.</p>
+    <div class="cols-2">
+      <div class="card">
+        <div class="card-t">405 a.C. &mdash; La battaglia di Egospotami</div>
+        <ul class="blist">
+          <li>La <strong>flotta ateniese</strong> viene distrutta dalla flotta spartana</li>
+          <li>La battaglia avviene nello stretto di <strong>Egospotami</strong> (oggi Turchia europea)</li>
+          <li>È la <strong>fine della potenza marittima ateniese</strong></li>
+          <li>Gli Spartani assediano nuovamente Atene</li>
+          <li>Atene, <strong>privata della possibilità di ricevere rifornimenti via mare</strong>, deve arrendersi</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-t">404 a.C. &mdash; La resa di Atene</div>
+        <ul class="blist">
+          <li>Dopo <strong>27 lunghi anni</strong>, la guerra del Peloponneso è finalmente finita</li>
+          <li>Atene capitola e si arrende a Sparta</li>
+          <li>A perdere è però <strong>tutta la Grecia</strong>: devastata, indebolita</li>
+          <li>Si aprirà la strada alle future conquiste macedoni di <strong>Filippo II</strong> e di <strong>Alessandro Magno</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="def">
+      <div class="def-t">Egospotami &mdash; dove si trova?</div>
+      <div class="def-b">Egospotami significa, in greco, <strong>«fiumi delle capre»</strong>. È uno stretto tratto di mare che collegava il <strong>Mar Egeo</strong> al <strong>Mar Nero</strong>, nei pressi dell&rsquo;attuale Edirne, in <strong>Turchia europea</strong>. Il controllo di questa rotta era <strong>vitale per Atene</strong>, che da lì riceveva il grano dai territori del Mar Nero. Perdere la battaglia di Egospotami significava per Atene <strong>perdere i rifornimenti alimentari</strong> e quindi la guerra.</div>
+    </div>
+  </div>
+</div>
+<!-- 23 · SEZ.5.1 -->
+<div class="slide" id="s23">
+  <div class="sh">
+    <div class="sec-badge">Sezione 5</div>
+    <div class="sh-text">
+      <div class="slide-kicker">Atene dopo la guerra &middot; parte I</div>
+      <h2 class="slide-title">Il governo dei <span class="acc">Trenta tiranni</span><span class="sub">Le dure condizioni di pace e il breve regime aristocratico (404&ndash;403 a.C.)</span></h2>
+    </div>
+    <div class="slide-num">23&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <p class="lead">Sparta impose condizioni di pace <strong>particolarmente dure</strong>. La potente città che aveva guidato il mondo greco per quasi un secolo era ora ai piedi della rivale.</p>
+    <div class="cols-2">
+      <div class="card">
+        <div class="card-t">Le condizioni di pace imposte da Sparta</div>
+        <ul class="blist">
+          <li>Atene è costretta a <strong>sciogliere la Lega di Delo</strong> e ad <strong>aderire alla Lega del Peloponneso</strong></li>
+          <li>Deve <strong>abbattere le Lunghe Mura</strong> (il simbolo fisico della resistenza ateniese)</li>
+          <li>La flotta è ridotta ad appena <strong>dodici triremi</strong> (da centinaia a dodici: umiliazione senza precedenti)</li>
+          <li>Gli Spartani sostengono la nascita ad Atene di un <strong>governo aristocratico filospartano</strong></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-t">I Trenta tiranni (404&ndash;403 a.C.)</div>
+        <ul class="blist">
+          <li>Le <strong>riforme democratiche di Clistene e di Pericle</strong> sono cancellate</li>
+          <li>Alla guida della <em>polis</em> sale un gruppo di <strong>trenta aristocratici ateniesi filospartani</strong></li>
+          <li>A causa della loro <strong>ferocia contro gli esponenti del partito democratico</strong>, furono soprannominati i <strong>Trenta tiranni</strong></li>
+          <li>Il nuovo governo restò al potere <strong>solo un anno</strong>: nel <strong>403 a.C.</strong> una rivolta ripristinò la <strong>democrazia</strong></li>
+          <li>La rivolta pose fine al controllo spartano e decretò <strong>l&rsquo;uscita di Atene</strong> dalla Lega del Peloponneso</li>
+        </ul>
+      </div>
+    </div>
+    <div class="hl"><strong>La rinascita inattesa di Atene.</strong> Malgrado la sconfitta subita, nel giro di pochi anni Atene si rialzò. Il <strong>porto del Pireo</strong> continuò a essere uno dei principali scali del Mediterraneo e alla prosperità economica si accompagnò ben presto il recupero di una <strong>posizione politica di primo piano</strong> &mdash; anche se, ovviamente, inferiore a prima della guerra. Soprattutto, <strong>Atene mantenne sempre il ruolo di capitale culturale</strong> del mondo ellenico.</div>
+  </div>
+</div>
+
+<!-- 24 · SEZ.5.2 -->
+<div class="slide" id="s24">
+  <div class="sh">
+    <div class="sec-badge">Sezione 5</div>
+    <div class="sh-text">
+      <div class="slide-kicker">Atene dopo la guerra &middot; parte II</div>
+      <h2 class="slide-title">La morte di <span class="acc">Socrate</span> (399 a.C.)<span class="sub">Un monito contro ogni forma di intolleranza</span></h2>
+    </div>
+    <div class="slide-num">24&nbsp;/&nbsp;24</div>
+  </div>
+  <div class="sb">
+    <p class="lead">La cacciata dei Trenta tiranni e il ritorno della democrazia non riportarono la <strong>concordia</strong> ad Atene: ripresero gli scontri tra gli aristocratici e i democratici. Su questo sfondo si colloca un evento che ancora oggi, a più di duemila anni di distanza, rappresenta un <strong>monito contro ogni forma di intolleranza</strong>: la condanna a morte di Socrate.</p>
+    <div class="cols-2-21">
+      <div class="card">
+        <div class="card-t">Chi era Socrate &mdash; il pensiero</div>
+        <p class="para">Socrate (469&ndash;399 a.C.) fu uno dei <strong>principali rappresentanti della tradizione filosofica occidentale</strong>. Non lasciò nulla di scritto: lo conosciamo attraverso i suoi allievi, in particolare <strong>Platone</strong>.</p>
+        <ul class="blist">
+          <li>Ai suoi allievi insegnava a <strong>ragionare criticamente</strong></li>
+          <li>Insegnava a <strong>non accettare in maniera passiva</strong> le conoscenze o gli ordini ricevuti</li>
+          <li>Ognuno doveva saper <strong>guardare dentro di sé</strong> e ritrovare i <strong>princìpi etici</strong> da porre a guida del buon cittadino</li>
+          <li>Non invitava i suoi discepoli a <strong>infrangere le leggi</strong>, ma a <strong>rispettarle</strong>, avendone però compreso il reale significato</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-t">Il processo e la condanna</div>
+        <ul class="blist">
+          <li>Socrate viveva in un periodo di <strong>forti tensioni politiche</strong></li>
+          <li>Il suo insegnamento venne <strong>frainteso</strong></li>
+          <li><strong>399 a.C.</strong> &mdash; accusato di <strong>corrompere i giovani</strong> e di <strong>empietà</strong> verso gli dèi, fu processato e condannato a morte</li>
+          <li>Gli amici gli offrirono la possibilità di <strong>fuggire</strong> e salvarsi la vita, ma egli <strong>rifiutò</strong></li>
+          <li>Ciò avrebbe significato <strong>infrangere la legge</strong>: cosa contraria a tutto il suo insegnamento</li>
+          <li>Restò così ad Atene e andò <strong>serenamente incontro alla morte</strong>, bevendo, come stabilito dalla sentenza, una <strong>tazza di cicuta</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="def">
+      <div class="def-t">Glossario &mdash; Etici / Cicuta</div>
+      <div class="def-b"><strong>Etici</strong>: relativi all&rsquo;<em>etica</em>, il ramo della filosofia che riflette sui comportamenti dell&rsquo;uomo e su concetti come la verità, i doveri morali dell&rsquo;individuo, il vero bene e i mezzi per conseguirli. &nbsp;|&nbsp; <strong>Cicuta</strong>: pianta velenosa (<em>Conium maculatum</em>) il cui succo, somministrato come veleno, paralizza progressivamente il sistema nervoso. Era la modalità di esecuzione capitale dei cittadini ad Atene.</div>
+    </div>
+  </div>
+</div>
+
+  </div><!-- /wrapper -->
+
+  <nav id="nav">
+    <button class="nbtn" id="pbtn" onclick="prev()" title="Indietro (Freccia sinistra)">&#8592;</button>
+    <div id="sctr">01&nbsp;/&nbsp;24</div>
+    <button class="nbtn" id="nbtn2" onclick="next()" title="Avanti (Freccia destra)">&#8594;</button>
+  </nav>
+  <button id="hbtn" onclick="goTo(2)" title="Vai all'indice">&#9776;</button>
+</div>
+
+<script>
+const N=24;
+let cur=1;
+const pad=n=>String(n).padStart(2,'0');
+
+function goTo(n){
+  if(n<1||n>N||n===cur)return;
+  const prev=document.getElementById('s'+cur);
+  const next=document.getElementById('s'+n);
+  prev.classList.add('exit');
+  setTimeout(function(){prev.classList.remove('active','exit')},300);
+  next.style.transform=n>cur?'translateX(40px)':'translateX(-40px)';
+  next.style.opacity='0';
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      next.style.transform='';next.style.opacity='';
+      next.classList.add('active');
+    });
+  });
+  cur=n;ui();
+}
+function next(){goTo(cur+1)}
+function prev(){goTo(cur-1)}
+
+function ui(){
+  document.getElementById('sctr').innerHTML=pad(cur)+'&nbsp;/&nbsp;'+N;
+  document.getElementById('pbtn').disabled=cur===1;
+  document.getElementById('nbtn2').disabled=cur===N;
+  const p=((cur-1)/(N-1))*100;
+  document.getElementById('prog-fill').style.width=p+'%';
+}
+
+document.addEventListener('keydown',function(e){
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '||e.key==='PageDown'){e.preventDefault();next();}
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp'||e.key==='PageUp'){e.preventDefault();prev();}
+  if(e.key==='Home'){e.preventDefault();goTo(1);}
+  if(e.key==='End'){e.preventDefault();goTo(N);}
+});
+
+let tx=0,ty=0;
+document.getElementById('wrapper').addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+document.getElementById('wrapper').addEventListener('touchend',function(e){
+  const dx=e.changedTouches[0].clientX-tx;
+  const dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)){dx<0?next():prev();}
+});
+
+ui();
+</script>
+</body>
+</html>
