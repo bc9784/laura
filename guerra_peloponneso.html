@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Guerra del Peloponneso</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --terracotta: #C0522A;
+    --terracotta-light: #E07048;
+    --stone: #1A1610;
+    --stone-mid: #2E2820;
+    --stone-light: #4A4030;
+    --cream: #F5EDD8;
+    --cream-dark: #E8D8B0;
+    --blue-aegean: #1E3A5F;
+    --blue-light: #2E5885;
+    --parchment: #FAF3E0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Crimson Pro', Georgia, serif;
+    background: var(--stone);
+    color: var(--cream);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* ── SLIDE SYSTEM ── */
+  .slideshow { width: 100%; height: 100vh; position: relative; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.7s ease;
+    overflow: hidden;
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ── DECORATIVE ELEMENTS ── */
+  .meander-top {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 8px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--gold) 0px, var(--gold) 8px,
+      transparent 8px, transparent 16px,
+      var(--gold) 16px, var(--gold) 20px,
+      transparent 20px, transparent 28px
+    );
+    z-index: 10;
+  }
+
+  .meander-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 8px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--gold) 0px, var(--gold) 8px,
+      transparent 8px, transparent 16px,
+      var(--gold) 16px, var(--gold) 20px,
+      transparent 20px, transparent 28px
+    );
+    z-index: 10;
+  }
+
+  .corner-ornament {
+    position: absolute;
+    width: 60px; height: 60px;
+    border-color: var(--gold);
+    border-style: solid;
+    z-index: 10;
+  }
+  .corner-ornament.tl { top: 14px; left: 14px; border-width: 2px 0 0 2px; }
+  .corner-ornament.tr { top: 14px; right: 14px; border-width: 2px 2px 0 0; }
+  .corner-ornament.bl { bottom: 14px; left: 14px; border-width: 0 0 2px 2px; }
+  .corner-ornament.br { bottom: 14px; right: 14px; border-width: 0 2px 2px 0; }
+
+  /* ── SLIDE 1: TITLE ── */
+  #slide1 {
+    background:
+      radial-gradient(ellipse at 30% 50%, rgba(201,168,76,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 30%, rgba(192,82,42,0.06) 0%, transparent 50%),
+      linear-gradient(165deg, #0E0C08 0%, #1A1610 40%, #120E08 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #slide1::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(201,168,76,0.08) 1px, transparent 0);
+    background-size: 40px 40px;
+  }
+
+  .title-content {
+    text-align: center;
+    z-index: 2;
+    animation: fadeInUp 1s ease both;
+  }
+
+  .slide-number-badge {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    opacity: 0.7;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+  }
+
+  .title-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.5em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+  }
+
+  .main-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.05;
+    text-shadow: 0 0 60px rgba(201,168,76,0.3);
+    margin-bottom: 0.4rem;
+  }
+
+  .main-title span { color: var(--gold); }
+
+  .title-sub {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    color: var(--terracotta-light);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    margin-bottom: 2.5rem;
+  }
+
+  .title-divider {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 2rem;
+  }
+
+  .title-meta {
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--cream-dark);
+    opacity: 0.7;
+    letter-spacing: 0.05em;
+  }
+
+  .date-badge {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.5rem 2rem;
+    border: 1px solid rgba(201,168,76,0.4);
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+  }
+
+  /* ── SLIDE 2: CONTESTO ── */
+  #slide2 {
+    background: linear-gradient(135deg, #12100A 0%, #1C1810 60%, #0E1420 100%);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .slide-left-panel {
+    padding: 4rem 3rem 4rem 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .slide-right-panel {
+    padding: 4rem 4rem 4rem 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    color: var(--terracotta-light);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .slide-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 600;
+    color: var(--cream);
+    line-height: 1.2;
+    margin-bottom: 0.8rem;
+  }
+
+  .slide-title span { color: var(--gold); }
+
+  .gold-rule {
+    width: 60px;
+    height: 2px;
+    background: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+
+  .body-text {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: rgba(245,237,216,0.85);
+    font-weight: 300;
+    margin-bottom: 1rem;
+  }
+
+  .highlight-box {
+    background: rgba(201,168,76,0.08);
+    border-left: 3px solid var(--gold);
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--cream-dark);
+    line-height: 1.7;
+  }
+
+  /* Info cards */
+  .info-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 4px;
+    padding: 1.2rem;
+    margin-bottom: 0.8rem;
+    position: relative;
+  }
+
+  .info-card-icon {
+    font-size: 1.4rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .info-card-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .info-card-text {
+    font-size: 0.95rem;
+    color: rgba(245,237,216,0.8);
+    line-height: 1.6;
+  }
+
+  /* ── SLIDE 3: CAUSE ── */
+  #slide3 {
+    background: linear-gradient(150deg, #0A0E14 0%, #12100A 50%, #1A1610 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 4rem;
+  }
+
+  .causes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    width: 100%;
+    max-width: 1000px;
+    margin-top: 2rem;
+  }
+
+  .cause-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .cause-card:hover { border-color: rgba(201,168,76,0.5); }
+
+  .cause-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .cause-card.profonda::before { background: var(--terracotta); }
+  .cause-card.immediata::before { background: var(--gold); }
+  .cause-card.ideologica::before { background: var(--blue-light); }
+  .cause-card.economica::before { background: #5A8A5A; }
+
+  .cause-number {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    opacity: 0.1;
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .cause-type {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .cause-card.profonda .cause-type { color: var(--terracotta-light); }
+  .cause-card.immediata .cause-type { color: var(--gold); }
+  .cause-card.ideologica .cause-type { color: #7EB0DD; }
+  .cause-card.economica .cause-type { color: #8AC88A; }
+
+  .cause-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: var(--cream);
+    margin-bottom: 0.6rem;
+    font-weight: 600;
+  }
+
+  .cause-text {
+    font-size: 0.9rem;
+    color: rgba(245,237,216,0.75);
+    line-height: 1.6;
+  }
+
+  /* ── SLIDE 4: FORZE IN CAMPO ── */
+  #slide4 {
+    background: linear-gradient(120deg, #08100E 0%, #101816 50%, #180E08 100%);
+    display: grid;
+    grid-template-columns: 1fr 80px 1fr;
+    align-items: center;
+    padding: 3rem 3rem;
+  }
+
+  .faction-panel {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .faction-emblem {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 1.2rem;
+    border: 2px solid;
+  }
+
+  .atene .faction-emblem {
+    background: rgba(30,58,95,0.3);
+    border-color: var(--blue-light);
+  }
+
+  .sparta .faction-emblem {
+    background: rgba(192,82,42,0.2);
+    border-color: var(--terracotta);
+  }
+
+  .faction-name {
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+
+  .atene .faction-name { color: #7EB0DD; }
+  .sparta .faction-name { color: var(--terracotta-light); }
+
+  .faction-league {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    opacity: 0.6;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+  }
+
+  .strength-list {
+    list-style: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  .strength-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 0.9rem;
+    color: rgba(245,237,216,0.8);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    line-height: 1.4;
+  }
+
+  .strength-list li::before {
+    content: '▸';
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .atene .strength-list li::before { color: var(--blue-light); }
+  .sparta .strength-list li::before { color: var(--terracotta); }
+
+  .vs-divider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gold);
+  }
+
+  .vs-line { width: 1px; height: 60px; background: rgba(201,168,76,0.3); }
+
+  .vs-text {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  /* ── SLIDE 5: TIMELINE FASI ── */
+  #slide5 {
+    background: linear-gradient(170deg, #0C0A06 0%, #1A1610 70%, #0A0E14 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 4rem;
+  }
+
+  .phases-container {
+    width: 100%;
+    max-width: 1050px;
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .phase-row {
+    display: grid;
+    grid-template-columns: 160px 16px 1fr;
+    align-items: center;
+    gap: 0;
+  }
+
+  .phase-date {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    color: var(--gold);
+    text-align: right;
+    padding-right: 1.2rem;
+    letter-spacing: 0.05em;
+  }
+
+  .phase-dot-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+  }
+
+  .phase-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .phase-row:not(:last-child) .phase-dot::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: calc(1rem + 16px);
+    background: rgba(201,168,76,0.2);
+  }
+
+  .phase1 .phase-dot { border-color: var(--terracotta); background: rgba(192,82,42,0.3); }
+  .phase2 .phase-dot { border-color: var(--gold); background: rgba(201,168,76,0.3); }
+  .phase3 .phase-dot { border-color: var(--blue-light); background: rgba(46,88,133,0.3); }
+
+  .phase-content {
+    margin-left: 1.2rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    padding: 1rem 1.3rem;
+    border-radius: 3px;
+  }
+
+  .phase1 .phase-content { border-left: 3px solid var(--terracotta); }
+  .phase2 .phase-content { border-left: 3px solid var(--gold); }
+  .phase3 .phase-content { border-left: 3px solid var(--blue-light); }
+
+  .phase-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+
+  .phase1 .phase-name { color: var(--terracotta-light); }
+  .phase2 .phase-name { color: var(--gold-light); }
+  .phase3 .phase-name { color: #7EB0DD; }
+
+  .phase-events {
+    font-size: 0.88rem;
+    color: rgba(245,237,216,0.75);
+    line-height: 1.5;
+  }
+
+  /* ── SLIDE 6: PRIMA FASE ── */
+  #slide6 {
+    background: linear-gradient(145deg, #100808 0%, #1A1610 50%, #0A0C10 100%);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  /* ── SLIDE 7: SPEDIZIONE ── */
+  #slide7 {
+    background: linear-gradient(160deg, #080C14 0%, #0E1218 50%, #140E08 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 4rem;
+  }
+
+  .expedition-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.2rem;
+    margin-top: 2rem;
+    width: 100%;
+    max-width: 1000px;
+  }
+
+  .exp-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 1.4rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .exp-icon { font-size: 2rem; margin-bottom: 0.6rem; }
+
+  .exp-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .exp-text {
+    font-size: 0.88rem;
+    color: rgba(245,237,216,0.75);
+    line-height: 1.6;
+  }
+
+  .disaster-banner {
+    background: rgba(192,82,42,0.12);
+    border: 1px solid rgba(192,82,42,0.3);
+    border-left: 4px solid var(--terracotta);
+    padding: 1rem 1.5rem;
+    margin-top: 1.5rem;
+    width: 100%;
+    max-width: 1000px;
+    text-align: center;
+  }
+
+  .disaster-banner-text {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: var(--terracotta-light);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── SLIDE 8: FASE FINALE ── */
+  #slide8 {
+    background: linear-gradient(140deg, #0A0A0E 0%, #14100A 50%, #0E1410 100%);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  /* ── SLIDE 9: CONSEGUENZE ── */
+  #slide9 {
+    background: linear-gradient(130deg, #08100A 0%, #121008 50%, #0E0A14 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 4rem;
+  }
+
+  .consequences-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+    width: 100%;
+    max-width: 1000px;
+  }
+
+  .cons-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(201,168,76,0.15);
+    padding: 1.4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cons-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gold);
+    opacity: 0.3;
+  }
+
+  .cons-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+
+  .cons-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .cons-text {
+    font-size: 0.88rem;
+    color: rgba(245,237,216,0.75);
+    line-height: 1.6;
+  }
+
+  .final-quote {
+    margin-top: 1.5rem;
+    padding: 1.2rem 2rem;
+    border-left: 3px solid var(--gold);
+    border-right: 3px solid var(--gold);
+    text-align: center;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--cream-dark);
+    max-width: 700px;
+    line-height: 1.8;
+  }
+
+  /* ── SLIDE 10: RIEPILOGO ── */
+  #slide10 {
+    background:
+      radial-gradient(ellipse at 20% 80%, rgba(201,168,76,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(192,82,42,0.05) 0%, transparent 50%),
+      linear-gradient(165deg, #0E0C08 0%, #1A1610 40%, #120E08 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 4rem;
+  }
+
+  #slide10::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(201,168,76,0.06) 1px, transparent 0);
+    background-size: 40px 40px;
+  }
+
+  .recap-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.8rem;
+    margin-top: 2rem;
+    width: 100%;
+    max-width: 1050px;
+    z-index: 2;
+  }
+
+  .recap-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 1rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .recap-num {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    color: var(--gold);
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .recap-label {
+    font-size: 0.78rem;
+    color: rgba(245,237,216,0.7);
+    line-height: 1.4;
+  }
+
+  .domande-box {
+    margin-top: 1.5rem;
+    width: 100%;
+    max-width: 1050px;
+    z-index: 2;
+    background: rgba(201,168,76,0.06);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 1.5rem 2rem;
+  }
+
+  .domande-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+
+  .domande-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem 2rem;
+    list-style: none;
+  }
+
+  .domande-list li {
+    font-size: 0.88rem;
+    color: rgba(245,237,216,0.8);
+    padding: 0.3rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .domande-list li::before {
+    content: '?';
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ── NAVIGATION ── */
+  .nav-bar {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 100;
+    background: rgba(10,8,6,0.8);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 0.6rem 1.2rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-btn {
+    background: none;
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold);
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    padding: 0.4rem 1rem;
+    letter-spacing: 0.1em;
+    transition: all 0.2s;
+  }
+
+  .nav-btn:hover {
+    background: rgba(201,168,76,0.1);
+    border-color: var(--gold);
+  }
+
+  .nav-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  .nav-counter {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    color: rgba(201,168,76,0.7);
+    min-width: 60px;
+    text-align: center;
+    letter-spacing: 0.1em;
+  }
+
+  .nav-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .nav-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.25);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .nav-dot.active {
+    background: var(--gold);
+    transform: scale(1.3);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .slide.active .info-card,
+  .slide.active .cause-card,
+  .slide.active .phase-row,
+  .slide.active .exp-card,
+  .slide.active .cons-card,
+  .slide.active .recap-card,
+  .slide.active .faction-panel {
+    animation: fadeInUp 0.5s ease both;
+  }
+
+  .slide.active .info-card:nth-child(1),
+  .slide.active .cause-card:nth-child(1),
+  .slide.active .phase-row:nth-child(1),
+  .slide.active .exp-card:nth-child(1),
+  .slide.active .cons-card:nth-child(1),
+  .slide.active .recap-card:nth-child(1) { animation-delay: 0.1s; }
+
+  .slide.active .info-card:nth-child(2),
+  .slide.active .cause-card:nth-child(2),
+  .slide.active .phase-row:nth-child(2),
+  .slide.active .exp-card:nth-child(2),
+  .slide.active .cons-card:nth-child(2),
+  .slide.active .recap-card:nth-child(2) { animation-delay: 0.2s; }
+
+  .slide.active .info-card:nth-child(3),
+  .slide.active .cause-card:nth-child(3),
+  .slide.active .phase-row:nth-child(3),
+  .slide.active .exp-card:nth-child(3),
+  .slide.active .cons-card:nth-child(3),
+  .slide.active .recap-card:nth-child(3) { animation-delay: 0.3s; }
+
+  .slide.active .cause-card:nth-child(4),
+  .slide.active .recap-card:nth-child(4) { animation-delay: 0.4s; }
+
+  .slide.active .recap-card:nth-child(5) { animation-delay: 0.5s; }
+
+  /* slide header centered */
+  .slide-header-center {
+    text-align: center;
+    z-index: 2;
+  }
+
+  /* bold term */
+  strong.term {
+    color: var(--gold-light);
+    font-weight: 600;
+  }
+
+  .tag-pill {
+    display: inline-block;
+    padding: 0.2rem 0.7rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: 1px solid;
+    margin-right: 0.4rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tag-pill.red { color: var(--terracotta-light); border-color: rgba(192,82,42,0.4); }
+  .tag-pill.gold { color: var(--gold); border-color: rgba(201,168,76,0.4); }
+  .tag-pill.blue { color: #7EB0DD; border-color: rgba(30,58,95,0.6); }
+</style>
+</head>
+<body>
+
+<div class="slideshow">
+
+  <!-- ──────────────────── SLIDE 1: TITOLO ──────────────────── -->
+  <div class="slide active" id="slide1">
+    <div class="meander-top"></div>
+    <div class="meander-bottom"></div>
+    <div class="corner-ornament tl"></div>
+    <div class="corner-ornament tr"></div>
+    <div class="corner-ornament bl"></div>
+    <div class="corner-ornament br"></div>
+
+    <div class="title-content">
+      <div class="title-eyebrow">Unità 4 · Il mondo greco</div>
+      <h1 class="main-title">La guerra del<br><span>Peloponneso</span></h1>
+      <div class="title-divider"></div>
+      <p class="title-meta">Il grande conflitto che cambiò per sempre la Grecia antica</p>
+      <div class="date-badge">431 – 404 a.C.</div>
+    </div>
+  </div>
+
+  <!-- ──────────────────── SLIDE 2: CONTESTO ──────────────────── -->
+  <div class="slide" id="slide2">
+    <div class="meander-top"></div>
+    <div class="meander-bottom"></div>
+
+    <div class="slide-left-panel">
+      <div class="section-label">Contesto storico</div>
+      <h2 class="slide-title">La <span>"guerra civile"</span> dei greci</h2>
+      <div class="gold-rule"></div>
+      <p class="body-text">Nel <strong class="term">431 a.C.</strong> si ruppe la pace che Atene e Sparta avevano stretto nel 446 a.C. Iniziò così un lungo conflitto tra le due città e i loro alleati, durato quasi 30 anni.</p>
+      <div class="highlight-box">
+        «Il più grande sconvolgimento che abbia interessato i greci e una parte dei barbari»<br>
+        <small style="opacity:0.7">— Tucidide, storico ateniese</small>
+      </div>
+      <p class="body-text">Lo storico <strong class="term">Tucidide</strong> (460–404 a.C.) ci ha tramandato la narrazione di questo conflitto, considerato il primo grande "conflitto mondiale" dell'antichità.</p>
+    </div>
+
+    <div class="slide-right-panel">
+      <div class="section-label">Caratteristiche principali</div>
+      <div class="info-card">
+        <div class="info-card-icon">⚔️</div>
+        <div class="info-card-title">Conflitto per l'egemonia</div>
+        <div class="info-card-text">Una guerra per il dominio sul mondo greco, ma anche uno scontro ideologico tra <strong class="term">democrazia</strong> (Atene) e <strong class="term">oligarchia</strong> (Sparta).</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🌊</div>
+        <div class="info-card-title">Scala geografica</div>
+        <div class="info-card-text">Coinvolse tutta la Grecia continentale, le isole dell'Egeo, le colonie in Sicilia e Italia, fino all'Asia Minore.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🏛️</div>
+        <div class="info-card-title">Esito</div>
+        <div class="info-card-text">La guerra si concluse con la <strong class="term">sconfitta di Atene</strong> nel 404 a.C. e la fine del suo impero marittimo.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────── SLIDE 3: CAUSE ──────────────────── -->
+  <div class="slide" id="slide3">
+    <div class="meander-top"></div>
+    <div class="meander-bottom"></div>
+
+    <div class="slide-header-center">
+      <div class="section-label">Analisi storica</div>
+      <h2 class="slide-title">Perché scoppiò la guerra?</h2>
+      <div class="gold-rule" style="margin: 0.8rem auto 0;"></div>
+    </div>
+
+    <div class="causes-grid">
+      <div class="cause-card profonda">
+        <div class="cause-number">01</div>
+        <div class="cause-type">Causa profonda</div>
+        <div class="cause-title">La politica espansionistica di Atene</div>
+        <div class="cause-text">Atene stava diventando sempre più potente, destando la preoccupazione di Sparta e dei suoi alleati. La crescita dell'impero ateniese era percepita come una minaccia all'equilibrio di potere.</div>
+      </div>
+      <div class="cause-card immediata">
+        <div class="cause-number">02</div>
+        <div class="cause-type">Cause immediate</div>
+        <div class="cause-title">Le tensioni con Corinto e Megara</div>
+        <div class="cause-text">Conflitti tra Atene e la colonia corinzia di Corcira (435 a.C.); pressioni su città alleate di Sparta perché uscissero dalla Lega di Delo; embargo commerciale imposto ad Atene contro Megara (432 a.C.).</div>
+      </div>
+      <div class="cause-card ideologica">
+        <div class="cause-number">03</div>
+        <div class="cause-type">Causa ideologica</div>
+        <div class="cause-title">Democrazia vs Oligarchia</div>
+        <div class="cause-text">Atene e Sparta avevano favorito in ogni modo l'instaurarsi di regimi opposti nelle città alleate: democratici per Atene, oligarchici per Sparta. Lo scontro ideologico era vivo anche all'interno di ogni singola <em>pòlis</em>.</div>
+      </div>
+      <div class="cause-card economica">
+        <div class="cause-number">04</div>
+        <div class="cause-type">Causa economica</div>
+        <div class="cause-title">Il controllo dei commerci</div>
+        <div class="cause-text">Atene dominava i commerci nel Mediterraneo orientale grazie alla sua flotta e alla Lega di Delo. Sparta e i suoi alleati, in particolare Corinto, subivano questa supremazia economica ateniese.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────── SLIDE 4: FORZE IN CAMPO ──────────────────── -->
+  <div class="slide" id="slide4">
+    <div class="meander-top"></div>
+    <div class="meander-bottom"></div>
+
+    <div class="faction-panel atene">
+      <div class="faction-emblem">🦉</div>
+      <div class="faction-name">ATENE</div>
+      <div class="faction-league">Lega di Delo</div>
+      <ul class="strength-list">
+        <li>Supremazia navale nel Mediterraneo orientale</li>
+        <li>Maggiori risorse finanziarie grazie al tributo degli alleati</li>
+        <li>Alleati: Platea, Eubea, Tessaglia, Acarnania, Calcide, Tracia, Ellesponto, Asia Minore</li>
+        <li>Democrazia come ideologia unificante</li>
+        <li>Strategia: <strong class="term">resistenza</strong>, evitare lo scontro diretto, logoramento</li>
+      </ul>
+    </div>
+
+    <div class="vs-divider">
+      <div class="vs-line"></div>
+      <div class="vs-text">VS</div>
+      <div class="vs-line"></div>
+    </div>
+
+    <div class="faction-panel sparta">
+      <div class="faction-emblem">⚔️</div>
+      <div class="faction-name">SPARTA</div>
+      <div class="faction-league">Lega peloponnesiaca</div>
+      <ul class="strength-list">
+        <li>Superiorità nelle forze di terra (opliti)</li>
+        <li>Alleati: tutto il Peloponneso (eccetto Argo), megaresi, beoti, locresi, focesi, macedoni</li>
+        <li>Risorsa ideologica: presentarsi come difensori della libertà delle <em>pòleis</em> contro Atene</li>
+        <li>Strategia: <strong class="term">offensiva</strong>, invasione dell'Attica, devastazione dei campi ateniesi</li>
+        <li>Solo flotta corinzia (punto debole iniziale)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ──────────────────── SLIDE 5: LE TRE FASI ──────────────────── -->
+  <div class="slide" id="slide5">
+    <div class="meander-top"></div>
+    <div class="meander-bottom"></div>
+
+    <div class="slide-header-center">
+      <div class="section-label">Cronologia</div>
+      <h2 class="slide-title">Le tre fasi della guerra</h2>
+      <div class="gold-rule" style="margin: 0.8rem auto 0;"></div>
+    </div>
+
+    <div class="phases-container">
+      <div class="phase-row phase1">
+        <div class="phase-date">431 – 421 a.C.</div>
+        <div class="phase-dot-col"><div class="phase-dot"></div></div>
+        <div class="phase-content">
+          <div class="phase-name">1ª FASE — "Archidamica" (dal re spartano Archidamo)</div>
+          <div class="phase-events">
+            Sparta invade ripetutamente l'Attica • I contadini ateniesi si rifugiano in città • La "peste di Atene" (430–429 a.C.) uccide molti cittadini, tra cui Pericle • Vittoria ateniese a Pilo (425 a.C.) • La guerra si conclude con la <strong class="term">pace di Nicia</strong> (421 a.C.), che ribadisce l'equilibrio tra le due potenze
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-row phase2">
+        <div class="phase-date">420 – 413 a.C.</div>
+        <div class="phase-dot-col"><div class="phase-dot"></div></div>
+        <div class="phase-content">
+          <div class="phase-name">2ª FASE — Periodo intermedio</div>
+          <div class="phase-events">
+            La pace di Nicia rimane fragile • Ad Atene il giovane <strong class="term">Alcibiade</strong> convince l'assemblea a lanciare la <strong class="term">spedizione in Sicilia</strong> (415 a.C.) per estendere l'egemonia ateniese nel Mediterraneo occidentale • La spedizione si rivela un <strong class="term">disastro totale</strong> (413 a.C.)
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-row phase3">
+        <div class="phase-date">413 – 404 a.C.</div>
+        <div class="phase-dot-col"><div class="phase-dot"></div></div>
+        <div class="phase-content">
+          <div class="phase-name">3ª FASE — "Deceleica" (da Decelea, base spartana vicino Atene)</div>
+          <div class="phase-events">
+            Sparta occupa Decelea e riceve finanziamenti dai Persiani • Il colpo di stato oligarchico ad Atene (411 a.C.) e rapido ritorno alla democrazia (410 a.C.) • Vittoria spartana a <strong class="term">Egospòtami</strong> (405 a.C.) • Occupazione spartana di Atene (404 a.C.) → <strong class="term">fine della guerra</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────── SLIDE 6: PRIMA FASE ──────────────────── -->
+  <div class="slide" id="slide6">
+    <div class="meander-top"></div>
+    <div class="meander-bottom"></div>
+
+    <div class="slide-left-panel">
+      <div class="section-label">Prima fase · 431–421 a.C.</div>
+      <h2 class="slide-title">La strategia di <span>Pericle</span> e la peste</h2>
+      <div class="gold-rule"></div>
+      <p class="body-text">Pericle era consapevole dell'inferiorità ateniese nelle forze di terra, quindi impostò una strategia di <strong class="term">resistenza</strong>:</p>
+      <div class="info-card">
+        <div class="info-card-title">🏯 Chiudersi nelle Lunghe Mura</div>
+        <div class="info-card-text">Non affrontare gli opliti spartani in campo aperto; tenersi al sicuro nelle mura che collegavano Atene al porto del Pireo, ricevendo rifornimenti via mare.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">🚢 Attacchi dal mare</div>
+        <div class="info-card-text">Logorare gli avversari con sbarchi improvvisi e attacchi alle loro coste, sfruttando la supremazia navale ateniese.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon"></div>
+        <div class="info-card-title">⚠️ La "Peste di Atene" (430–429 a.C.)</div>
+        <div class="info-card-text">Un evento inatteso sconvolse la strategia: una violenta epidemia (forse il tifo) decimò gli ateniesi ammassati nella città sovraffollata, uccidendo lo stesso <strong class="term">Pericle</strong> nel 429 a.C.</div>
+      </div>
+    </div>
+
+    <div class="slide-right-panel">
+      <div class="section-label">La pace di Nicia</div>
+      <h2 class="slide-title">Cleone, Brasida e la <span>Pace</span></h2>
+      <div class="gold-rule"></div>
+      <p class="body-text">Dopo la morte di Pericle, ad Atene si impose <strong class="term">Cleone</strong>, un mercante di cuoio, uomo del popolo che aumentò le tasse sulle merci importate e spinse per continuare la guerra.</p>
+      <p class="body-text">A Sparta, il generale <strong class="term">Brasida</strong> voleva invece portare il conflitto fino alla distruzione del nemico.</p>
+      <div class="highlight-box">
+        Quando entrambi i capi della guerra – Cleone e Brasida – morirono in battaglia, si aprì la strada alla pace. Nel <strong class="term">421 a.C.</strong> si firmò la <strong class="term">pace di Nicia</strong>, che ribadiva sostanzialmente la situazione precedente al conflitto, senza un vincitore.
+      </div>
+      <p class="body-text" style="margin-top:0.5rem;">La pace fu però fragile: le ragioni profonde del conflitto non erano state risolte.</p>
+    </div>
+  </div>
+
+  <!-- ──────────────────── SLIDE 7: SPEDIZIONE IN SICILIA ──────────────────── -->
+  <div class="slide" id="slide7">
+    <div class="meander-top"></div>
+    <div class="meander-bottom"></div>
+
+    <div class="slide-header-center">
+      <div class="section-label">Il grande errore · 415–413 a.C.</div>
+      <h2 class="slide-title">La <span>spedizione in Sicilia</span></h2>
+      <div class="gold-rule" style="margin: 0.8rem auto 0;"></div>
+    </div>
+
+    <div class="expedition-grid">
+      <div class="exp-card">
+        <div class="exp-icon">💡</div>
+        <div class="exp-title">L'idea di Alcibiade</div>
+        <div class="exp-text">Il giovane stratega <strong class="term">Alcibiade</strong>, nipote di Pericle, ambizioso e carismatico, convinse l'assemblea ateniese: conquistare la ricca Sicilia avrebbe permesso di dominare il Mediterraneo occidentale e dare un colpo decisivo a Sparta.</div>
+      </div>
+      <div class="exp-card">
+        <div class="exp-icon">⚡</div>
+        <div class="exp-title">Lo scandalo delle erme</div>
+        <div class="exp-text">Alla vigilia della partenza, le erme sacre della città furono mutilate. Alcibiade fu accusato di sacrilegio. Richiamato in patria durante la spedizione, fuggì dai nemici spartani, lasciando l'esercito senza la sua guida.</div>
+      </div>
+      <div class="exp-card">
+        <div class="exp-icon">💀</div>
+        <div class="exp-title">Il disastro di Siracusa</div>
+        <div class="exp-text">L'esercito rimase sotto il comando di <strong class="term">Nicia</strong>, che era sempre stato contrario alla spedizione. Giunti in Sicilia, gli spartani intervennero in aiuto di Siracusa. Nel <strong class="term">413 a.C.</strong> fu una disfatta totale: migliaia di prigionieri, molti morirono nelle cave di pietra delle Latomie.</div>
+      </div>
+    </div>
+
+    <div class="disaster-banner">
+      <div class="disaster-banner-text">
+        💥 &nbsp; La sconfitta in Sicilia fu il colpo più duro per Atene: un'ingente quantità di uomini, denaro e navi andati perduti — e il "mito" della potenza ateniese crollò definitivamente
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────── SLIDE 8: FASE FINALE ──────────────────── -->
+  <div class="slide" id="slide8">
+    <div class="meander-top"></div>
+    <div class="meander-bottom"></div>
+
+    <div class="slide-left-panel">
+      <div class="section-label">Terza fase · 413–404 a.C.</div>
+      <h2 class="slide-title">La caduta di <span>Atene</span></h2>
+      <div class="gold-rule"></div>
+      <div class="info-card">
+        <div class="info-card-title">💰 L'alleanza con la Persia</div>
+        <div class="info-card-text">Sparta ottenne finanziamenti dal re persiano <strong class="term">Dario II</strong> (trattati del 412–410 a.C.) per costruire una flotta. In cambio, i persiani ottennero mano libera sulle <em>pòleis</em> dell'Asia Minore.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">🏛️ Il colpo di stato oligarchico (411 a.C.)</div>
+        <div class="info-card-text">Ad Atene, i conservatori attribuirono la crisi agli eccessi della democrazia e ai demagoghi. Fu instaurato il <strong class="term">Consiglio dei Quattrocento</strong> (golpe oligarchico), ma durò poco: il <em>dèmos</em> si ribellò e la democrazia fu ripristinata nel 410 a.C.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">⚓ Egospòtami (405 a.C.)</div>
+        <div class="info-card-text">Il comandante spartano <strong class="term">Lisandro</strong> distrusse la flotta ateniese nell'Ellesponto. Atene era isolata: tutte le città alleate, tranne Samo, avevano defezionato.</div>
+      </div>
+    </div>
+
+    <div class="slide-right-panel">
+      <div class="section-label">La resa · 404 a.C.</div>
+      <h2 class="slide-title">La fine dell'<span>impero ateniese</span></h2>
+      <div class="gold-rule"></div>
+      <p class="body-text">Nell'aprile del <strong class="term">404 a.C.</strong>, dopo un lungo assedio, <strong class="term">Lisandro occupò Atene</strong> ormai alla fame.</p>
+      <div class="highlight-box">
+        Il sistema di dominio ateniese si era sfaldato: tutte le città della Lega di Delo, ad eccezione di Samo, avevano defezionato o si erano ribellate.
+      </div>
+      <p class="body-text">Il lungo tempo dell'autonomia greca sotto l'egemonia ateniese volgeva al termine. Spartani e Persiani avevano collaborato per abbattere la potenza di Atene:</p>
+      <ul class="strength-list" style="margin-top:0.5rem;">
+        <li>La Lega di Delo fu sciolta</li>
+        <li>Le Lunghe Mura furono abbattute</li>
+        <li>Atene fu sottoposta al controllo di Sparta</li>
+        <li>Iniziò un breve regime oligarchico: i <strong class="term">Trenta Tiranni</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ──────────────────── SLIDE 9: CONSEGUENZE ──────────────────── -->
+  <div class="slide" id="slide9">
+    <div class="meander-top"></div>
+    <div class="meander-bottom"></div>
+
+    <div class="slide-header-center">
+      <div class="section-label">Bilancio storico</div>
+      <h2 class="slide-title">Le conseguenze della guerra</h2>
+      <div class="gold-rule" style="margin: 0.8rem auto 0;"></div>
+    </div>
+
+    <div class="consequences-grid">
+      <div class="cons-card">
+        <div class="cons-icon">🏛️</div>
+        <div class="cons-title">Fine dell'egemonia ateniese</div>
+        <div class="cons-text">La Lega di Delo fu sciolta. L'impero marittimo di Atene cessò di esistere. La democrazia ateniese sopravvisse, ma la città non fu mai più la potenza dominante del mondo greco.</div>
+      </div>
+      <div class="cons-card">
+        <div class="cons-icon">⚔️</div>
+        <div class="cons-title">Egemonia spartana</div>
+        <div class="cons-text">Sparta dominò la Grecia dal 404 al 371 a.C. Ma il suo modello di governo basato sulla forza militare si rivelò fragile: non riuscì a mantenere la pace tra le città greche.</div>
+      </div>
+      <div class="cons-card">
+        <div class="cons-icon">🌍</div>
+        <div class="cons-title">Ritorno della Persia</div>
+        <div class="cons-text">I persiani tornarono a esercitare influenza nel mondo greco. Le <em>pòleis</em> dell'Asia Minore tornarono sotto il controllo persiano, vanificando le conquiste delle Guerre Persiane.</div>
+      </div>
+      <div class="cons-card">
+        <div class="cons-icon">💔</div>
+        <div class="cons-title">Crisi delle città greche</div>
+        <div class="cons-text">La lunga guerra aveva devastato l'economia, decimato la popolazione, alimentato le guerre civili interne (<em>stàsis</em>) nelle <em>pòleis</em>. La Grecia era indebolita e divisa.</div>
+      </div>
+      <div class="cons-card">
+        <div class="cons-icon">📚</div>
+        <div class="cons-title">Crisi della democrazia</div>
+        <div class="cons-text">La demagogia, il populismo e le guerre civili avevano screditato la democrazia agli occhi dei filosofi (Platone, Aristotele), aprendo la strada a riflessioni politiche fondamentali.</div>
+      </div>
+      <div class="cons-card">
+        <div class="cons-icon">🔮</div>
+        <div class="cons-title">Verso il mondo ellenistico</div>
+        <div class="cons-text">La debolezza delle <em>pòleis</em> dopo la guerra aprì la strada all'espansione della Macedonia di Filippo II e poi di Alessandro Magno, che avrebbe creato il mondo ellenistico.</div>
+      </div>
+    </div>
+
+    <div class="final-quote">
+      «La guerra fu maestra violenta, e plasmò le abitudini degli uomini al livello delle circostanze, togliendo l'agio della vita quotidiana.»<br>
+      <small style="opacity:0.7; font-style:normal; font-family:'Cinzel',serif; font-size:0.75rem; letter-spacing:0.1em;">— TUCIDIDE</small>
+    </div>
+  </div>
+
+  <!-- ──────────────────── SLIDE 10: RIEPILOGO ──────────────────── -->
+  <div class="slide" id="slide10">
+    <div class="meander-top"></div>
+    <div class="meander-bottom"></div>
+    <div class="corner-ornament tl"></div>
+    <div class="corner-ornament tr"></div>
+    <div class="corner-ornament bl"></div>
+    <div class="corner-ornament br"></div>
+
+    <div class="slide-header-center" style="z-index:2;">
+      <div class="section-label">Sintesi finale</div>
+      <h2 class="slide-title">Riepilogo · <span>Date e concetti chiave</span></h2>
+      <div class="gold-rule" style="margin: 0.8rem auto 0;"></div>
+    </div>
+
+    <div class="recap-grid">
+      <div class="recap-card">
+        <div class="recap-num">431</div>
+        <div class="recap-label">a.C. — Inizio della guerra</div>
+      </div>
+      <div class="recap-card">
+        <div class="recap-num">421</div>
+        <div class="recap-label">a.C. — Pace di Nicia</div>
+      </div>
+      <div class="recap-card">
+        <div class="recap-num">415</div>
+        <div class="recap-label">a.C. — Spedizione in Sicilia</div>
+      </div>
+      <div class="recap-card">
+        <div class="recap-num">405</div>
+        <div class="recap-label">a.C. — Battaglia di Egospòtami</div>
+      </div>
+      <div class="recap-card">
+        <div class="recap-num">404</div>
+        <div class="recap-label">a.C. — Sconfitta di Atene</div>
+      </div>
+    </div>
+
+    <div class="domande-box">
+      <div class="domande-title">Domande per la verifica</div>
+      <ul class="domande-list">
+        <li>Di chi fu la responsabilità dello scoppio della guerra?</li>
+        <li>Quali erano i punti di forza di Atene? E di Sparta?</li>
+        <li>Quali furono i principali eventi delle tre fasi?</li>
+        <li>Perché Atene decise la spedizione in Sicilia?</li>
+        <li>Come la guerra permise ai persiani di tornare in gioco?</li>
+        <li>Cosa si intende per "demagogia"? Chi era Cleone?</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /slideshow -->
+
+<!-- ── NAVIGATION BAR ── -->
+<div class="nav-bar">
+  <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" disabled>◀ Prec</button>
+  <div class="nav-dots" id="navDots"></div>
+  <span class="nav-counter" id="navCounter">1 / 10</span>
+  <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Succ ▶</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  const dotsContainer = document.getElementById('navDots');
+  const counter = document.getElementById('navCounter');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  // Build dots
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('div');
+    d.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    dotsContainer.appendChild(d);
+  }
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    dotsContainer.children[current].classList.remove('active');
+    current = Math.max(0, Math.min(n, total - 1));
+    slides[current].classList.add('active');
+    dotsContainer.children[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + total;
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === total - 1;
+  }
+
+  function changeSlide(dir) { goTo(current + dir); }
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') changeSlide(-1);
+  });
+</script>
+
+</body>
+</html>
